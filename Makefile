@@ -16,6 +16,8 @@ help:
 	@echo "  make test           - Ejecutar tests"
 	@echo "  make lint           - Linter de código"
 	@echo "  make format         - Formatear código"
+	@echo "  make hooks          - Instalar pre-commit hooks"
+	@echo "  make pre-commit     - Ejecutar pre-commit en todos los archivos"
 	@echo "  make clean          - Limpiar archivos temporales"
 	@echo ""
 	@echo "Project Management:"
@@ -55,6 +57,13 @@ lint:
 format:
 	isort sheily_train/ sheily_core/ tools/
 	black sheily_train/ sheily_core/ tools/
+
+# Pre-commit
+hooks:
+	pre-commit install
+
+pre-commit:
+	pre-commit run --all-files
 
 # Cleanup
 clean:

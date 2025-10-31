@@ -12,6 +12,11 @@ build/
 venv/
 env/
 ENV/
+.venv/
+
+# Caches
+.mypy_cache/
+.cache/
 
 # IDEs
 .vscode/
@@ -29,6 +34,8 @@ var/central_logs/*
 var/central_models/*
 var/central_cache/*
 var/central_data/*
+data/
+models/
 
 # Git
 .git/

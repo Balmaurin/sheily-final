@@ -64,6 +64,15 @@ class RAGService:
     def __init__(self):
         self.app = FastAPI(title="Sheily RAG Service", version="1.0.0")
 
+        # Middlewares de rendimiento
+        try:
+            from fastapi.middleware.gzip import GZipMiddleware
+            # Comprimir respuestas grandes para mejorar rendimiento de red
+            self.app.add_middleware(GZipMiddleware, minimum_size=1000)
+        except Exception:
+            # Middleware opcional; si no está disponible, continuar sin fallo
+            pass
+
         # FAISS index y almacenamiento de datos
         self.index = None
         self.index_ids = []  # Lista de IDs correspondientes
@@ -242,12 +251,12 @@ async def main():
         config = uvicorn.Config(
             rag_service.app,
             host="0.0.0.0",
-            port=8002,  # Cambiado de 8001 a 8002
+            port=8000,  # Unificado para Docker/Compose/Healthcheck
             log_level="info"
         )
         server = uvicorn.Server(config)
 
-        print("🌐 Iniciando servidor HTTP en http://0.0.0.0:8002")
+        print("🌐 Iniciando servidor HTTP en http://0.0.0.0:8000")
         await server.serve()
 
     except Exception as e:
