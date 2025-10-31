@@ -8,6 +8,23 @@ Sistema enterprise de inteligencia artificial con arquitectura modular, soporte 
 
 ---
 
+## Índice
+
+- [Estado del Proyecto](#-estado-del-proyecto-auditoría-31102025)
+- [Inicio Rápido](#-inicio-rápido)
+- [Arquitectura](#-arquitectura)
+- [Componentes Principales](#-componentes-principales)
+- [Testing](#-testing)
+- [Seguridad](#-seguridad)
+- [Métricas y Recomendaciones](#-métricas-de-calidad)
+- [Flujo de Trabajo](#-flujo-de-trabajo)
+- [Herramientas](#-herramientas-disponibles)
+- [Documentación adicional](#-documentación-adicional)
+- [Contribuir](#-contribuir)
+- [Changelog](#-changelog)
+
+---
+
 ## 📊 Estado del Proyecto (Auditoría 31/10/2025)
 
 ```
@@ -33,14 +50,16 @@ DevOps................. 75/100 ✓ [****]
 - 16GB RAM (mínimo)
 - GPU CUDA opcional (recomendada)
 
-### Instalación
+### Instalación (Windows PowerShell)
 
 ```bash
 # 1. Clonar repositorio
 git clone https://github.com/Balmaurin/sheily-final.git
 cd sheily-final
 
-# 2. Instalar dependencias
+# 2. Crear entorno virtual e instalar dependencias
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 
 # 3. Configurar variables de entorno
@@ -50,6 +69,35 @@ cp .env.example .env
 # 4. Iniciar sistema RAG
 python quick_start.py
 ```
+
+### Instalación (Linux/Mac)
+
+```bash
+# 1. Clonar repositorio
+git clone https://github.com/Balmaurin/sheily-final.git
+cd sheily-final
+
+# 2. Crear entorno virtual e instalar dependencias
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# 3. Configurar variables de entorno
+cp .env.example .env
+
+# 4. Iniciar sistema RAG
+python3 quick_start.py
+```
+
+### Variables .env más comunes
+
+Estas variables están documentadas en `.env.example`:
+
+- MODEL_NAME, MODEL_PATH, USE_GPU
+- BATCH_SIZE, LEARNING_RATE, MAX_EPOCHS, USE_LORA
+- API_HOST, API_PORT, API_WORKERS
+- LOG_LEVEL, LOG_DIR
+- Opcionales: HF_TOKEN, DB_*, SENTRY_DSN, CORS_ORIGINS
 
 ---
 
@@ -234,6 +282,17 @@ docker-compose ps
 - `prometheus` - Métricas (Puerto 9090)
 - `grafana` - Visualización (Puerto 3000)
 
+### Volúmenes y datos persistentes
+
+El `docker-compose.yml` monta volúmenes locales para no perder datos ni modelos:
+
+- `./var/central_models` → `/app/var/central_models`
+- `./var/central_logs` → `/app/var/central_logs`
+- `./var/central_cache` → `/app/var/central_cache`
+- `./logs` → `/app/logs`
+
+Consulta `docs/NOTAS_DEL_PROYECTO_REAL.md` para conocer qué artefactos están excluidos del repo y cómo reconstruirlos.
+
 ---
 
 ## 📈 Métricas de Calidad
@@ -279,6 +338,17 @@ docker-compose up -d --build
 
 # Verificar salud del sistema
 curl http://localhost:8000/health
+```
+
+### Makefile útil
+
+```bash
+make help          # Ver comandos disponibles
+make install       # Instalar dependencias
+make test          # Ejecutar tests
+make lint          # Lint (flake8/mypy)
+make format        # Formato (black)
+make audit         # Auditoría completa
 ```
 
 ---
@@ -327,6 +397,16 @@ make lint
 - 📖 [Notas del Proyecto Real](docs/NOTAS_DEL_PROYECTO_REAL.md) - Exclusiones y reconstrucción local
 - 📖 [Configuración de Seguridad](docs/SECURITY_POLICIES.md) - Políticas de seguridad
 - 📖 [API Documentation](sheily_core/integration/README.md) - Documentación de APIs
+
+---
+
+## ❗ Troubleshooting
+
+- CUDA no detectada: establece `USE_GPU=false` en `.env` o instala drivers/CUDA adecuados.
+- Puerto en uso (8000): cambia `API_PORT` en `.env` o en `docker-compose.yml`.
+- Falta FAISS o modelos: revisa `docs/NOTAS_DEL_PROYECTO_REAL.md` para reconstruir índices y ubicar modelos en `var/central_models/`.
+- Token HuggingFace: configura `HF_TOKEN` en `.env` si usas modelos privados.
+- Rutas en Windows: usa PowerShell y el activador `.\.venv\Scripts\Activate.ps1`.
 
 ---
 
