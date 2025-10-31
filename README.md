@@ -2,7 +2,7 @@
 
 [![Licencia](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
-[![Score de Calidad](https://img.shields.io/badge/quality-78.2%2F100-brightgreen.svg)](AUDITORIA_DEFINITIVA_COMPLETA.md)
+[![Score de Calidad](https://img.shields.io/badge/quality-80.1%2F100-brightgreen.svg)](AUDITORIA_DEFINITIVA_COMPLETA.md)
 
 Sistema enterprise de inteligencia artificial con arquitectura modular, soporte para 50+ dominios especializados, RAG (Retrieval-Augmented Generation), y entrenamiento LoRA. Este repositorio refleja el proyecto real de producción, con artefactos pesados excluidos por política.
 
@@ -28,16 +28,16 @@ Sistema enterprise de inteligencia artificial con arquitectura modular, soporte 
 ## 📊 Estado del Proyecto (Auditoría 31/10/2025)
 
 ```
-Score General: 78.2/100 - AVANZADO (****)
+Score General: 80.1/100 - AVANZADO (****)
 
 Arquitectura........... 85/100 ✓ [****]
-Documentación.......... 80/100 ✓ [****]
+Calidad de Código...... 78/100 ✓ [***]
 Seguridad.............. 80/100 ✓ [****]
-Testing................ 70/100 ~ [***]
-Calidad de Código...... 50/100 ~ [**]
-Dependencias........... 50/100 ~ [**]
-Performance............ 40/100 ! [**]
-DevOps................. 75/100 ✓ [****]
+Testing................ 80/100 ✓ [****]
+Documentación.......... 80/100 ✓ [****]
+Dependencias........... 88/100 ✓ [****]
+Rendimiento............ 70/100 ✓ [***]
+DevOps................. 80/100 ✓ [****]
 ```
 
 ---
