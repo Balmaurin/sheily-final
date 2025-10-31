@@ -40,10 +40,19 @@ test:
 	pytest tests/ -v
 
 lint:
+	@echo "Running Black (check)"
+	black --check sheily_train/ sheily_core/ tools/
+	@echo "Running isort (check-only)"
+	isort --check-only sheily_train/ sheily_core/ tools/
+	@echo "Running Ruff"
+	ruff sheily_train/ sheily_core/ tools/
+	@echo "Running Flake8"
 	flake8 sheily_train/ sheily_core/ tools/
-	mypy sheily_train/ --ignore-missing-imports
+	@echo "Running MyPy"
+	mypy sheily_train/ sheily_core/ --ignore-missing-imports
 
 format:
+	isort sheily_train/ sheily_core/ tools/
 	black sheily_train/ sheily_core/ tools/
 
 # Cleanup

@@ -25,7 +25,7 @@ jobs:
       
       - name: Install linting dependencies
         run: |
-          pip install black flake8 pylint mypy isort
+          pip install black flake8 pylint mypy isort ruff interrogate
       
       - name: Run Black (format check)
         run: black --check sheily_core/ sheily_train/ --line-length 120
@@ -38,6 +38,15 @@ jobs:
       
       - name: Run Pylint
         run: pylint sheily_core/ sheily_train/ --fail-under=7.0 || true
+
+      - name: Run Ruff (fast linter)
+        run: ruff sheily_core/ sheily_train/
+
+      - name: Run MyPy (type checking)
+        run: mypy sheily_core/ sheily_train/ --ignore-missing-imports
+
+      - name: Check docstring coverage (interrogate)
+        run: interrogate -vv --fail-under=60 sheily_core/ sheily_train/
 
   # Job 2: Tests Unitarios
   test:
@@ -64,7 +73,7 @@ jobs:
         run: |
           pytest tests/ --cov=sheily_core --cov=sheily_train \
             --cov-report=xml --cov-report=html --cov-report=term \
-            -v --tb=short
+            --cov-fail-under=70 -v --tb=short
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
