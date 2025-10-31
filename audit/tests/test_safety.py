@@ -6,12 +6,13 @@ Coverage: Seguridad y monitoreo
 """
 
 import pytest
+
 from sheily_core.safety import (
-    SecurityMonitor,
     SecurityConfig,
     SecurityEvent,
-    get_security_monitor,
+    SecurityMonitor,
     create_security_event,
+    get_security_monitor,
 )
 
 
@@ -39,25 +40,19 @@ class TestSecurityEventHandling:
 
     def test_security_event_creation(self):
         """Verificar creación de evento de seguridad"""
-        event = create_security_event(
-            event_type="test_event", severity="low", description="Test message"
-        )
+        event = create_security_event(event_type="test_event", severity="low", description="Test message")
         assert isinstance(event, SecurityEvent)
 
     def test_security_event_attributes(self):
         """Verificar atributos del evento de seguridad"""
-        event = create_security_event(
-            event_type="test", severity="high", description="Test"
-        )
+        event = create_security_event(event_type="test", severity="high", description="Test")
         assert event.event_type == "test"
         assert event.severity == "high"
 
     def test_record_security_event(self):
         """Verificar grabación de evento"""
         monitor = SecurityMonitor()
-        event = create_security_event(
-            event_type="test", severity="low", description="Test"
-        )
+        event = create_security_event(event_type="test", severity="low", description="Test")
         try:
             monitor.record_security_event(event)
             # Si no lanza excepción, funciona

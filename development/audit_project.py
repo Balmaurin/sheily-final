@@ -91,9 +91,7 @@ class SheilyAuditor:
         if missing_files:
             findings.append(f"Archivos críticos faltantes: {', '.join(missing_files)}")
             recommendations.append("Crear archivos críticos faltantes para proyecto profesional")
-            return self.log_audit(
-                "Estructura del Proyecto", "FAIL", 30.0, findings, recommendations
-            )
+            return self.log_audit("Estructura del Proyecto", "FAIL", 30.0, findings, recommendations)
 
         # Verificar estructura de directorios
         expected_dirs = ["audit_2024", "models", "sheily_core", "data", "logs", "reports", "docs"]
@@ -142,11 +140,7 @@ class SheilyAuditor:
             with open(req_file, "r", encoding="utf-8") as f:
                 content = f.read()
 
-            lines = [
-                line.strip()
-                for line in content.split("\n")
-                if line.strip() and not line.startswith("#")
-            ]
+            lines = [line.strip() for line in content.split("\n") if line.strip() and not line.startswith("#")]
 
             # Verificar dependencias críticas
             critical_deps = ["torch", "transformers", "fastapi", "pytest"]
@@ -272,9 +266,7 @@ class SheilyAuditor:
                 findings.append(f"Error en docker-compose.yml: {e}")
 
         # Calcular puntuación
-        issues = len(
-            [f for f in findings if "Error" in f or "mal formateado" in f or "no encontrado" in f]
-        )
+        issues = len([f for f in findings if "Error" in f or "mal formateado" in f or "no encontrado" in f])
 
         if issues == 0:
             score = 100.0
@@ -361,9 +353,7 @@ class SheilyAuditor:
 
         # Verificar tamaño del proyecto
         try:
-            result = subprocess.run(
-                ["du", "-sh", str(self.project_root)], capture_output=True, text=True
-            )
+            result = subprocess.run(["du", "-sh", str(self.project_root)], capture_output=True, text=True)
             project_size = result.stdout.strip()
             findings.append(f"Tamaño total del proyecto: {project_size}")
         except Exception:
@@ -493,9 +483,7 @@ class SheilyAuditor:
             if (py_dir / "__init__.py").exists():
                 modules_with_init += 1
 
-        init_percentage = (
-            (modules_with_init / total_python_files * 100) if total_python_files > 0 else 0
-        )
+        init_percentage = (modules_with_init / total_python_files * 100) if total_python_files > 0 else 0
         findings.append(f"Módulos con __init__.py: {init_percentage:.1f}%")
 
         # Verificar archivos muy grandes
@@ -560,10 +548,7 @@ class SheilyAuditor:
             "python_version": platform.python_version(),
             "platform": platform.platform(),
             "total_files": len(list(self.project_root.rglob("*"))),
-            "total_size_mb": sum(
-                f.stat().st_size for f in self.project_root.rglob("*") if f.is_file()
-            )
-            / (1024 * 1024),
+            "total_size_mb": sum(f.stat().st_size for f in self.project_root.rglob("*") if f.is_file()) / (1024 * 1024),
         }
 
         # Generar resumen
@@ -609,9 +594,7 @@ class SheilyAuditor:
         report_lines.append("-" * 40)
 
         for component_audit in audit.component_audits:
-            status_icon = {"PASS": "✅", "WARN": "⚠️", "FAIL": "❌", "INFO": "ℹ️"}.get(
-                component_audit.status, "❓"
-            )
+            status_icon = {"PASS": "✅", "WARN": "⚠️", "FAIL": "❌", "INFO": "ℹ️"}.get(component_audit.status, "❓")
             report_lines.append(f"{status_icon} {component_audit.component}:")
             report_lines.append(f"   Puntuación: {component_audit.score:.1f}/100")
             report_lines.append(f"   Estado: {component_audit.status}")
@@ -636,9 +619,7 @@ class SheilyAuditor:
         report_lines.append(f"• Estado WARN: {audit.summary['status_distribution']['WARN']}")
         report_lines.append(f"• Estado FAIL: {audit.summary['status_distribution']['FAIL']}")
         report_lines.append(f"• Recomendaciones totales: {audit.summary['recommendations_count']}")
-        report_lines.append(
-            f"• Tiempo de auditoría: {audit.summary['audit_duration_seconds']:.1f} segundos"
-        )
+        report_lines.append(f"• Tiempo de auditoría: {audit.summary['audit_duration_seconds']:.1f} segundos")
         report_lines.append("")
 
         # Conclusión
@@ -703,19 +684,13 @@ def main():
     auditor.save_audit_report(audit_result)
 
     # Mostrar recomendaciones finales
-    total_recommendations = sum(
-        len(audit.recommendations) for audit in audit_result.component_audits
-    )
+    total_recommendations = sum(len(audit.recommendations) for audit in audit_result.component_audits)
     if total_recommendations == 0:
         print("🎉 ¡AUDITORÍA COMPLETADA! El proyecto está en excelentes condiciones.")
     elif total_recommendations <= 3:
-        print(
-            f"✅ Auditoría completada. Se encontraron {total_recommendations} recomendaciones menores."
-        )
+        print(f"✅ Auditoría completada. Se encontraron {total_recommendations} recomendaciones menores.")
     else:
-        print(
-            f"⚠️  Auditoría completada. Se encontraron {total_recommendations} recomendaciones para mejorar."
-        )
+        print(f"⚠️  Auditoría completada. Se encontraron {total_recommendations} recomendaciones para mejorar.")
 
     print(f"\n📊 Puntuación general: {audit_result.overall_score:.1f}/100")
 

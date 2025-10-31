@@ -108,9 +108,7 @@ class AdvancedRewardsOptimizer:
         # Registrar en historial global
         self.performance_history["global"]["interactions"].append(interaction_data)
         self.performance_history["global"]["metrics"]["total_interactions"] += 1
-        self.performance_history["global"]["metrics"]["total_sheilys"] += interaction_data.get(
-            "sheilys_earned", 0
-        )
+        self.performance_history["global"]["metrics"]["total_sheilys"] += interaction_data.get("sheilys_earned", 0)
 
         # Registrar por dominio
         if domain not in self.performance_history["domains"]:
@@ -128,9 +126,7 @@ class AdvancedRewardsOptimizer:
         domain_history["metrics"]["total_interactions"] += 1
         domain_history["metrics"]["total_sheilys"] += interaction_data.get("sheilys_earned", 0)
 
-    def _calculate_statistical_metrics(
-        self, interactions: List[Dict[str, Any]]
-    ) -> Dict[str, float]:
+    def _calculate_statistical_metrics(self, interactions: List[Dict[str, Any]]) -> Dict[str, float]:
         """
         Calcular métricas estadísticas avanzadas
 
@@ -164,9 +160,7 @@ class AdvancedRewardsOptimizer:
             dict: Configuración de factores optimizada
         """
         # Métricas globales
-        global_metrics = self._calculate_statistical_metrics(
-            self.performance_history["global"]["interactions"]
-        )
+        global_metrics = self._calculate_statistical_metrics(self.performance_history["global"]["interactions"])
 
         # Ajuste de factores basado en métricas
         factors = self.config["reward_factors"]
@@ -190,18 +184,14 @@ class AdvancedRewardsOptimizer:
             factors[factor] /= total
 
         # Decaimiento de tasa de exploración
-        self.exploration_rate *= self.config["optimization_strategies"].get(
-            "exploration_decay", 0.99
-        )
+        self.exploration_rate *= self.config["optimization_strategies"].get("exploration_decay", 0.99)
 
         # Actualizar configuración
         self.config["reward_factors"] = factors
 
         return factors
 
-    def predict_interaction_quality(
-        self, interaction_features: Dict[str, Any]
-    ) -> Tuple[float, float]:
+    def predict_interaction_quality(self, interaction_features: Dict[str, Any]) -> Tuple[float, float]:
         """
         Predecir calidad y Sheilys de una interacción
 
@@ -345,9 +335,7 @@ class AdvancedRewardsOptimizer:
             suggestions.append("Rendimiento de calidad bajo. Revisar criterios de evaluación.")
 
         if metrics.get("sheilys_skewness", 0) > 1.0:
-            suggestions.append(
-                "Distribución de Sheilys sesgada. Posible necesidad de normalización."
-            )
+            suggestions.append("Distribución de Sheilys sesgada. Posible necesidad de normalización.")
 
         return suggestions
 

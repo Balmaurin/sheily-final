@@ -185,7 +185,7 @@ class IndexManager:
         cursor.execute(
             """
         CREATE TRIGGER IF NOT EXISTS documents_ai AFTER INSERT ON documents BEGIN
-            INSERT INTO documents_fts(rowid, content, title, domain, language) 
+            INSERT INTO documents_fts(rowid, content, title, domain, language)
             VALUES (new.rowid, new.content, new.title, new.domain, new.language);
         END
         """
@@ -194,7 +194,7 @@ class IndexManager:
         cursor.execute(
             """
         CREATE TRIGGER IF NOT EXISTS documents_ad AFTER DELETE ON documents BEGIN
-            INSERT INTO documents_fts(documents_fts, rowid, content, title, domain, language) 
+            INSERT INTO documents_fts(documents_fts, rowid, content, title, domain, language)
             VALUES('delete', old.rowid, old.content, old.title, old.domain, old.language);
         END
         """
@@ -203,9 +203,9 @@ class IndexManager:
         cursor.execute(
             """
         CREATE TRIGGER IF NOT EXISTS documents_au AFTER UPDATE ON documents BEGIN
-            INSERT INTO documents_fts(documents_fts, rowid, content, title, domain, language) 
+            INSERT INTO documents_fts(documents_fts, rowid, content, title, domain, language)
             VALUES('delete', old.rowid, old.content, old.title, old.domain, old.language);
-            INSERT INTO documents_fts(rowid, content, title, domain, language) 
+            INSERT INTO documents_fts(rowid, content, title, domain, language)
             VALUES (new.rowid, new.content, new.title, new.domain, new.language);
         END
         """
@@ -262,8 +262,8 @@ class IndexManager:
         # Contar documentos por idioma y dominio
         cursor.execute(
             """
-        SELECT language, domain, COUNT(*) 
-        FROM documents 
+        SELECT language, domain, COUNT(*)
+        FROM documents
         GROUP BY language, domain
         """
         )
@@ -342,17 +342,11 @@ class IndexManager:
 
             # Añadir según backend
             if self.index_type == "sqlite":
-                success = await self._add_document_sqlite(
-                    doc_id, content, embedding, doc_metadata, language, domain
-                )
+                success = await self._add_document_sqlite(doc_id, content, embedding, doc_metadata, language, domain)
             elif self.index_type == "faiss":
-                success = await self._add_document_faiss(
-                    doc_id, content, embedding, doc_metadata, language, domain
-                )
+                success = await self._add_document_faiss(doc_id, content, embedding, doc_metadata, language, domain)
             elif self.index_type == "memory":
-                success = await self._add_document_memory(
-                    doc_id, content, embedding, doc_metadata, language, domain
-                )
+                success = await self._add_document_memory(doc_id, content, embedding, doc_metadata, language, domain)
             else:
                 success = False
 
@@ -410,7 +404,7 @@ class IndexManager:
             # Insertar documento
             cursor.execute(
                 """
-            INSERT OR REPLACE INTO documents 
+            INSERT OR REPLACE INTO documents
             (id, content, title, domain, language, metadata, embedding, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
             """,
@@ -514,9 +508,7 @@ class IndexManager:
             logger.error(f"Error buscando documentos: {e}")
             return []
 
-    async def _search_sqlite(
-        self, query: str, language: str, domain: Optional[str], k: int
-    ) -> List[Dict[str, Any]]:
+    async def _search_sqlite(self, query: str, language: str, domain: Optional[str], k: int) -> List[Dict[str, Any]]:
         """Buscar en índice SQLite usando FTS5"""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -526,11 +518,11 @@ class IndexManager:
             fts_query = query.replace("'", "''")  # Escapar comillas
 
             sql_query = """
-            SELECT d.id, d.content, d.title, d.domain, d.language, 
+            SELECT d.id, d.content, d.title, d.domain, d.language,
                    d.metadata, documents_fts.rank
-            FROM documents_fts 
+            FROM documents_fts
             JOIN documents d ON documents_fts.rowid = d.rowid
-            WHERE documents_fts MATCH ? 
+            WHERE documents_fts MATCH ?
             AND d.language = ?
             """
 
@@ -605,9 +597,7 @@ class IndexManager:
 
         return results
 
-    async def _search_memory(
-        self, query: str, language: str, domain: Optional[str], k: int
-    ) -> List[Dict[str, Any]]:
+    async def _search_memory(self, query: str, language: str, domain: Optional[str], k: int) -> List[Dict[str, Any]]:
         """Buscar en índice en memoria"""
         results = []
         query_lower = query.lower()
@@ -618,9 +608,7 @@ class IndexManager:
             domains_to_search.append(f"{language}_{domain}")
         else:
             domains_to_search = [
-                key
-                for key in self.memory_indices["documents"].keys()
-                if key.startswith(f"{language}_")
+                key for key in self.memory_indices["documents"].keys() if key.startswith(f"{language}_")
             ]
 
         for key in domains_to_search:
@@ -731,9 +719,9 @@ class IndexManager:
         current_avg = self._index_stats["average_indexing_time"]
 
         if total_indexed > 0:
-            self._index_stats["average_indexing_time"] = (
-                current_avg * total_indexed + indexing_time
-            ) / (total_indexed + 1)
+            self._index_stats["average_indexing_time"] = (current_avg * total_indexed + indexing_time) / (
+                total_indexed + 1
+            )
         else:
             self._index_stats["average_indexing_time"] = indexing_time
 
@@ -748,11 +736,7 @@ class IndexManager:
             Número de documentos
         """
         if language:
-            return sum(
-                count
-                for key, count in self._document_counts.items()
-                if key.startswith(f"{language}_")
-            )
+            return sum(count for key, count in self._document_counts.items() if key.startswith(f"{language}_"))
         else:
             return sum(self._document_counts.values())
 
@@ -798,9 +782,7 @@ class IndexManager:
             "backend": self.index_type,
             "loaded_indices": len(self._loaded_indices),
             "total_documents": self.get_document_count(),
-            "available_languages": len(
-                set(key.split("_")[0] for key in self._document_counts.keys())
-            ),
+            "available_languages": len(set(key.split("_")[0] for key in self._document_counts.keys())),
             "stats": self.get_stats(),
         }
 

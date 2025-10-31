@@ -45,10 +45,7 @@ class DocumentProcessor:
         corpus_path = Path(corpus_path)
 
         # Buscar carpetas de idiomas (spanish/ como corpus_ES)
-        language_dirs = {
-            "spanish": "ES",
-            "english": "EN"
-        }
+        language_dirs = {"spanish": "ES", "english": "EN"}
 
         for lang_dir, lang_code in language_dirs.items():
             lang_path = corpus_path / lang_dir
@@ -80,11 +77,11 @@ class DocumentProcessor:
         chunks = []
 
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Dividir por líneas pero considerar objetos JSON multilínea
-            lines = content.split('\n')
+            lines = content.split("\n")
             current_json = ""
             brace_count = 0
 
@@ -96,7 +93,7 @@ class DocumentProcessor:
                 current_json += line
 
                 # Contar llaves para detectar objetos JSON completos
-                brace_count += line.count('{') - line.count('}')
+                brace_count += line.count("{") - line.count("}")
 
                 # Si tenemos un objeto JSON completo
                 if brace_count == 0 and current_json.strip():
@@ -116,7 +113,7 @@ class DocumentProcessor:
                             "category": doc.get("category", ""),
                             "keywords": doc.get("keywords", []),
                             "date": doc.get("date", ""),
-                            "line_number": line_num
+                            "line_number": line_num,
                         }
 
                         # Dividir el contenido en chunks
@@ -125,11 +122,7 @@ class DocumentProcessor:
                         # Crear chunks con metadata
                         for i, chunk_text in enumerate(text_chunks):
                             chunk_id = f"{file_path.stem}_{line_num}_{i}"
-                            chunk = {
-                                "id": chunk_id,
-                                "content": chunk_text,
-                                "metadata": metadata
-                            }
+                            chunk = {"id": chunk_id, "content": chunk_text, "metadata": metadata}
                             chunks.append(chunk)
 
                         current_json = ""  # Reset para siguiente objeto
@@ -166,7 +159,7 @@ def process_all_branches_corpus(all_branches_path: str, domains: Optional[List[s
     if domains:
         domain_dirs = [branches_path / domain for domain in domains if (branches_path / domain).exists()]
     else:
-        domain_dirs = [d for d in branches_path.iterdir() if d.is_dir() and not d.name.startswith('.')]
+        domain_dirs = [d for d in branches_path.iterdir() if d.is_dir() and not d.name.startswith(".")]
 
     print(f"Procesando {len(domain_dirs)} dominios...")
 

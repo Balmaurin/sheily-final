@@ -42,9 +42,7 @@ class ServerManager:
     def check_server_running(self) -> bool:
         """Verificar si el servidor está corriendo - implementación unificada"""
         try:
-            response = requests.get(
-                f"http://{self.config.model.host}:{self.config.model.port}/health", timeout=2.0
-            )
+            response = requests.get(f"http://{self.config.model.host}:{self.config.model.port}/health", timeout=2.0)
             return response.status_code == 200
         except Exception:
             return False
@@ -89,9 +87,7 @@ class ServerManager:
                     self.server_status = "running"
                     self.start_time = time.time()
                     self._start_health_monitoring()
-                    print(
-                        f"✅ Servidor activo en http://{self.config.model.host}:{self.config.model.port}"
-                    )
+                    print(f"✅ Servidor activo en http://{self.config.model.host}:{self.config.model.port}")
                     return True
                 else:
                     print("❌ Timeout iniciando servidor")

@@ -184,9 +184,7 @@ class AdvancedCryptographySystem:
         """Desencriptar paquete híbrido"""
         try:
             # Cargar clave privada
-            private_key = serialization.load_pem_private_key(
-                private_key_pem, password=None, backend=self.backend
-            )
+            private_key = serialization.load_pem_private_key(private_key_pem, password=None, backend=self.backend)
 
             # Decodificar componentes
             encrypted_data = base64.b64decode(encrypted_package["encrypted_data"])
@@ -199,9 +197,7 @@ class AdvancedCryptographySystem:
             from cryptography.hazmat.primitives.asymmetric import rsa
 
             if not isinstance(private_key, rsa.RSAPrivateKey):
-                raise TypeError(
-                    "La clave privada debe ser RSA para desencriptar la clave AES y HMAC."
-                )
+                raise TypeError("La clave privada debe ser RSA para desencriptar la clave AES y HMAC.")
             aes_key = private_key.decrypt(
                 encrypted_aes_key,
                 padding.OAEP(
@@ -325,9 +321,7 @@ class AdvancedCryptographySystem:
         digest.update(data)
         return digest.finalize().hex()
 
-    def verify_hash(
-        self, data: Union[str, bytes], expected_hash: str, algorithm: str = "SHA256"
-    ) -> bool:
+    def verify_hash(self, data: Union[str, bytes], expected_hash: str, algorithm: str = "SHA256") -> bool:
         """Verificar hash"""
         calculated_hash = self.secure_hash(data, algorithm)
         return calculated_hash == expected_hash

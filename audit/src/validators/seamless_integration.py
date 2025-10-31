@@ -46,9 +46,7 @@ class SeamlessIntegrator:
                 cmd.extend(test_args)
 
             # Ejecutar con timeout corto para prueba
-            result = subprocess.run(
-                cmd, capture_output=True, text=True, timeout=30, cwd=self.base_path
-            )
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30, cwd=self.base_path)
 
             compatibility_result = {
                 "script": str(script_path),
@@ -62,9 +60,7 @@ class SeamlessIntegrator:
                 self.log_integration("SCRIPT COMPATIBLE", compatibility_result)
                 return True, "Compatible"
             else:
-                self.log_integration(
-                    "SCRIPT INCOMPATIBLE", {**compatibility_result, "error": result.stderr}
-                )
+                self.log_integration("SCRIPT INCOMPATIBLE", {**compatibility_result, "error": result.stderr})
                 return False, result.stderr
 
         except subprocess.TimeoutExpired:
@@ -108,9 +104,7 @@ class SeamlessIntegrator:
 
         for script_name, script_info in scripts_to_test.items():
             if script_info["path"].exists():
-                compatible, message = self.test_script_compatibility(
-                    script_info["path"], script_info["test_args"]
-                )
+                compatible, message = self.test_script_compatibility(script_info["path"], script_info["test_args"])
                 integration_results[script_name] = {
                     "compatible": compatible,
                     "message": message,
@@ -499,12 +493,8 @@ if __name__ == "__main__":
             print("📊 RESULTADOS DE INTEGRACIÓN")
             print("=" * 70)
 
-            critical_scripts = [
-                name for name, info in integration_results.items() if info["critical"]
-            ]
-            critical_success = sum(
-                1 for name in critical_scripts if integration_results[name]["compatible"]
-            )
+            critical_scripts = [name for name, info in integration_results.items() if info["critical"]]
+            critical_success = sum(1 for name in critical_scripts if integration_results[name]["compatible"])
 
             print(f"🔧 Scripts críticos: {critical_success}/{len(critical_scripts)} compatibles")
             print(f"📋 Scripts totales: {len(integration_results)} verificados")

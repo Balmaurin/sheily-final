@@ -212,9 +212,7 @@ class TrainingSystemInstaller:
             return Err(f"Critical dependencies missing: {critical_missing}")
 
         self.log_step("✅ Dependencies verified")
-        return Ok(
-            {"dependencies": all_deps, "core_deps": core_deps, "optional_deps": optional_deps}
-        )
+        return Ok({"dependencies": all_deps, "core_deps": core_deps, "optional_deps": optional_deps})
 
     def validate_installation(self) -> Result[Dict[str, Any], str]:
         """Validate complete installation"""

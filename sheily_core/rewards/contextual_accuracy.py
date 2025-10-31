@@ -47,9 +47,7 @@ class ContextualAccuracyEvaluator:
 
         # Generar embeddings usando el modelo principal
         query_inputs = self.tokenizer(query, return_tensors="pt", padding=True, truncation=True)
-        response_inputs = self.tokenizer(
-            response, return_tensors="pt", padding=True, truncation=True
-        )
+        response_inputs = self.tokenizer(response, return_tensors="pt", padding=True, truncation=True)
 
         with torch.no_grad():
             query_outputs = self.embedding_model(**query_inputs)
@@ -86,17 +84,11 @@ class ContextualAccuracyEvaluator:
 
         # Extraer sustantivos y verbos principales
         query_key_words = set(token.lemma_ for token in doc_query if token.pos_ in ["NOUN", "VERB"])
-        response_key_words = set(
-            token.lemma_ for token in doc_response if token.pos_ in ["NOUN", "VERB"]
-        )
+        response_key_words = set(token.lemma_ for token in doc_response if token.pos_ in ["NOUN", "VERB"])
 
         # Calcular cobertura
-        entity_coverage = len(query_entities.intersection(response_entities)) / (
-            len(query_entities) + 1
-        )
-        word_coverage = len(query_key_words.intersection(response_key_words)) / (
-            len(query_key_words) + 1
-        )
+        entity_coverage = len(query_entities.intersection(response_entities)) / (len(query_entities) + 1)
+        word_coverage = len(query_key_words.intersection(response_key_words)) / (len(query_key_words) + 1)
 
         return (entity_coverage + word_coverage) / 2
 
@@ -117,8 +109,7 @@ class ContextualAccuracyEvaluator:
 
         # Combinar métricas con pesos
         contextual_score = (
-            0.6 * semantic_sim  # Similitud semántica más importante
-            + 0.4 * linguistic_cov  # Cobertura lingüística
+            0.6 * semantic_sim + 0.4 * linguistic_cov  # Similitud semántica más importante  # Cobertura lingüística
         )
 
         return round(contextual_score, 2)

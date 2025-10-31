@@ -342,9 +342,7 @@ class UnifiedLearningTrainingSystem:
 
     # ==================== GESTIÓN DE DATASETS ====================
 
-    async def download_dataset(
-        self, dataset_type: DatasetType, output_dir: Optional[str] = None
-    ) -> str:
+    async def download_dataset(self, dataset_type: DatasetType, output_dir: Optional[str] = None) -> str:
         """Descargar dataset"""
         try:
             output_dir = output_dir or f"data/datasets/{dataset_type.value}"
@@ -473,8 +471,8 @@ class UnifiedLearningTrainingSystem:
                 """
                 INSERT INTO datasets (dataset_id, name, type, size, domains)
                 VALUES (%s, %s, %s, %s, %s)
-                ON CONFLICT (dataset_id) 
-                DO UPDATE SET 
+                ON CONFLICT (dataset_id)
+                DO UPDATE SET
                     size = EXCLUDED.size,
                     last_updated = CURRENT_TIMESTAMP
             """,
@@ -795,7 +793,7 @@ class UnifiedLearningTrainingSystem:
             cursor = self.db_conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO training_sessions 
+                INSERT INTO training_sessions
                 (session_id, model_name, dataset_name, training_mode, config, start_time)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """,
@@ -819,7 +817,7 @@ class UnifiedLearningTrainingSystem:
             cursor = self.db_conn.cursor()
             cursor.execute(
                 """
-                UPDATE training_sessions 
+                UPDATE training_sessions
                 SET end_time = %s, status = %s, metrics = %s, artifacts = %s
                 WHERE session_id = %s
             """,
@@ -842,7 +840,7 @@ class UnifiedLearningTrainingSystem:
             cursor = self.db_conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO learning_experiences 
+                INSERT INTO learning_experiences
                 (experience_id, domain, input_data, output_data, performance_score, metadata)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """,
@@ -866,7 +864,7 @@ class UnifiedLearningTrainingSystem:
             cursor = self.db_conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO training_metrics 
+                INSERT INTO training_metrics
                 (metric_type, metric_value, step)
                 VALUES (%s, %s, %s)
             """,

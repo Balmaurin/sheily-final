@@ -3,10 +3,11 @@
 Cliente HTTP para el RAG Service - Integración con Sheily
 """
 
-import requests
 import json
-from typing import List, Dict, Optional, Tuple
 import logging
+from typing import Dict, List, Optional, Tuple
+
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class RAGServiceClient:
     """
 
     def __init__(self, base_url: str = "http://localhost:8002"):
-        self.base_url = base_url.rstrip('/')
+        self.base_url = base_url.rstrip("/")
         self.session = requests.Session()
         self.session.timeout = 30
 
@@ -25,7 +26,7 @@ class RAGServiceClient:
         """Verificar que el servicio esté funcionando"""
         try:
             response = self.session.get(f"{self.base_url}/health")
-            return response.status_code == 200 and response.json().get('status') == 'healthy'
+            return response.status_code == 200 and response.json().get("status") == "healthy"
         except:
             return False
 
@@ -68,13 +69,13 @@ class RAGServiceClient:
                 return "", []
 
             # Filtrar por score mínimo y construir contexto
-            relevant_chunks = [r for r in results if r['score'] > 0.5]
+            relevant_chunks = [r for r in results if r["score"] > 0.5]
 
             context_parts = []
             total_length = 0
 
             for chunk in relevant_chunks:
-                chunk_text = chunk['content']
+                chunk_text = chunk["content"]
                 if total_length + len(chunk_text) > max_context_length:
                     # Truncar si excede el límite
                     remaining = max_context_length - total_length
@@ -131,12 +132,14 @@ def retrieve_relevant_memories(query: str, branch_name: str = None, max_results:
         # Convertir al formato esperado por el sistema existente
         memories = []
         for result in results:
-            memories.append({
-                'content': result['content'],
-                'metadata': result['metadata'],
-                'score': result['score'],
-                'source': 'rag_service'
-            })
+            memories.append(
+                {
+                    "content": result["content"],
+                    "metadata": result["metadata"],
+                    "score": result["score"],
+                    "source": "rag_service",
+                }
+            )
 
         return memories
 

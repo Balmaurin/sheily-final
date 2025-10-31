@@ -48,9 +48,7 @@ __all__ = [
 
 __version__ = "2.0.0"
 __author__ = "Sheily AI Team"
-__description__ = (
-    "Sistema completo de conversación inteligente con detección automática de ramas académicas"
-)
+__description__ = "Sistema completo de conversación inteligente con detección automática de ramas académicas"
 
 # ==============================================================================
 # IMPORTS CONDICIONALES PARA MEJOR COMPATIBILIDAD
@@ -60,7 +58,6 @@ from .chat_engine import ChatContext, ChatEngine, ChatMessage, ChatResponse
 from .sheily_chat_memory_adapter import SheilyChatMemoryAdapter
 from .sheily_fast_chat_v3 import FastChatV3
 from .unified_chat_system import UnifiedChatSystem
-
 
 # ==============================================================================
 # FUNCIONES DE UTILIDAD DEL MÓDULO

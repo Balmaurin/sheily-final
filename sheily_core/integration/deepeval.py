@@ -7,7 +7,7 @@
 Sistema de evaluación completo y real basado en métricas avanzadas de AI:
 - Implementación completa de métricas de evaluación
 - Análisis de fidelidad (faithfulness) real
-- Evaluación de relevancia contextual  
+- Evaluación de relevancia contextual
 - Medición de fluidez y correctness
 - Sistema de scoring y benchmarking
 - Reportes detallados de evaluación
@@ -318,9 +318,7 @@ class FaithfulnessMetric:
             score = self._evaluate_internal_consistency(test_case.actual_output)
             explanation = "Evaluación de consistencia interna (sin contexto proporcionado)"
         else:
-            score = self._evaluate_contextual_faithfulness(
-                test_case.actual_output, test_case.context
-            )
+            score = self._evaluate_contextual_faithfulness(test_case.actual_output, test_case.context)
             explanation = "Evaluación de fidelidad al contexto proporcionado"
 
         execution_time = time.time() - start_time
@@ -632,9 +630,7 @@ class FaithfulnessMetric:
             else:
                 if matches >= 2:  # Al menos 2 palabras para otros temas
                     detected_themes.add(theme)
-                elif (
-                    matches >= 1 and len(keywords) <= 5
-                ):  # Más flexible para temas con pocas palabras clave
+                elif matches >= 1 and len(keywords) <= 5:  # Más flexible para temas con pocas palabras clave
                     detected_themes.add(theme)
 
         return detected_themes
@@ -724,9 +720,7 @@ class FaithfulnessMetric:
 
         for category, patterns in context_response_patterns.items():
             # Verificar si el contexto coincide con esta categoría
-            context_matches = sum(
-                1 for indicator in patterns["context_indicators"] if indicator in context_lower
-            )
+            context_matches = sum(1 for indicator in patterns["context_indicators"] if indicator in context_lower)
 
             if context_matches >= 1:  # Al menos un indicador del contexto
                 # Verificar si la respuesta es apropiada para esta categoría
@@ -737,9 +731,7 @@ class FaithfulnessMetric:
 
                 # Calcular score de apropiabilidad para esta categoría
                 if response_matches > 0:
-                    category_score = min(
-                        1.0, (response_matches / len(patterns["appropriate_responses"])) * 2
-                    )
+                    category_score = min(1.0, (response_matches / len(patterns["appropriate_responses"])) * 2)
                     appropriateness_score = max(appropriateness_score, category_score)
 
         # Bonus por longitud de respuesta apropiada
@@ -766,16 +758,12 @@ class ContextualRelevancyMetric:
         start_time = time.time()
 
         # Evaluar relevancia al input
-        input_relevance = self._evaluate_input_relevance(
-            test_case.actual_output, test_case.input_text
-        )
+        input_relevance = self._evaluate_input_relevance(test_case.actual_output, test_case.input_text)
 
         # Evaluar relevancia al contexto si existe
         context_relevance = 0.8  # Default si no hay contexto
         if test_case.context:
-            context_relevance = self._evaluate_context_relevance(
-                test_case.actual_output, test_case.context
-            )
+            context_relevance = self._evaluate_context_relevance(test_case.actual_output, test_case.context)
 
         # Combinar relevancia
         final_score = (input_relevance * 0.7) + (context_relevance * 0.3)
@@ -985,9 +973,7 @@ class ContextualRelevancyMetric:
         # Buscar múltiples coincidencias temáticas
         for topic, pattern in direct_patterns.items():
             topic_words = topic.split()
-            if any(word in input_lower for word in topic_words) or any(
-                word in output_lower for word in topic_words
-            ):
+            if any(word in input_lower for word in topic_words) or any(word in output_lower for word in topic_words):
                 matches = len(re.findall(pattern, output_lower))
                 if matches > 0:
                     current_bonus = min(1.0, matches * 0.4)  # Más generoso
@@ -1091,12 +1077,7 @@ class FluencyMetric:
         length_score = self._evaluate_response_length(output, test_case.input_text)
 
         # Combinar scores con pesos optimizados para SOBRESALIENTE
-        base_fluency = (
-            (grammar_score * 0.3)
-            + (coherence_score * 0.3)
-            + (vocabulary_score * 0.2)
-            + (length_score * 0.2)
-        )
+        base_fluency = (grammar_score * 0.3) + (coherence_score * 0.3) + (vocabulary_score * 0.2) + (length_score * 0.2)
 
         # Sistema de bonificaciones ULTRA-GENEROSAS para nivel SOBRESALIENTE
 
@@ -1272,14 +1253,10 @@ class CorrectnessMetric:
 
         if not test_case.expected_output:
             # Sin referencia, evaluar corrección interna
-            score = self._evaluate_internal_correctness(
-                test_case.actual_output, test_case.input_text
-            )
+            score = self._evaluate_internal_correctness(test_case.actual_output, test_case.input_text)
             explanation = "Evaluación de corrección interna (sin referencia)"
         else:
-            score = self._evaluate_reference_correctness(
-                test_case.actual_output, test_case.expected_output
-            )
+            score = self._evaluate_reference_correctness(test_case.actual_output, test_case.expected_output)
             explanation = "Evaluación de corrección contra referencia"
 
         execution_time = time.time() - start_time
@@ -1292,9 +1269,7 @@ class CorrectnessMetric:
             details={
                 "has_reference": bool(test_case.expected_output),
                 "output_length": len(test_case.actual_output),
-                "reference_length": len(test_case.expected_output)
-                if test_case.expected_output
-                else 0,
+                "reference_length": len(test_case.expected_output) if test_case.expected_output else 0,
             },
             execution_time=execution_time,
             explanation=explanation,
@@ -1494,9 +1469,7 @@ class CorrectnessMetric:
         exact_matches = actual_concepts.intersection(expected_concepts)
 
         # Coincidencias semánticas usando el diccionario de relaciones
-        semantic_matches = TextSimilarityAnalyzer._find_semantic_relations(
-            actual_concepts, expected_concepts
-        )
+        semantic_matches = TextSimilarityAnalyzer._find_semantic_relations(actual_concepts, expected_concepts)
 
         # Análisis de entidades específicas importantes
         important_entities = {
@@ -1568,9 +1541,7 @@ class CorrectnessMetric:
         # Verificar elementos específicos por tipo de pregunta
         for q_word, elements in question_types.items():
             if q_word in input_lower:
-                element_score = sum(
-                    0.1 for element in elements if any(kw in output_lower for kw in element.split())
-                )
+                element_score = sum(0.1 for element in elements if any(kw in output_lower for kw in element.split()))
                 completeness += min(0.2, element_score)
                 break
 
@@ -1612,9 +1583,7 @@ class CorrectnessMetric:
             clarity -= 0.2
 
         # Bonus por respuestas directas y precisas
-        if len(output.split()) <= 15 and any(
-            indicator in output.lower() for indicator in clear_indicators
-        ):
+        if len(output.split()) <= 15 and any(indicator in output.lower() for indicator in clear_indicators):
             clarity += 0.15
 
         return max(0.0, min(1.0, clarity))
@@ -1791,9 +1760,7 @@ def get_available_metrics() -> List[str]:
     return list(_evaluation_engine.metrics.keys())
 
 
-def evaluate_single_case(
-    input_text: str, output: str, expected: str = "", context: str = ""
-) -> Dict[str, Any]:
+def evaluate_single_case(input_text: str, output: str, expected: str = "", context: str = "") -> Dict[str, Any]:
     """Evaluar un caso individual"""
     data = [{"input": input_text, "output": output, "reference": expected, "context": context}]
 

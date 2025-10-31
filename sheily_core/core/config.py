@@ -210,9 +210,7 @@ def create_rag_config() -> RAGConfig:
     return RAGConfig(
         corpus_root=get_env_var("SHEILY_CORPUS_ROOT", "corpus_ES"),
         max_search_results=parse_int_env(get_env_var("SHEILY_MAX_RESULTS", "5"), 5),
-        similarity_threshold=parse_float_env(
-            get_env_var("SHEILY_SIMILARITY_THRESHOLD", "0.3"), 0.3
-        ),
+        similarity_threshold=parse_float_env(get_env_var("SHEILY_SIMILARITY_THRESHOLD", "0.3"), 0.3),
         chunk_size=parse_int_env(get_env_var("SHEILY_CHUNK_SIZE", "500"), 500),
         chunk_overlap=parse_int_env(get_env_var("SHEILY_CHUNK_OVERLAP", "50"), 50),
     )
@@ -325,9 +323,7 @@ def validate_numeric_ranges(config: SheilyConfig) -> Result[SheilyConfig, str]:
 
     for value, min_val, max_val, name in validations:
         if not (min_val <= value <= max_val):
-            return Err(
-                f"Configuration error: {name} must be between {min_val} and {max_val}, got {value}"
-            )
+            return Err(f"Configuration error: {name} must be between {min_val} and {max_val}, got {value}")
 
     return Ok(config)
 
@@ -406,9 +402,7 @@ def config_to_dict(config: SheilyConfig) -> Dict[str, Any]:
     }
 
 
-def save_config_to_file(
-    config: SheilyConfig, config_path: str = "sheily_config.json"
-) -> Result[Path, str]:
+def save_config_to_file(config: SheilyConfig, config_path: str = "sheily_config.json") -> Result[Path, str]:
     """Save configuration to file - Pure function"""
     try:
         config_data = config_to_dict(config)
@@ -450,36 +444,18 @@ def load_config_from_file(config_path: str = "sheily_config.json") -> Result[Dic
 def create_config_from_dict(config_dict: Dict[str, Any]) -> SheilyConfig:
     """Create configuration from dictionary - Pure function"""
     # Extract section data
-    server_data = {
-        k.replace("server_", ""): v for k, v in config_dict.items() if k.startswith("server_")
-    }
-    model_data = {
-        k.replace("model_", ""): v for k, v in config_dict.items() if k.startswith("model_")
-    }
+    server_data = {k.replace("server_", ""): v for k, v in config_dict.items() if k.startswith("server_")}
+    model_data = {k.replace("model_", ""): v for k, v in config_dict.items() if k.startswith("model_")}
     rag_data = {k.replace("rag_", ""): v for k, v in config_dict.items() if k.startswith("rag_")}
-    branches_data = {
-        k.replace("branches_", ""): v for k, v in config_dict.items() if k.startswith("branches_")
-    }
-    logging_data = {
-        k.replace("logging_", ""): v for k, v in config_dict.items() if k.startswith("logging_")
-    }
+    branches_data = {k.replace("branches_", ""): v for k, v in config_dict.items() if k.startswith("branches_")}
+    logging_data = {k.replace("logging_", ""): v for k, v in config_dict.items() if k.startswith("logging_")}
     performance_data = {
-        k.replace("performance_", ""): v
-        for k, v in config_dict.items()
-        if k.startswith("performance_")
+        k.replace("performance_", ""): v for k, v in config_dict.items() if k.startswith("performance_")
     }
-    security_data = {
-        k.replace("security_", ""): v for k, v in config_dict.items() if k.startswith("security_")
-    }
-    database_data = {
-        k.replace("database_", ""): v for k, v in config_dict.items() if k.startswith("database_")
-    }
-    features_data = {
-        k.replace("features_", ""): v for k, v in config_dict.items() if k.startswith("features_")
-    }
-    memory_data = {
-        k.replace("memory_", ""): v for k, v in config_dict.items() if k.startswith("memory_")
-    }
+    security_data = {k.replace("security_", ""): v for k, v in config_dict.items() if k.startswith("security_")}
+    database_data = {k.replace("database_", ""): v for k, v in config_dict.items() if k.startswith("database_")}
+    features_data = {k.replace("features_", ""): v for k, v in config_dict.items() if k.startswith("features_")}
+    memory_data = {k.replace("memory_", ""): v for k, v in config_dict.items() if k.startswith("memory_")}
 
     return SheilyConfig(
         server=ServerConfig(**server_data) if server_data else create_server_config(),
@@ -487,9 +463,7 @@ def create_config_from_dict(config_dict: Dict[str, Any]) -> SheilyConfig:
         rag=RAGConfig(**rag_data) if rag_data else create_rag_config(),
         branches=BranchesConfig(**branches_data) if branches_data else create_branches_config(),
         logging=LoggingConfig(**logging_data) if logging_data else create_logging_config(),
-        performance=PerformanceConfig(**performance_data)
-        if performance_data
-        else create_performance_config(),
+        performance=PerformanceConfig(**performance_data) if performance_data else create_performance_config(),
         security=SecurityConfig(**security_data) if security_data else create_security_config(),
         database=DatabaseConfig(**database_data) if database_data else create_database_config(),
         features=FeaturesConfig(**features_data) if features_data else create_features_config(),
@@ -551,9 +525,7 @@ def init_config(config_path: str = None) -> SheilyConfig:
     return context.config
 
 
-def create_config_with_overrides(
-    base_config: SheilyConfig, overrides: Dict[str, Any]
-) -> SheilyConfig:
+def create_config_with_overrides(base_config: SheilyConfig, overrides: Dict[str, Any]) -> SheilyConfig:
     """Create configuration with overrides - Pure function"""
     # This would need more sophisticated logic to handle nested overrides
     # For now, return the base config

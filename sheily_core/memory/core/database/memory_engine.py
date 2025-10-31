@@ -84,9 +84,7 @@ class SheilyMemoryV2:
 
         self.db.commit()
 
-    def memorize_file(
-        self, file_path: Path, category: str = "general", importance: float = 0.5
-    ) -> bool:
+    def memorize_file(self, file_path: Path, category: str = "general", importance: float = 0.5) -> bool:
         """Memorizar un archivo completo"""
         try:
             # Leer contenido del archivo
@@ -269,9 +267,7 @@ class SheilyMemoryV2:
         total_importance = cursor.fetchone()[0] or 0
 
         # Categorías más comunes
-        cursor.execute(
-            "SELECT category, COUNT(*) FROM documents GROUP BY category ORDER BY COUNT(*) DESC LIMIT 5"
-        )
+        cursor.execute("SELECT category, COUNT(*) FROM documents GROUP BY category ORDER BY COUNT(*) DESC LIMIT 5")
         top_categories = cursor.fetchall()
 
         return {
@@ -282,9 +278,7 @@ class SheilyMemoryV2:
             "database_size_mb": self.memory_db_path.stat().st_size / (1024 * 1024),
         }
 
-    def add_emotional_context(
-        self, file_name: str, emotion_type: str, intensity: float, description: str
-    ):
+    def add_emotional_context(self, file_name: str, emotion_type: str, intensity: float, description: str):
         """Agregar contexto emocional a un documento"""
         cursor = self.db.cursor()
 
@@ -304,9 +298,7 @@ class SheilyMemoryV2:
 
             self.db.commit()
 
-    def get_contextual_memories(
-        self, query: str, emotional_filter: str = None
-    ) -> List[Dict[str, Any]]:
+    def get_contextual_memories(self, query: str, emotional_filter: str = None) -> List[Dict[str, Any]]:
         """Obtener recuerdos contextuales basados en emoción y similitud"""
         try:
             memories = self.search_memory(query, limit=10)
@@ -377,9 +369,7 @@ class SheilyMemoryV2:
         recommendations = []
 
         if stats["total_documents"] < 10:
-            recommendations.append(
-                "Agregar más documentos para mejorar la diversidad de conocimiento"
-            )
+            recommendations.append("Agregar más documentos para mejorar la diversidad de conocimiento")
 
         if stats["database_size_mb"] > 100:
             recommendations.append("Considerar limpieza de documentos antiguos poco importantes")

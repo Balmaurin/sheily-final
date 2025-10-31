@@ -62,9 +62,7 @@ class PreTrainingAuditor:
                 branch_analysis = self.analyze_corrupted_branch(branch_dir)
                 corrupted_analysis[branch_name] = branch_analysis
 
-        self.log_audit(
-            "AUDITORÍA DE CORRUPTOS COMPLETADA", {"branches_analyzed": len(corrupted_analysis)}
-        )
+        self.log_audit("AUDITORÍA DE CORRUPTOS COMPLETADA", {"branches_analyzed": len(corrupted_analysis)})
         return corrupted_analysis
 
     def analyze_corrupted_branch(self, branch_path):
@@ -82,16 +80,12 @@ class PreTrainingAuditor:
             for file_path in branch_path.iterdir():
                 if file_path.is_file():
                     size = file_path.stat().st_size
-                    analysis["files"].append(
-                        {"name": file_path.name, "size": size, "path": str(file_path)}
-                    )
+                    analysis["files"].append({"name": file_path.name, "size": size, "path": str(file_path)})
                     analysis["total_size"] += size
 
                     # Identificar problemas
                     if size < 1000:
-                        analysis["issues"].append(
-                            f"Archivo muy pequeño: {file_path.name} ({size} bytes)"
-                        )
+                        analysis["issues"].append(f"Archivo muy pequeño: {file_path.name} ({size} bytes)")
                     if file_path.name == "adapter_model.safetensors" and size < 100000:
                         analysis["issues"].append(f"Modelo principal corrupto: {size} bytes")
 
@@ -230,9 +224,7 @@ class PreTrainingAuditor:
                 validation_results[check_name] = {"exists": False, "status": "MISSING"}
 
         # Verificar estado general
-        critical_missing = [
-            name for name, result in validation_results.items() if not result["exists"]
-        ]
+        critical_missing = [name for name, result in validation_results.items() if not result["exists"]]
         if critical_missing:
             self.log_audit("ERROR: Componentes críticos faltantes", {"missing": critical_missing})
             return False
@@ -277,9 +269,7 @@ class PreTrainingAuditor:
             else:
                 print("❌ Entorno de entrenamiento: PROBLEMAS DETECTADOS")
 
-            print(
-                f"\n📋 Reporte completo guardado: audit_2024/reports/pre_training_audit_report.json"
-            )
+            print(f"\n📋 Reporte completo guardado: audit_2024/reports/pre_training_audit_report.json")
 
             # Determinar si podemos proceder
             if env_valid and summary["branches_to_correct"] > 0:

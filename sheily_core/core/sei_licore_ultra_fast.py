@@ -110,9 +110,7 @@ class UltraFastResponse:
             resource.setrlimit(resource.RLIMIT_AS, (memory_bytes, memory_bytes))
             logger.info(f"🧠 Límite de memoria configurado: {self.config.memory_limit_gb}GB")
         except ImportError:
-            logger.warning(
-                "⚠️ No se pudo configurar límite de memoria (módulo resource no disponible)"
-            )
+            logger.warning("⚠️ No se pudo configurar límite de memoria (módulo resource no disponible)")
 
     async def think_ultra_fast(self, query: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
         """Proceso de pensamiento ultra-rápido"""
@@ -162,9 +160,7 @@ class UltraFastResponse:
             "performance": {
                 "target_time_ms": self.config.target_response_time_ms,
                 "actual_time_ms": processing_time * 1000,
-                "efficiency_score": min(
-                    100, (self.config.target_response_time_ms / (processing_time * 1000)) * 100
-                ),
+                "efficiency_score": min(100, (self.config.target_response_time_ms / (processing_time * 1000)) * 100),
             },
         }
 
@@ -179,14 +175,10 @@ class UltraFastResponse:
             "word_count": len(words),
             "query_type": query_type,
             "keywords": [w for w in words if len(w) > 3][:5],  # Top 5 palabras clave
-            "urgency_indicators": [
-                w for w in words if w in ["urgente", "rápido", "inmediato", "ahora"]
-            ],
+            "urgency_indicators": [w for w in words if w in ["urgente", "rápido", "inmediato", "ahora"]],
         }
 
-    async def _retrieve_relevant_context(
-        self, query: str, context: Dict[str, Any] = None
-    ) -> Dict[str, Any]:
+    async def _retrieve_relevant_context(self, query: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
         """Recuperar contexto relevante ultra-rápido"""
         from sheily_core.core.ultra_fast_search import search_files
 
@@ -196,8 +188,7 @@ class UltraFastResponse:
             return {
                 "relevant_files": len(search_results),
                 "top_sources": [r.file_path for r in search_results[:3]],
-                "context_quality": sum(r.relevance_score for r in search_results)
-                / max(len(search_results), 1),
+                "context_quality": sum(r.relevance_score for r in search_results) / max(len(search_results), 1),
             }
         except Exception as e:
             logger.error(f"Error en búsqueda de contexto: {e}")
@@ -233,9 +224,7 @@ class UltraFastResponse:
 
         return plan
 
-    async def _synthesize_thinking(
-        self, analysis_results: List[Dict[str, Any]], query: str
-    ) -> Dict[str, Any]:
+    async def _synthesize_thinking(self, analysis_results: List[Dict[str, Any]], query: str) -> Dict[str, Any]:
         """Síntesis ultra-rápida de proceso de pensamiento"""
         # Combinar análisis en paralelo
         combined_analysis = {}
@@ -344,9 +333,7 @@ class UltraFastResponse:
             # Implementar cache LRU
             if len(self.thinking_cache) >= self.config.thinking_cache_size:
                 # Remover entradas más antiguas
-                oldest_keys = sorted(
-                    self.thinking_cache.keys(), key=lambda k: self.thinking_cache[k]["timestamp"]
-                )[:50]
+                oldest_keys = sorted(self.thinking_cache.keys(), key=lambda k: self.thinking_cache[k]["timestamp"])[:50]
                 for key in oldest_keys:
                     del self.thinking_cache[key]
 
@@ -374,22 +361,16 @@ class UltraFastResponse:
         current_avg = self.performance_metrics["avg_response_time"]
         total = self.performance_metrics["total_requests"]
 
-        self.performance_metrics["avg_response_time"] = (
-            current_avg * (total - 1) + response_time
-        ) / total
+        self.performance_metrics["avg_response_time"] = (current_avg * (total - 1) + response_time) / total
 
         # Actualizar uso de memoria
         process = psutil.Process()
         memory_mb = process.memory_info().rss / 1024 / 1024
-        self.performance_metrics["peak_memory_usage"] = max(
-            self.performance_metrics["peak_memory_usage"], memory_mb
-        )
+        self.performance_metrics["peak_memory_usage"] = max(self.performance_metrics["peak_memory_usage"], memory_mb)
 
         # Actualizar uso de CPU
         cpu_percent = process.cpu_percent()
-        self.performance_metrics["cpu_utilization"] = max(
-            self.performance_metrics["cpu_utilization"], cpu_percent
-        )
+        self.performance_metrics["cpu_utilization"] = max(self.performance_metrics["cpu_utilization"], cpu_percent)
 
         # Actualizar tasa de aciertos de caché
         cache_hits = sum(1 for v in self.response_cache.values() if v.get("hit", False))
@@ -425,9 +406,7 @@ class UltraFastResponse:
         else:
             return "general"
 
-    async def _format_cached_response(
-        self, cached_response: Dict[str, Any], start_time: float
-    ) -> Dict[str, Any]:
+    async def _format_cached_response(self, cached_response: Dict[str, Any], start_time: float) -> Dict[str, Any]:
         """Formatear respuesta desde caché"""
         response_time = time.time() - start_time
 

@@ -180,9 +180,7 @@ class SecurityMonitor:
         self.security_events.append(event)
 
         # Log del evento
-        self.logger.warning(
-            f"Evento de seguridad: {event.event_type} - {event.severity} - {event.description}"
-        )
+        self.logger.warning(f"Evento de seguridad: {event.event_type} - {event.severity} - {event.description}")
 
         # Mantener solo eventos recientes (últimas 24 horas)
         cutoff_time = datetime.now() - timedelta(hours=24)

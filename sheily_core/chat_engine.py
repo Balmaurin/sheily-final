@@ -176,11 +176,7 @@ def create_chat_context(config_path: str = None) -> ChatContext:
     security_monitor = get_security_monitor()
 
     # Import here to avoid circular dependencies
-    from app.chat_engine import (
-        create_branch_detector,
-        create_context_manager,
-        create_model_interface,
-    )
+    from app.chat_engine import create_branch_detector, create_context_manager, create_model_interface
 
     branch_detector = create_branch_detector(config.branches_config_path)
     model_interface = None
@@ -189,9 +185,7 @@ def create_chat_context(config_path: str = None) -> ChatContext:
     # Initialize model interface if paths are configured
     if config.model_path and config.llama_binary_path:
         try:
-            model_interface = create_model_interface(
-                config.model_path, config.llama_binary_path, config
-            )
+            model_interface = create_model_interface(config.model_path, config.llama_binary_path, config)
         except Exception as e:
             logger.error(f"Could not initialize model interface: {e}")
 
@@ -264,9 +258,7 @@ def get_related_words() -> Dict[str, List[str]]:
     }
 
 
-def calculate_branch_score(
-    query: str, branch_name: str, branch_config: Dict, related_words: Dict
-) -> float:
+def calculate_branch_score(query: str, branch_name: str, branch_config: Dict, related_words: Dict) -> float:
     """Calculate score for a branch - Pure function"""
     query_lower = query.lower()
     score = 0.0
@@ -290,9 +282,7 @@ def calculate_branch_score(
     return score
 
 
-def detect_branch(
-    query: str, branches_config: Dict[str, Any], logger: Any = None
-) -> Tuple[str, float]:
+def detect_branch(query: str, branches_config: Dict[str, Any], logger: Any = None) -> Tuple[str, float]:
     """
     Detect the most appropriate branch for a query - Pure function
 
@@ -381,9 +371,7 @@ def get_fallback_response(query: str) -> str:
     return f"Entiendo que preguntas sobre '{query}'. Puedo ayudarte mejor si proporcionas más contexto específico sobre tu consulta."
 
 
-def execute_model_command(
-    model_path: str, llama_binary_path: str, prompt: str, config: Any
-) -> Result[str, str]:
+def execute_model_command(model_path: str, llama_binary_path: str, prompt: str, config: Any) -> Result[str, str]:
     """Execute model command - Pure function"""
     try:
         # Prepare command
@@ -466,9 +454,7 @@ def generate_model_response(
         return get_fallback_response(query)
 
 
-def create_model_interface(
-    model_path: str, llama_binary_path: str, config: Any
-) -> Callable[[str, List[str]], str]:
+def create_model_interface(model_path: str, llama_binary_path: str, config: Any) -> Callable[[str, List[str]], str]:
     """Create a model interface function - Factory function"""
     # Validate files
     validation = validate_model_files(model_path, llama_binary_path)
@@ -479,9 +465,7 @@ def create_model_interface(
     logger.info(f"Model files validated: {model_path}")
 
     def interface(query: str, context_docs: List[str] = None) -> str:
-        return generate_model_response(
-            query, context_docs or [], model_path, llama_binary_path, config, logger
-        )
+        return generate_model_response(query, context_docs or [], model_path, llama_binary_path, config, logger)
 
     return interface
 
@@ -540,9 +524,7 @@ def get_branch_context_files(corpus_root: Path, branch_name: str) -> List[Path]:
     return []
 
 
-def get_branch_context(
-    query: str, branch_name: str, corpus_root: Path, logger: Any = None
-) -> List[str]:
+def get_branch_context(query: str, branch_name: str, corpus_root: Path, logger: Any = None) -> List[str]:
     """Get context from branch-specific corpus - Pure function"""
     context_docs = []
 
@@ -625,9 +607,7 @@ def generate_fallback_response(query: str, branch: str) -> str:
     return fallback_responses.get(branch, fallback_responses["general"])
 
 
-def check_security_validation(
-    query: str, client_id: str, security_monitor: Any
-) -> Result[str, str]:
+def check_security_validation(query: str, client_id: str, security_monitor: Any) -> Result[str, str]:
     """Check security validation - Pure function"""
     is_secure, security_reason = security_monitor.check_request(query, client_id)
     if not is_secure:
@@ -635,9 +615,7 @@ def check_security_validation(
     return Ok("secure")
 
 
-def create_security_blocked_response(
-    query: str, security_reason: str, processing_time: float
-) -> ChatResponse:
+def create_security_blocked_response(query: str, security_reason: str, processing_time: float) -> ChatResponse:
     """Create security blocked response - Pure function"""
     return create_chat_response(
         query=query,

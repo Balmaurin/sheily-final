@@ -153,9 +153,7 @@ class LearningStrategy:
             strategy_name=f"{self.strategy_name}_x_{other.strategy_name}",
             hyperparameters={},
             generation=max(self.generation, other.generation) + 1,
-            parent_strategies=self.parent_strategies
-            + other.parent_strategies
-            + [self.strategy_id, other.strategy_id],
+            parent_strategies=self.parent_strategies + other.parent_strategies + [self.strategy_id, other.strategy_id],
         )
 
         # Crossover de hiperparámetros
@@ -336,9 +334,7 @@ class MetaLearningEngine:
 
                 return patterns
 
-            def _detect_knowledge_growth(
-                self, learning_data: Dict[str, Any]
-            ) -> Optional[LearningPattern]:
+            def _detect_knowledge_growth(self, learning_data: Dict[str, Any]) -> Optional[LearningPattern]:
                 """Detectar crecimiento acelerado de conocimiento"""
                 knowledge_metrics = learning_data.get("knowledge_metrics", {})
 
@@ -348,9 +344,7 @@ class MetaLearningEngine:
                     # Calcular tasa de crecimiento
                     if len(self.pattern_memory) > 1:
                         prev_data = list(self.pattern_memory)[-2]
-                        prev_size = prev_data.get("knowledge_metrics", {}).get(
-                            "knowledge_base_size", 0
-                        )
+                        prev_size = prev_data.get("knowledge_metrics", {}).get("knowledge_base_size", 0)
 
                         if prev_size > 0:
                             growth_rate = (current_size - prev_size) / prev_size
@@ -369,9 +363,7 @@ class MetaLearningEngine:
 
                 return None
 
-            def _detect_performance_degradation(
-                self, learning_data: Dict[str, Any]
-            ) -> Optional[LearningPattern]:
+            def _detect_performance_degradation(self, learning_data: Dict[str, Any]) -> Optional[LearningPattern]:
                 """Detectar degradación de rendimiento"""
                 performance_metrics = learning_data.get("performance_metrics", {})
 
@@ -388,9 +380,7 @@ class MetaLearningEngine:
                         avg_recent_accuracy = sum(recent_accuracies) / len(recent_accuracies)
 
                         if avg_recent_accuracy > 0:
-                            degradation_rate = (
-                                avg_recent_accuracy - current_accuracy
-                            ) / avg_recent_accuracy
+                            degradation_rate = (avg_recent_accuracy - current_accuracy) / avg_recent_accuracy
 
                             if degradation_rate > 0.1:  # Degradación > 10%
                                 return LearningPattern(
@@ -406,9 +396,7 @@ class MetaLearningEngine:
 
                 return None
 
-            def _detect_context_shift(
-                self, learning_data: Dict[str, Any]
-            ) -> Optional[LearningPattern]:
+            def _detect_context_shift(self, learning_data: Dict[str, Any]) -> Optional[LearningPattern]:
                 """Detectar cambios significativos de contexto"""
                 context_metrics = learning_data.get("context_metrics", {})
 
@@ -418,14 +406,10 @@ class MetaLearningEngine:
                     # Comparar con distribuciones anteriores
                     if len(self.pattern_memory) > 1:
                         prev_data = list(self.pattern_memory)[-2]
-                        prev_distribution = prev_data.get("context_metrics", {}).get(
-                            "domain_distribution", {}
-                        )
+                        prev_distribution = prev_data.get("context_metrics", {}).get("domain_distribution", {})
 
                         # Calcular distancia entre distribuciones
-                        distribution_shift = self._calculate_distribution_shift(
-                            current_distribution, prev_distribution
-                        )
+                        distribution_shift = self._calculate_distribution_shift(current_distribution, prev_distribution)
 
                         if distribution_shift > 0.3:  # Cambio significativo
                             return LearningPattern(
@@ -441,9 +425,7 @@ class MetaLearningEngine:
 
                 return None
 
-            def _calculate_distribution_shift(
-                self, dist1: Dict[str, float], dist2: Dict[str, float]
-            ) -> float:
+            def _calculate_distribution_shift(self, dist1: Dict[str, float], dist2: Dict[str, float]) -> float:
                 """Calcular magnitud de cambio entre distribuciones"""
                 all_keys = set(dist1.keys()) | set(dist2.keys())
 
@@ -475,9 +457,7 @@ class MetaLearningEngine:
                     strategy.fitness_score = strategy.calculate_fitness()
 
                 # Seleccionar mejores estrategias
-                sorted_strategies = sorted(
-                    current_strategies, key=lambda x: x.fitness_score, reverse=True
-                )
+                sorted_strategies = sorted(current_strategies, key=lambda x: x.fitness_score, reverse=True)
                 elite_strategies = sorted_strategies[: self.config.population_size // 2]
 
                 # Crear nueva generación
@@ -507,8 +487,7 @@ class MetaLearningEngine:
                     {
                         "generation": self.generation,
                         "best_fitness": max(s.fitness_score for s in new_generation),
-                        "avg_fitness": sum(s.fitness_score for s in new_generation)
-                        / len(new_generation),
+                        "avg_fitness": sum(s.fitness_score for s in new_generation) / len(new_generation),
                         "population_size": len(new_generation),
                         "timestamp": datetime.now().isoformat(),
                     }
@@ -592,13 +571,9 @@ class MetaLearningEngine:
         performance_metrics = {}
 
         # Métricas básicas de rendimiento
-        performance_metrics["accuracy"] = learning_data.get("performance_metrics", {}).get(
-            "accuracy", 0.5
-        )
+        performance_metrics["accuracy"] = learning_data.get("performance_metrics", {}).get("accuracy", 0.5)
         performance_metrics["loss"] = learning_data.get("performance_metrics", {}).get("loss", 1.0)
-        performance_metrics["learning_rate"] = learning_data.get("hyperparameters", {}).get(
-            "learning_rate", 1e-4
-        )
+        performance_metrics["learning_rate"] = learning_data.get("hyperparameters", {}).get("learning_rate", 1e-4)
 
         # Métricas de eficiencia
         processing_time = learning_data.get("processing_time", 1.0)
@@ -680,21 +655,17 @@ class MetaLearningEngine:
 
         # Calcular basado en patrones de crecimiento recientes
         growth_patterns = [
-            pattern
-            for pattern in self.state.detected_patterns.values()
-            if pattern.pattern_type == "knowledge_growth"
+            pattern for pattern in self.state.detected_patterns.values() if pattern.pattern_type == "knowledge_growth"
         ]
 
         if not growth_patterns:
             return 0.0
 
         # Promedio de tasas de crecimiento recientes
-        recent_patterns = [
-            p for p in growth_patterns if (datetime.now() - p.detection_time).total_seconds() < 3600
-        ]
-        avg_growth_rate = sum(
-            p.pattern_data.get("growth_rate", 0.0) for p in recent_patterns
-        ) / max(len(recent_patterns), 1)
+        recent_patterns = [p for p in growth_patterns if (datetime.now() - p.detection_time).total_seconds() < 3600]
+        avg_growth_rate = sum(p.pattern_data.get("growth_rate", 0.0) for p in recent_patterns) / max(
+            len(recent_patterns), 1
+        )
 
         return min(1.0, avg_growth_rate)
 
@@ -763,9 +734,7 @@ def integrate_autonomous_learning(
 
 
 # Función de análisis de aprendizaje para debugging
-def analyze_learning_session(
-    session_data: Dict[str, Any], learning_engine: MetaLearningEngine
-) -> Dict[str, Any]:
+def analyze_learning_session(session_data: Dict[str, Any], learning_engine: MetaLearningEngine) -> Dict[str, Any]:
     """Analizar sesión de aprendizaje específica"""
     try:
         # Procesar sesión

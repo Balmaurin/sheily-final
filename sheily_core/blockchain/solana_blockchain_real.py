@@ -159,9 +159,7 @@ class SolanaBlockchainReal:
         commitment = os.getenv("SOLANA_COMMITMENT", "confirmed")
         timeout = int(os.getenv("SOLANA_TIMEOUT", "30"))
 
-        config = SolanaConfig(
-            network=network, commitment=commitment, timeout=timeout, api_key=api_key
-        )
+        config = SolanaConfig(network=network, commitment=commitment, timeout=timeout, api_key=api_key)
 
         # Usar RPC URL personalizada si está configurada
         if rpc_url:
@@ -203,9 +201,7 @@ class SolanaBlockchainReal:
             slot_value = slot.get("result", 0) if isinstance(slot, dict) else 0
             epoch_value = epoch.get("result", {}).get("epoch", 0) if isinstance(epoch, dict) else 0
             version_value = (
-                version.get("result", {}).get("solana-core", "unknown")
-                if isinstance(version, dict)
-                else "unknown"
+                version.get("result", {}).get("solana-core", "unknown") if isinstance(version, dict) else "unknown"
             )
 
             return {
@@ -381,9 +377,7 @@ class SolanaBlockchainReal:
         if SOLANA_AVAILABLE and self.connection_available and transaction.signature:
             try:
                 # Verificar transacción en Solana
-                response = self.client.get_transaction(
-                    transaction.signature, commitment=Commitment("confirmed")
-                )
+                response = self.client.get_transaction(transaction.signature, commitment=Commitment("confirmed"))
 
                 if response.value:
                     return {
@@ -427,9 +421,7 @@ class SolanaBlockchainReal:
             "last_updated": wallet.last_updated.isoformat(),
         }
 
-    def mint_tokens(
-        self, user_id: str, amount: int, reason: str = "training_reward"
-    ) -> TokenTransaction:
+    def mint_tokens(self, user_id: str, amount: int, reason: str = "training_reward") -> TokenTransaction:
         """Mintear tokens reales (simulado para tokens personalizados)"""
         try:
             if user_id not in self.user_wallets:

@@ -99,11 +99,7 @@ class ModulePluginManager:
             plugin_module = importlib.import_module("modules.plugins")
 
             for name, obj in inspect.getmembers(plugin_module):
-                if (
-                    inspect.isclass(obj)
-                    and issubclass(obj, ModulePluginBase)
-                    and obj is not ModulePluginBase
-                ):
+                if inspect.isclass(obj) and issubclass(obj, ModulePluginBase) and obj is not ModulePluginBase:
                     self.register_plugin(name, obj)
         except ImportError:
             self.logger.warning("No se encontró el módulo de plugins")
@@ -137,9 +133,7 @@ class ModulePluginManager:
             return plugin_class(config)
         return None
 
-    def apply_plugin_to_module(
-        self, module, plugin_name: str, config: Optional[Dict[str, Any]] = None
-    ):
+    def apply_plugin_to_module(self, module, plugin_name: str, config: Optional[Dict[str, Any]] = None):
         """
         Aplicar un plugin a un módulo
 
@@ -158,9 +152,7 @@ class ModulePluginManager:
             self.active_plugins[module_key].append(plugin)
             self.logger.info(f"Plugin {plugin_name} aplicado a {module_key}")
 
-    def process_with_plugins(
-        self, module, input_data: Any, original_process_method: Callable
-    ) -> Any:
+    def process_with_plugins(self, module, input_data: Any, original_process_method: Callable) -> Any:
         """
         Procesar datos con plugins
 
@@ -237,9 +229,7 @@ def main():
     plugin_manager.apply_plugin_to_module(example_module, "LoggingPlugin", {"log_level": "INFO"})
 
     # Procesar datos con plugins
-    result = plugin_manager.process_with_plugins(
-        example_module, "ejemplo de datos", example_module.process
-    )
+    result = plugin_manager.process_with_plugins(example_module, "ejemplo de datos", example_module.process)
 
     print("Resultado:", result)
 

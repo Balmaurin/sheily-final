@@ -472,6 +472,7 @@ class DashboardApp:
             return
 
         import os
+
         debug_mode = os.getenv("FLASK_DEBUG", "false").lower() in ("true", "1", "yes")
         logger.info(f"Starting dashboard at http://{host}:{port} (debug={'enabled' if debug_mode else 'disabled'})")
         self.app.run(host=host, port=port, debug=debug_mode)
@@ -504,6 +505,7 @@ def main() -> None:
     if HAS_FLASK:
         # Run Flask app
         import os
+
         debug_mode = os.getenv("FLASK_DEBUG", "false").lower() in ("true", "1", "yes")
         app = DashboardApp(debug=debug_mode)
         try:

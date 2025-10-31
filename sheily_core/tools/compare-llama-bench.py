@@ -262,9 +262,7 @@ $ ./scripts/compare-llama-bench.py --tool test-backend-ops -i test-backend-ops.s
 Performance numbers from multiple runs per commit are averaged WITHOUT being weighted by the --repetitions parameter of llama-bench.
 """
 
-parser = argparse.ArgumentParser(
-    description=DESCRIPTION, formatter_class=argparse.RawDescriptionHelpFormatter
-)
+parser = argparse.ArgumentParser(description=DESCRIPTION, formatter_class=argparse.RawDescriptionHelpFormatter)
 help_b = (
     "The baseline commit to compare performance to. "
     "Accepts either a branch name, tag name, or commit hash. "
@@ -283,9 +281,7 @@ help_t = (
     "This determines the database schema and comparison logic used. "
     "If left unspecified, try to determine from the input file."
 )
-parser.add_argument(
-    "-t", "--tool", help=help_t, default=None, choices=[None, "llama-bench", "test-backend-ops"]
-)
+parser.add_argument("-t", "--tool", help=help_t, default=None, choices=[None, "llama-bench", "test-backend-ops"])
 help_i = (
     "JSON/JSONL/SQLite/CSV files for comparing commits. "
     "Specify multiple times to use multiple input files (JSON/CSV only). "
@@ -311,18 +307,14 @@ help_s = (
     "If the columns are manually specified, then the results for each unique combination of the "
     "specified values are averaged WITHOUT weighing by the --repetitions parameter of llama-bench."
 )
-parser.add_argument(
-    "--check", action="store_true", help="check if all required Python libraries are installed"
-)
+parser.add_argument("--check", action="store_true", help="check if all required Python libraries are installed")
 parser.add_argument("-s", "--show", help=help_s)
 parser.add_argument("--verbose", action="store_true", help="increase output verbosity")
 parser.add_argument(
     "--plot",
     help="generate a performance comparison plot and save to specified file (e.g., plot.png)",
 )
-parser.add_argument(
-    "--plot_x", help="parameter to use as x axis for plotting (default: n_depth)", default="n_depth"
-)
+parser.add_argument("--plot_x", help="parameter to use as x axis for plotting (default: n_depth)", default="n_depth")
 parser.add_argument(
     "--plot_log_scale",
     action="store_true",
@@ -380,9 +372,7 @@ class LlamaBenchData:
 
         # Set schema-specific properties based on tool
         if self.tool == "llama-bench":
-            self.check_keys = set(
-                LLAMA_BENCH_KEY_PROPERTIES + ["build_commit", "test_time", "avg_ts"]
-            )
+            self.check_keys = set(LLAMA_BENCH_KEY_PROPERTIES + ["build_commit", "test_time", "avg_ts"])
         elif self.tool == "test-backend-ops":
             self.check_keys = set(TEST_BACKEND_OPS_KEY_PROPERTIES + ["build_commit", "test_time"])
         else:
@@ -458,9 +448,7 @@ class LlamaBenchData:
         """Helper method that gets rows of (build_commit, test_time) sorted by the latter."""
         return []
 
-    def get_rows(
-        self, properties: list[str], hexsha8_baseline: str, hexsha8_compare: str
-    ) -> Sequence[tuple]:
+    def get_rows(self, properties: list[str], hexsha8_baseline: str, hexsha8_compare: str) -> Sequence[tuple]:
         """
         Helper method that gets table rows for some list of properties.
         Rows are created by combining those where all provided properties are equal.
@@ -515,9 +503,7 @@ class LlamaBenchDataSQLite3(LlamaBenchData):
                     f"UPDATE {self.table_name} SET build_commit = SUBSTRING(build_commit, 1, {self.build_len_min});"
                 )
 
-            builds = self.cursor.execute(
-                f"SELECT DISTINCT build_commit FROM {self.table_name};"
-            ).fetchall()
+            builds = self.cursor.execute(f"SELECT DISTINCT build_commit FROM {self.table_name};").fetchall()
             self.builds = list(map(lambda b: b[0], builds))  # list[tuple[str]] -> list[str]
         super()._builds_init()
 
@@ -527,9 +513,7 @@ class LlamaBenchDataSQLite3(LlamaBenchData):
         ).fetchall()
         return reversed(data) if reverse else data
 
-    def get_rows(
-        self, properties: list[str], hexsha8_baseline: str, hexsha8_compare: str
-    ) -> Sequence[tuple]:
+    def get_rows(self, properties: list[str], hexsha8_baseline: str, hexsha8_compare: str) -> Sequence[tuple]:
         if self.tool == "llama-bench":
             return self._get_rows_llama_bench(properties, hexsha8_baseline, hexsha8_compare)
         elif self.tool == "test-backend-ops":
@@ -548,9 +532,7 @@ class LlamaBenchDataSQLite3(LlamaBenchData):
             [f"tb.{p} = tc.{p}" for p in LLAMA_BENCH_KEY_PROPERTIES]
             + [f"tb.build_commit = '{hexsha8_baseline}'", f"tc.build_commit = '{hexsha8_compare}'"]
         )
-        group_order_string = ", ".join(
-            [f"tb.{p}" for p in properties] + ["tb.n_gen", "tb.n_prompt", "tb.n_depth"]
-        )
+        group_order_string = ", ".join([f"tb.{p}" for p in properties] + ["tb.n_gen", "tb.n_prompt", "tb.n_depth"])
         query = (
             f"SELECT {select_string} FROM {self.table_name} tb JOIN {self.table_name} tc ON {equal_string} "
             f"GROUP BY {group_order_string} ORDER BY {group_order_string};"
@@ -590,9 +572,7 @@ class LlamaBenchDataSQLite3File(LlamaBenchDataSQLite3):
         self.cursor = self.connection.cursor()
 
         # Check which table exists in the database
-        tables = self.cursor.execute(
-            "SELECT name FROM sqlite_master WHERE type='table';"
-        ).fetchall()
+        tables = self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table';").fetchall()
         table_names = [table[0] for table in tables]
 
         # Tool selection logic
@@ -604,17 +584,13 @@ class LlamaBenchDataSQLite3File(LlamaBenchDataSQLite3):
                 self.table_name = "test_backend_ops"
                 tool = "test-backend-ops"
             else:
-                raise RuntimeError(
-                    f"No suitable table found in database. Available tables: {table_names}"
-                )
+                raise RuntimeError(f"No suitable table found in database. Available tables: {table_names}")
         elif tool == "llama-bench":
             if "llama_bench" in table_names:
                 self.table_name = "llama_bench"
                 tool = "llama-bench"
             else:
-                raise RuntimeError(
-                    f"Table 'test' not found for tool 'llama-bench'. Available tables: {table_names}"
-                )
+                raise RuntimeError(f"Table 'test' not found for tool 'llama-bench'. Available tables: {table_names}")
         elif tool == "test-backend-ops":
             if "test_backend_ops" in table_names:
                 self.table_name = "test_backend_ops"
@@ -660,9 +636,7 @@ class LlamaBenchDataJSONL(LlamaBenchDataSQLite3):
                     del parsed[k]
 
                 if missing_keys := self._check_keys(parsed.keys()):
-                    raise RuntimeError(
-                        f"Missing required data key(s) at line {i + 1}: {', '.join(missing_keys)}"
-                    )
+                    raise RuntimeError(f"Missing required data key(s) at line {i + 1}: {', '.join(missing_keys)}")
 
                 self.cursor.execute(
                     f"INSERT INTO {self.table_name}({', '.join(parsed.keys())}) VALUES({', '.join('?' * len(parsed))});",
@@ -701,9 +675,7 @@ class LlamaBenchDataJSON(LlamaBenchDataSQLite3):
                         del entry[k]
 
                     if missing_keys := self._check_keys(entry.keys()):
-                        raise RuntimeError(
-                            f"Missing required data key(s) at entry {i + 1}: {', '.join(missing_keys)}"
-                        )
+                        raise RuntimeError(f"Missing required data key(s) at entry {i + 1}: {', '.join(missing_keys)}")
 
                     self.cursor.execute(
                         f"INSERT INTO {self.table_name}({', '.join(entry.keys())}) VALUES({', '.join('?' * len(entry))});",
@@ -744,9 +716,7 @@ class LlamaBenchDataCSV(LlamaBenchDataSQLite3):
                         del parsed[k]
 
                     if missing_keys := self._check_keys(keys):
-                        raise RuntimeError(
-                            f"Missing required data key(s) at line {i + 1}: {', '.join(missing_keys)}"
-                        )
+                        raise RuntimeError(f"Missing required data key(s) at line {i + 1}: {', '.join(missing_keys)}")
 
                     self.cursor.execute(
                         f"INSERT INTO {self.table_name}({', '.join(parsed.keys())}) VALUES({', '.join('?' * len(parsed))});",
@@ -877,9 +847,7 @@ elif bench_data.repo is not None:
     hexsha8_baseline = bench_data.find_parent_in_data(bench_data.repo.heads.master.commit)
 
     if hexsha8_baseline is None:
-        logger.error(
-            "No baseline was provided and did not find data for any master branch commits.\n"
-        )
+        logger.error("No baseline was provided and did not find data for any master branch commits.\n")
         parser.print_help()
         sys.exit(1)
 else:
@@ -915,9 +883,7 @@ elif bench_data.repo is not None:
             break
 
     if hexsha8_compare is None:
-        logger.error(
-            "No compare target was provided and did not find data for any non-master commits.\n"
-        )
+        logger.error("No compare target was provided and did not find data for any non-master commits.\n")
         parser.print_help()
         sys.exit(1)
 else:
@@ -968,9 +934,7 @@ else:
 
     if tool == "llama-bench":
         # For llama-bench, skip n_prompt, n_gen, n_depth from differentiation logic
-        check_properties = [
-            kp for kp in key_properties if kp not in ["n_prompt", "n_gen", "n_depth"]
-        ]
+        check_properties = [kp for kp in key_properties if kp not in ["n_prompt", "n_gen", "n_depth"]]
         for i, kp_i in enumerate(key_properties):
             if kp_i in default_show or kp_i in ["n_prompt", "n_gen", "n_depth"]:
                 continue
@@ -1050,9 +1014,7 @@ if tool == "llama-bench":
             test_name = f"{test_name}@d{n_depth}"
         #           Regular columns    test name    avg t/s values              Speedup
         #            VVVVVVVVVVVVV     VVVVVVVVV    VVVVVVVVVVVVVV              VVVVVVV
-        table.append(
-            list(row[:-5]) + [test_name] + list(row[-2:]) + [float(row[-1]) / float(row[-2])]
-        )
+        table.append(list(row[:-5]) + [test_name] + list(row[-2:]) + [float(row[-1]) / float(row[-2])])
 elif tool == "test-backend-ops":
     # Determine the primary metric by checking rows until we find one with valid data
     if rows_show:
@@ -1166,9 +1128,7 @@ if known_args.plot:
             logger.error("matplotlib is required for --plot.")
             raise e
 
-        data_headers = headers[
-            :-4
-        ]  # Exclude the last 4 columns (Test, baseline t/s, compare t/s, Speedup)
+        data_headers = headers[:-4]  # Exclude the last 4 columns (Test, baseline t/s, compare t/s, Speedup)
         plot_x_index = None
         plot_x_label = plot_x_param
 
@@ -1267,12 +1227,8 @@ if known_args.plot:
             ax = axes[plot_idx]
 
             try:
-                points_sorted = sorted(
-                    points, key=lambda p: float(p["x_value"]) if p["x_value"] is not None else 0
-                )
-                x_values = [
-                    float(p["x_value"]) if p["x_value"] is not None else 0 for p in points_sorted
-                ]
+                points_sorted = sorted(points, key=lambda p: float(p["x_value"]) if p["x_value"] is not None else 0)
+                x_values = [float(p["x_value"]) if p["x_value"] is not None else 0 for p in points_sorted]
             except ValueError:
                 points_sorted = sorted(points, key=lambda p: group_key)
                 x_values = [p["x_value"] for p in points_sorted]

@@ -156,8 +156,7 @@ class PerformanceMonitor:
             # Recalcular promedio
             if self.aggregated_metrics["successful_operations"] > 0:
                 self.aggregated_metrics["avg_response_time"] = (
-                    self.aggregated_metrics["total_response_time"]
-                    / self.aggregated_metrics["successful_operations"]
+                    self.aggregated_metrics["total_response_time"] / self.aggregated_metrics["successful_operations"]
                 )
 
             # Mantener tamaño máximo
@@ -220,9 +219,7 @@ class PerformanceMonitor:
                 operation_stats[op]["count"] += 1
                 if metric.end_time:
                     operation_stats[op]["total_time"] += metric.duration
-                    operation_stats[op]["avg_time"] = (
-                        operation_stats[op]["total_time"] / operation_stats[op]["count"]
-                    )
+                    operation_stats[op]["avg_time"] = operation_stats[op]["total_time"] / operation_stats[op]["count"]
 
                 if metric.success:
                     operation_stats[op]["success_count"] += 1

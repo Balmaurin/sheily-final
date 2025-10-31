@@ -330,9 +330,7 @@ class RetrievalManager:
             )
 
             # Combinar resultados
-            combined_results = self._combine_search_results(
-                semantic_results, lexical_results, alpha, k
-            )
+            combined_results = self._combine_search_results(semantic_results, lexical_results, alpha, k)
 
             self._retrieval_stats["hybrid_searches"] += 1
             self._update_search_metrics(time.time() - start_time)
@@ -473,9 +471,7 @@ class RetrievalManager:
         if corpus_root.exists():
             # Buscar en dominios específicos o todos
             search_domains = (
-                [domain]
-                if domain
-                else ["general", "programming", "medicine", "science", "biology", "mathematics"]
+                [domain] if domain else ["general", "programming", "medicine", "science", "biology", "mathematics"]
             )
 
             for domain_name in search_domains:
@@ -494,9 +490,7 @@ class RetrievalManager:
                                     {
                                         "id": f"tfidf_real_{file_path.stem}",
                                         "title": file_path.stem.replace("_", " ").title(),
-                                        "content": content[:500] + "..."
-                                        if len(content) > 500
-                                        else content,
+                                        "content": content[:500] + "..." if len(content) > 500 else content,
                                         "domain": domain_name,
                                         "language": language,
                                         "score": min(score, 1.0),
@@ -509,18 +503,14 @@ class RetrievalManager:
 
         # Si no hay documentos reales, usar datos de branches
         if not real_docs:
-            real_docs = await self._lexical_search_from_branches(
-                query_terms, language, domain, k, vocab
-            )
+            real_docs = await self._lexical_search_from_branches(query_terms, language, domain, k, vocab)
 
         # Ordenar por score y limitar resultados
         real_docs.sort(key=lambda x: x["score"], reverse=True)
 
         return real_docs[:k]
 
-    def _calculate_tfidf_score(
-        self, content: str, query_terms: List[str], vocab: Dict[str, float]
-    ) -> float:
+    def _calculate_tfidf_score(self, content: str, query_terms: List[str], vocab: Dict[str, float]) -> float:
         """Calcula score TF-IDF real para un documento"""
         content_lower = content.lower()
         content_words = content_lower.split()
@@ -634,9 +624,7 @@ class RetrievalManager:
 
         # Buscar archivos en el corpus
         search_domains = (
-            [domain]
-            if domain
-            else ["general", "programming", "artificial_intelligence", "medicine", "science"]
+            [domain] if domain else ["general", "programming", "artificial_intelligence", "medicine", "science"]
         )
 
         for domain_name in search_domains:
@@ -655,9 +643,7 @@ class RetrievalManager:
                                 {
                                     "id": f"real_doc_{file_path.stem}",
                                     "title": file_path.stem.replace("_", " ").title(),
-                                    "content": content[:500] + "..."
-                                    if len(content) > 500
-                                    else content,
+                                    "content": content[:500] + "..." if len(content) > 500 else content,
                                     "domain": domain_name,
                                     "language": language,
                                     "score": similarity,
@@ -947,9 +933,7 @@ class RetrievalManager:
             logger.error(f"Error en re-ranking: {e}")
             return documents[:k] if k else documents
 
-    async def _reciprocal_rank_fusion(
-        self, query: str, documents: List[Dict]
-    ) -> List[Dict[str, Any]]:
+    async def _reciprocal_rank_fusion(self, query: str, documents: List[Dict]) -> List[Dict[str, Any]]:
         """
         Re-ranking usando Reciprocal Rank Fusion (RRF)
 
@@ -1036,9 +1020,7 @@ class RetrievalManager:
             content_length = len(doc.get("content", "").split())
 
             # Factor de similitud por longitud y posición
-            length_similarity = 1.0 / (
-                1.0 + abs(query_length - content_length) / max(query_length, content_length)
-            )
+            length_similarity = 1.0 / (1.0 + abs(query_length - content_length) / max(query_length, content_length))
             position_penalty = 1.0 / (1.0 + i * 0.1)  # Penalizar posiciones bajas
 
             # Nuevo score semántico

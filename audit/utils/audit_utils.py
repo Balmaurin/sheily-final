@@ -56,11 +56,10 @@ class AuditUtils:
 
         try:
             # Crear backup de reportes y logs
-            subprocess.run([
-                "tar", "-czf", str(backup_dir / backup_name),
-                "-C", str(self.audit_dir),
-                "reports", "logs", "config"
-            ], check=True)
+            subprocess.run(
+                ["tar", "-czf", str(backup_dir / backup_name), "-C", str(self.audit_dir), "reports", "logs", "config"],
+                check=True,
+            )
 
             return str(backup_dir / backup_name)
         except subprocess.CalledProcessError:
@@ -107,11 +106,7 @@ class AuditUtils:
     def _check_system_health(self) -> str:
         """Verificar salud del sistema de auditoría"""
         # Verificación básica de salud
-        required_files = [
-            "advanced_audit_system.py",
-            "run_integrated_audit.py",
-            "config/audit_config.json"
-        ]
+        required_files = ["advanced_audit_system.py", "run_integrated_audit.py", "config/audit_config.json"]
 
         missing = []
         for file in required_files:
@@ -160,7 +155,7 @@ class AuditUtils:
             "missing_components": [],
             "corrupted_files": [],
             "configuration_valid": True,
-            "recommendations": []
+            "recommendations": [],
         }
 
         # Verificar componentes requeridos
@@ -169,7 +164,7 @@ class AuditUtils:
             "run_integrated_audit.py",
             "realtime_audit_dashboard.py",
             "monitoring_system.py",
-            "config/audit_config.json"
+            "config/audit_config.json",
         ]
 
         for component in required_components:
@@ -190,14 +185,10 @@ class AuditUtils:
 
         # Generar recomendaciones
         if validation["missing_components"]:
-            validation["recommendations"].append(
-                f"Instalar componentes faltantes: {validation['missing_components']}"
-            )
+            validation["recommendations"].append(f"Instalar componentes faltantes: {validation['missing_components']}")
 
         if validation["corrupted_files"]:
-            validation["recommendations"].append(
-                f"Corregir archivos corruptos: {validation['corrupted_files']}"
-            )
+            validation["recommendations"].append(f"Corregir archivos corruptos: {validation['corrupted_files']}")
 
         return validation
 
@@ -207,7 +198,7 @@ class AuditUtils:
             "timestamp": datetime.now().isoformat(),
             "optimizations_applied": [],
             "performance_improvements": [],
-            "space_saved_mb": 0
+            "space_saved_mb": 0,
         }
 
         # Limpiar reportes antiguos
@@ -228,9 +219,7 @@ class AuditUtils:
                 # Optimizar intervalos de monitoreo
                 if config.get("monitoring", {}).get("metrics_collection_interval", 60) < 30:
                     config["monitoring"]["metrics_collection_interval"] = 60
-                    optimization["optimizations_applied"].append(
-                        "Optimización de intervalo de monitoreo"
-                    )
+                    optimization["optimizations_applied"].append("Optimización de intervalo de monitoreo")
 
                 # Guardar configuración optimizada
                 with open(config_file, "w", encoding="utf-8") as f:

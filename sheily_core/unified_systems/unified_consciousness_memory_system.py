@@ -174,17 +174,10 @@ class UnifiedConsciousnessMemorySystem:
                             t: sum(
                                 1
                                 for m in self.memories.values()
-                                if (
-                                    m.memory_type.value
-                                    if isinstance(m.memory_type, Enum)
-                                    else m.memory_type
-                                )
-                                == t
+                                if (m.memory_type.value if isinstance(m.memory_type, Enum) else m.memory_type) == t
                             )
                             for t in set(
-                                m.memory_type.value
-                                if isinstance(m.memory_type, Enum)
-                                else m.memory_type
+                                m.memory_type.value if isinstance(m.memory_type, Enum) else m.memory_type
                                 for m in self.memories.values()
                             )
                         },
@@ -192,15 +185,10 @@ class UnifiedConsciousnessMemorySystem:
                     "thoughts": {
                         "total": len(self.thoughts),
                         "recent": [
-                            t.content
-                            for t in sorted(self.thoughts, key=lambda x: x.timestamp, reverse=True)[
-                                :5
-                            ]
+                            t.content for t in sorted(self.thoughts, key=lambda x: x.timestamp, reverse=True)[:5]
                         ],
                     },
-                    "triggers": [
-                        trig.get("description", trig["event_type"]) for trig in self.triggers
-                    ],
+                    "triggers": [trig.get("description", trig["event_type"]) for trig in self.triggers],
                     "auto_improve": {
                         "memory_capacity": self.config.memory_capacity,
                         "semantic_memory_consolidation": self.config.semantic_memory_consolidation,
@@ -217,12 +205,8 @@ class UnifiedConsciousnessMemorySystem:
     def auto_improve(self, window_size: int = 100):
         """Ajusta automáticamente parámetros clave según desempeño reciente (meta-aprendizaje simple)."""
         # Analiza las últimas N memorias y pensamientos
-        recent_memories = sorted(self.memories.values(), key=lambda m: m.created_at, reverse=True)[
-            :window_size
-        ]
-        recent_thoughts = sorted(self.thoughts, key=lambda t: t.timestamp, reverse=True)[
-            :window_size
-        ]
+        recent_memories = sorted(self.memories.values(), key=lambda m: m.created_at, reverse=True)[:window_size]
+        recent_thoughts = sorted(self.thoughts, key=lambda t: t.timestamp, reverse=True)[:window_size]
         # Ajuste de umbral de olvido: si la mayoría de memorias recientes tienen baja importancia, sube el umbral
         if recent_memories:
             avg_importance = sum(m.importance_score for m in recent_memories) / len(recent_memories)
@@ -236,13 +220,9 @@ class UnifiedConsciousnessMemorySystem:
             high_imp = [m for m in episodic if m.importance_score > 0.7]
             ratio = len(high_imp) / len(episodic)
             if ratio > 0.5:
-                self.config.semantic_memory_consolidation = min(
-                    1.0, self.config.semantic_memory_consolidation + 0.05
-                )
+                self.config.semantic_memory_consolidation = min(1.0, self.config.semantic_memory_consolidation + 0.05)
             else:
-                self.config.semantic_memory_consolidation = max(
-                    0.1, self.config.semantic_memory_consolidation - 0.05
-                )
+                self.config.semantic_memory_consolidation = max(0.1, self.config.semantic_memory_consolidation - 0.05)
         # Ajuste de triggers: si se activan muchos triggers de alerta, endurece condiciones
         # (Ejemplo: podrías ajustar factores de triggers aquí)
         logger.info("🤖 Auto-mejora ejecutada: parámetros ajustados según desempeño reciente")
@@ -307,9 +287,7 @@ class UnifiedConsciousnessMemorySystem:
                     {
                         "id": m.id,
                         "content": m.content,
-                        "memory_type": m.memory_type.value
-                        if isinstance(m.memory_type, Enum)
-                        else m.memory_type,
+                        "memory_type": m.memory_type.value if isinstance(m.memory_type, Enum) else m.memory_type,
                         "consciousness_level": m.consciousness_level.value
                         if isinstance(m.consciousness_level, Enum)
                         else m.consciousness_level,
@@ -407,16 +385,12 @@ class UnifiedConsciousnessMemorySystem:
                 count += 1
         return count
 
-    def update_priorities(
-        self, context: Optional[Dict[str, Any]] = None, active_goals: Optional[List[str]] = None
-    ):
+    def update_priorities(self, context: Optional[Dict[str, Any]] = None, active_goals: Optional[List[str]] = None):
         """Actualiza dinámicamente la prioridad de memorias y pensamientos según contexto, uso reciente y metas activas."""
         now = datetime.now()
         # Priorización de memorias
         for mem in self.memories.values():
-            recency = 1.0 / (
-                1.0 + (now - mem.last_accessed).total_seconds() / 3600.0
-            )  # Más reciente, mayor score
+            recency = 1.0 / (1.0 + (now - mem.last_accessed).total_seconds() / 3600.0)  # Más reciente, mayor score
             goal_relevance = 0.0
             if active_goals:
                 for goal in active_goals:
@@ -430,10 +404,7 @@ class UnifiedConsciousnessMemorySystem:
             # Nueva prioridad ponderada
             mem.importance_score = min(
                 1.0,
-                0.5 * mem.importance_score
-                + 0.3 * recency
-                + 0.1 * goal_relevance
-                + 0.1 * context_relevance,
+                0.5 * mem.importance_score + 0.3 * recency + 0.1 * goal_relevance + 0.1 * context_relevance,
             )
         # Priorización de pensamientos
         for th in self.thoughts:
@@ -451,10 +422,7 @@ class UnifiedConsciousnessMemorySystem:
             # Nueva prioridad ponderada
             th.creativity_score = min(
                 1.0,
-                0.5 * th.creativity_score
-                + 0.3 * recency
-                + 0.1 * goal_relevance
-                + 0.1 * context_relevance,
+                0.5 * th.creativity_score + 0.3 * recency + 0.1 * goal_relevance + 0.1 * context_relevance,
             )
         logger.info("⚡ Priorización dinámica de memorias y pensamientos actualizada")
 
@@ -522,12 +490,8 @@ class UnifiedConsciousnessMemorySystem:
                 model="j-hartmann/emotion-english-distilroberta-base",
                 top_k=None,
             )
-            self.topic_analyzer = pipeline(
-                "zero-shot-classification", model="facebook/bart-large-mnli"
-            )
-            logger.info(
-                "✅ Modelos ML cargados para análisis avanzado de emociones, sentimiento y temas"
-            )
+            self.topic_analyzer = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
+            logger.info("✅ Modelos ML cargados para análisis avanzado de emociones, sentimiento y temas")
         except Exception as e:
             logger.error(f"Error cargando modelos ML: {e}")
             self.sentiment_analyzer = None
@@ -557,9 +521,7 @@ class UnifiedConsciousnessMemorySystem:
             return {result[0]["label"]: float(result[0]["score"])}
         return {}
 
-    def analyze_topics_ml(
-        self, text: str, candidate_labels: Optional[List[str]] = None
-    ) -> Dict[str, float]:
+    def analyze_topics_ml(self, text: str, candidate_labels: Optional[List[str]] = None) -> Dict[str, float]:
         """Análisis de temas usando zero-shot classification real."""
         if not hasattr(self, "topic_analyzer") or self.topic_analyzer is None:
             self._load_ml_models()
@@ -583,10 +545,7 @@ class UnifiedConsciousnessMemorySystem:
         for mem in self.memories.values():
             if (
                 memory_type
-                and (
-                    mem.memory_type.value if isinstance(mem.memory_type, Enum) else mem.memory_type
-                )
-                != memory_type
+                and (mem.memory_type.value if isinstance(mem.memory_type, Enum) else mem.memory_type) != memory_type
             ):
                 continue
             if mem.importance_score < min_importance:
@@ -616,11 +575,7 @@ class UnifiedConsciousnessMemorySystem:
         for th in self.thoughts:
             if (
                 reasoning_mode
-                and (
-                    th.reasoning_mode.value
-                    if isinstance(th.reasoning_mode, Enum)
-                    else th.reasoning_mode
-                )
+                and (th.reasoning_mode.value if isinstance(th.reasoning_mode, Enum) else th.reasoning_mode)
                 != reasoning_mode
             ):
                 continue
@@ -810,10 +765,7 @@ class UnifiedConsciousnessMemorySystem:
                 )
                 self.memories[memory_id] = item
                 # Cargar a memoria de trabajo si corresponde
-                if (
-                    len(self.working_memory) < self.config.working_memory_size
-                    and importance_score > 0.7
-                ):
+                if len(self.working_memory) < self.config.working_memory_size and importance_score > 0.7:
                     self.working_memory.append(item)
             cursor.close()
             logger.info(f"🔄 {len(self.memories)} memorias cargadas desde la base de datos")
@@ -950,16 +902,10 @@ class UnifiedConsciousnessMemorySystem:
 
         # Índices
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_memory_type ON memories(memory_type)")
-        cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_consciousness_level ON memories(consciousness_level)"
-        )
-        cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_importance_score ON memories(importance_score)"
-        )
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_consciousness_level ON memories(consciousness_level)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_importance_score ON memories(importance_score)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_thoughts_timestamp ON thoughts(timestamp)")
-        cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_consciousness_timestamp ON consciousness_states(timestamp)"
-        )
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_consciousness_timestamp ON consciousness_states(timestamp)")
 
         self.conn.commit()
         cursor.close()
@@ -1008,9 +954,7 @@ class UnifiedConsciousnessMemorySystem:
             ReasoningMode.CONTEXTUAL: self._contextual_reasoning,
         }
 
-    def _logical_reasoning(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    def _logical_reasoning(self, input_text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Razonamiento lógico"""
         return {
             "mode": "logical",
@@ -1018,15 +962,11 @@ class UnifiedConsciousnessMemorySystem:
             "conclusions": ["conclusión lógica"],
         }
 
-    def _creative_reasoning(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    def _creative_reasoning(self, input_text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Razonamiento creativo"""
         return {"mode": "creative", "confidence": 0.6, "ideas": ["idea creativa"]}
 
-    def _analytical_reasoning(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    def _analytical_reasoning(self, input_text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Razonamiento analítico"""
         return {
             "mode": "analytical",
@@ -1034,9 +974,7 @@ class UnifiedConsciousnessMemorySystem:
             "analysis": ["análisis detallado"],
         }
 
-    def _intuitive_reasoning(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    def _intuitive_reasoning(self, input_text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Razonamiento intuitivo"""
         return {
             "mode": "intuitive",
@@ -1044,9 +982,7 @@ class UnifiedConsciousnessMemorySystem:
             "insights": ["insight intuitivo"],
         }
 
-    def _contextual_reasoning(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    def _contextual_reasoning(self, input_text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Razonamiento contextual"""
         return {
             "mode": "contextual",
@@ -1054,9 +990,7 @@ class UnifiedConsciousnessMemorySystem:
             "context_analysis": ["análisis contextual"],
         }
 
-    async def process_input(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    async def process_input(self, input_text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Procesar entrada con conciencia y memoria"""
         start_time = time.time()
 
@@ -1101,9 +1035,7 @@ class UnifiedConsciousnessMemorySystem:
                 else self.current_state.level,
             }
 
-    async def _basic_consciousness(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    async def _basic_consciousness(self, input_text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Conciencia básica - procesamiento simple"""
         # Análisis básico del input
         word_count = len(input_text.split())
@@ -1119,9 +1051,7 @@ class UnifiedConsciousnessMemorySystem:
             "attention_required": complexity > 0.5,
         }
 
-    async def _aware_consciousness(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    async def _aware_consciousness(self, input_text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Conciencia consciente - procesamiento con atención"""
         # Análisis más profundo
         semantic_analysis = self._analyze_semantics(input_text)
@@ -1156,9 +1086,7 @@ class UnifiedConsciousnessMemorySystem:
             "self_concept_updated": True,
         }
 
-    def _generate_self_reflection(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    def _generate_self_reflection(self, input_text: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Generar reflexión sobre sí mismo"""
         return f"Reflexionando sobre: {input_text[:30]}... (autoconciencia activa)"
 
@@ -1193,9 +1121,7 @@ class UnifiedConsciousnessMemorySystem:
             "insights": insights,
         }
 
-    def _deep_reflection(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    def _deep_reflection(self, input_text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Reflexión profunda"""
         return {"depth": 0.9, "complexity": 0.8, "insights_count": 3}
 
@@ -1248,23 +1174,17 @@ class UnifiedConsciousnessMemorySystem:
             "creative_ideas": creative_ideas,
         }
 
-    def _creative_thinking(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    def _creative_thinking(self, input_text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Pensamiento creativo"""
         return {"creativity_level": 0.8, "originality": 0.7, "flexibility": 0.6}
 
     def _assess_innovation_potential(self, input_text: str) -> float:
         """Evaluar potencial de innovación"""
         innovation_indicators = ["nuevo", "innovador", "creativo", "original", "único"]
-        indicator_count = sum(
-            1 for indicator in innovation_indicators if indicator in input_text.lower()
-        )
+        indicator_count = sum(1 for indicator in innovation_indicators if indicator in input_text.lower())
         return min(indicator_count * 0.2, 1.0)
 
-    def _generate_creative_ideas(
-        self, input_text: str, creative_analysis: Dict[str, Any]
-    ) -> List[str]:
+    def _generate_creative_ideas(self, input_text: str, creative_analysis: Dict[str, Any]) -> List[str]:
         """Generar ideas creativas"""
         ideas = []
 
@@ -1274,9 +1194,7 @@ class UnifiedConsciousnessMemorySystem:
 
         return ideas
 
-    async def _store_memory(
-        self, content: str, consciousness_result: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def _store_memory(self, content: str, consciousness_result: Dict[str, Any]) -> Dict[str, Any]:
         """Almacenar en memoria"""
         try:
             # Determinar tipo de memoria
@@ -1342,9 +1260,7 @@ class UnifiedConsciousnessMemorySystem:
             reasoning_mode = self._determine_reasoning_mode(input_text, consciousness_result)
 
             # Generar contenido del pensamiento
-            thought_content = self._generate_thought_content(
-                input_text, consciousness_result, reasoning_mode
-            )
+            thought_content = self._generate_thought_content(input_text, consciousness_result, reasoning_mode)
 
             # Calcular métricas
             complexity = self._calculate_thought_complexity(thought_content)
@@ -1372,9 +1288,7 @@ class UnifiedConsciousnessMemorySystem:
             return {
                 "generated": True,
                 "thought_id": thought_id,
-                "reasoning_mode": reasoning_mode.value
-                if isinstance(reasoning_mode, Enum)
-                else reasoning_mode,
+                "reasoning_mode": reasoning_mode.value if isinstance(reasoning_mode, Enum) else reasoning_mode,
                 "complexity": complexity,
                 "creativity_score": creativity_score,
             }
@@ -1383,9 +1297,7 @@ class UnifiedConsciousnessMemorySystem:
             logger.error(f"Error generando pensamiento: {e}")
             return {"generated": False, "error": str(e)}
 
-    def _determine_reasoning_mode(
-        self, input_text: str, consciousness_result: Dict[str, Any]
-    ) -> ReasoningMode:
+    def _determine_reasoning_mode(self, input_text: str, consciousness_result: Dict[str, Any]) -> ReasoningMode:
         """Determinar modo de razonamiento"""
         if consciousness_result.get("processing_level") in ["reflective", "creative"]:
             return ReasoningMode.CREATIVE
@@ -1418,9 +1330,7 @@ class UnifiedConsciousnessMemorySystem:
     def _calculate_creativity_score(self, thought_content: str) -> float:
         """Calcular score de creatividad"""
         creative_indicators = ["💡", "🔍", "💭", "creativo", "innovador", "original"]
-        indicator_count = sum(
-            1 for indicator in creative_indicators if indicator in thought_content
-        )
+        indicator_count = sum(1 for indicator in creative_indicators if indicator in thought_content)
         return min(indicator_count * 0.2, 1.0)
 
     def _calculate_emotional_impact(self, thought_content: str) -> float:
@@ -1429,18 +1339,14 @@ class UnifiedConsciousnessMemorySystem:
         emotional_count = sum(1 for word in emotional_words if word in thought_content)
         return min(emotional_count * 0.15, 1.0)
 
-    async def _contextual_reasoning(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    async def _contextual_reasoning(self, input_text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Razonamiento contextual"""
         try:
             # Buscar memorias relevantes
             relevant_memories = await self._find_relevant_memories(input_text, context)
 
             # Aplicar razonamiento contextual
-            reasoning_result = self._apply_contextual_reasoning(
-                input_text, relevant_memories, context
-            )
+            reasoning_result = self._apply_contextual_reasoning(input_text, relevant_memories, context)
 
             # Generar conclusiones
             conclusions = self._generate_conclusions(reasoning_result, relevant_memories)
@@ -1518,11 +1424,7 @@ class UnifiedConsciousnessMemorySystem:
         # Agrupar por tipo de memoria
         memory_types = {}
         for memory in memories:
-            key = (
-                memory.memory_type.value
-                if isinstance(memory.memory_type, Enum)
-                else memory.memory_type
-            )
+            key = memory.memory_type.value if isinstance(memory.memory_type, Enum) else memory.memory_type
             if key not in memory_types:
                 memory_types[key] = []
             memory_types[key].append(memory)
@@ -1533,8 +1435,7 @@ class UnifiedConsciousnessMemorySystem:
                 pattern = {
                     "type": memory_type,
                     "count": len(type_memories),
-                    "avg_importance": sum(m.importance_score for m in type_memories)
-                    / len(type_memories),
+                    "avg_importance": sum(m.importance_score for m in type_memories) / len(type_memories),
                     "emotional_trend": self._calculate_emotional_trend(type_memories),
                 }
                 patterns.append(pattern)
@@ -1566,17 +1467,13 @@ class UnifiedConsciousnessMemorySystem:
         # Analizar el patrón más fuerte
         strongest_pattern = max(patterns, key=lambda x: x["count"])
 
-        reasoning = (
-            f"Basado en {strongest_pattern['count']} memorias de tipo {strongest_pattern['type']}, "
-        )
+        reasoning = f"Basado en {strongest_pattern['count']} memorias de tipo {strongest_pattern['type']}, "
         reasoning += f"con tendencia emocional {strongest_pattern['emotional_trend']} "
         reasoning += f"y importancia promedio {strongest_pattern['avg_importance']:.2f}"
 
         return reasoning
 
-    def _generate_conclusions(
-        self, reasoning_result: Dict[str, Any], relevant_memories: List[MemoryItem]
-    ) -> List[str]:
+    def _generate_conclusions(self, reasoning_result: Dict[str, Any], relevant_memories: List[MemoryItem]) -> List[str]:
         """Generar conclusiones del razonamiento"""
         conclusions = []
 
@@ -1584,9 +1481,7 @@ class UnifiedConsciousnessMemorySystem:
             conclusions.append(reasoning_result["reasoning"])
 
         if relevant_memories:
-            avg_importance = sum(m.importance_score for m in relevant_memories) / len(
-                relevant_memories
-            )
+            avg_importance = sum(m.importance_score for m in relevant_memories) / len(relevant_memories)
             conclusions.append(f"Relevancia promedio: {avg_importance:.2f}")
 
         return conclusions
@@ -1698,9 +1593,7 @@ class UnifiedConsciousnessMemorySystem:
 
         return sum(attention_factors.values())
 
-    def _determine_memory_type(
-        self, content: str, consciousness_result: Dict[str, Any]
-    ) -> MemoryType:
+    def _determine_memory_type(self, content: str, consciousness_result: Dict[str, Any]) -> MemoryType:
         """Determinar tipo de memoria"""
         if consciousness_result.get("emotional_analysis", {}).get("intensity", 0) > 0.5:
             return MemoryType.EMOTIONAL
@@ -1715,10 +1608,7 @@ class UnifiedConsciousnessMemorySystem:
         """Calcular importancia del contenido"""
         importance_factors = {
             "attention_score": consciousness_result.get("attention_score", 0) * 0.4,
-            "emotional_intensity": consciousness_result.get("emotional_analysis", {}).get(
-                "intensity", 0
-            )
-            * 0.3,
+            "emotional_intensity": consciousness_result.get("emotional_analysis", {}).get("intensity", 0) * 0.3,
             "complexity": len(content) / 200 * 0.2,
             "processing_level": {
                 "basic": 0.2,
@@ -1738,9 +1628,7 @@ class UnifiedConsciousnessMemorySystem:
 
         # Calcular valencia (positiva vs negativa)
         positive_emotions = emotions.get("joy", 0) + emotions.get("enthusiasm", 0)
-        negative_emotions = (
-            emotions.get("sadness", 0) + emotions.get("anger", 0) + emotions.get("fear", 0)
-        )
+        negative_emotions = emotions.get("sadness", 0) + emotions.get("anger", 0) + emotions.get("fear", 0)
 
         if positive_emotions == 0 and negative_emotions == 0:
             return 0.5  # Neutral
@@ -1753,9 +1641,7 @@ class UnifiedConsciousnessMemorySystem:
         temporal_associations = await self._create_temporal_associations(memory_item)
 
         # Consolidar memoria
-        consolidation_strength = (
-            self.config.episodic_memory_retention * memory_item.importance_score
-        )
+        consolidation_strength = self.config.episodic_memory_retention * memory_item.importance_score
 
         return {
             "temporal_associations": temporal_associations,
@@ -1887,14 +1773,10 @@ class UnifiedConsciousnessMemorySystem:
 
         return patterns
 
-    async def _update_consciousness_state(
-        self, input_text: str, context: Optional[Dict[str, Any]] = None
-    ):
+    async def _update_consciousness_state(self, input_text: str, context: Optional[Dict[str, Any]] = None):
         """Actualizar estado de conciencia"""
         # Calcular factores de conciencia
-        attention_factor = self._calculate_attention_score(
-            input_text, self._analyze_semantics(input_text)
-        )
+        attention_factor = self._calculate_attention_score(input_text, self._analyze_semantics(input_text))
         memory_factor = len(self.working_memory) / self.config.working_memory_size
         reasoning_factor = len(self.thoughts) / 100  # Factor basado en actividad de pensamiento
         emotion_factor = self._calculate_emotional_balance()
@@ -1945,7 +1827,7 @@ class UnifiedConsciousnessMemorySystem:
 
             cursor.execute(
                 """
-                INSERT INTO memories 
+                INSERT INTO memories
                 (id, content, memory_type, consciousness_level, emotional_valence, importance_score,
                  created_at, last_accessed, access_count, associations, metadata, embedding)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -1966,11 +1848,7 @@ class UnifiedConsciousnessMemorySystem:
                     memory_item.access_count,
                     json.dumps(memory_item.associations),
                     json.dumps(memory_item.metadata),
-                    (
-                        memory_item.embedding.tobytes()
-                        if memory_item.embedding is not None
-                        else None
-                    ),
+                    (memory_item.embedding.tobytes() if memory_item.embedding is not None else None),
                 ),
             )
 
@@ -1987,7 +1865,7 @@ class UnifiedConsciousnessMemorySystem:
 
             cursor.execute(
                 """
-                INSERT INTO thoughts 
+                INSERT INTO thoughts
                 (id, content, reasoning_mode, consciousness_level, context, timestamp,
                  duration, complexity, creativity_score, emotional_impact)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -2023,7 +1901,7 @@ class UnifiedConsciousnessMemorySystem:
 
             cursor.execute(
                 """
-                INSERT INTO consciousness_states 
+                INSERT INTO consciousness_states
                 (level, awareness_score, attention_focus, emotional_state, cognitive_load,
                  creativity_level, timestamp, metadata)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -2081,12 +1959,8 @@ class UnifiedConsciousnessMemorySystem:
                     "total_states": total_states,
                 },
                 "performance": {
-                    "memory_types": list(
-                        set(mem.memory_type.value for mem in self.memories.values())
-                    ),
-                    "reasoning_modes": list(
-                        set(thought.reasoning_mode.value for thought in self.thoughts)
-                    ),
+                    "memory_types": list(set(mem.memory_type.value for mem in self.memories.values())),
+                    "reasoning_modes": list(set(thought.reasoning_mode.value for thought in self.thoughts)),
                 },
             }
 

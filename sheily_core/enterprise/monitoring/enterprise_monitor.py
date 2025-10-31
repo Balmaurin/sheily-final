@@ -104,9 +104,7 @@ class EnterpriseMonitoringSystem:
             EnterpriseAlertRule("RESPONSE_TIME_SLOW", "response_time_ms", 200.0, ">", "high"),
             EnterpriseAlertRule("ERROR_RATE_HIGH", "error_rate_percent", 1.0, ">", "high"),
             EnterpriseAlertRule("DISK_FULL_WARNING", "disk_usage_percent", 80.0, ">", "medium"),
-            EnterpriseAlertRule(
-                "THROUGHPUT_LOW", "throughput_requests_per_sec", 1.0, "<", "medium"
-            ),
+            EnterpriseAlertRule("THROUGHPUT_LOW", "throughput_requests_per_sec", 1.0, "<", "medium"),
             EnterpriseAlertRule("GPU_OVERLOAD", "gpu_utilization_percent", 95.0, ">", "high"),
             EnterpriseAlertRule("CONNECTIONS_EXCESSIVE", "active_connections", 1000, ">", "medium"),
         ]
@@ -118,9 +116,7 @@ class EnterpriseMonitoringSystem:
             return
 
         self.monitoring_active = True
-        self.monitoring_thread = threading.Thread(
-            target=self._enterprise_monitoring_loop, daemon=True
-        )
+        self.monitoring_thread = threading.Thread(target=self._enterprise_monitoring_loop, daemon=True)
         self.monitoring_thread.start()
         self.logger.info("🏢 Monitoreo empresarial 24/7 iniciado")
 
@@ -283,9 +279,7 @@ class EnterpriseMonitoringSystem:
             if alert_triggered:
                 self._trigger_enterprise_alert(rule, metrics)
 
-    def _trigger_enterprise_alert(
-        self, rule: EnterpriseAlertRule, metrics: EnterpriseHealthMetrics
-    ):
+    def _trigger_enterprise_alert(self, rule: EnterpriseAlertRule, metrics: EnterpriseHealthMetrics):
         """Activar alerta empresarial"""
         alert_message = (
             f"🚨 ALERTA EMPRESARIAL {rule.severity.upper()}\n"
@@ -329,8 +323,7 @@ class EnterpriseMonitoringSystem:
             return
 
         success_rate = (
-            self.business_metrics["successful_requests"]
-            / self.business_metrics["total_requests_served"]
+            self.business_metrics["successful_requests"] / self.business_metrics["total_requests_served"]
         ) * 100
 
         self.business_metrics["sla_compliance_percentage"] = success_rate
@@ -339,20 +332,14 @@ class EnterpriseMonitoringSystem:
         response_time_score = max(0, 100 - (self.business_metrics["average_response_time"] / 2))
         availability_score = min(100, success_rate)
 
-        self.business_metrics["enterprise_efficiency_score"] = (
-            response_time_score * 0.4 + availability_score * 0.6
-        )
+        self.business_metrics["enterprise_efficiency_score"] = response_time_score * 0.4 + availability_score * 0.6
 
     def _cleanup_enterprise_metrics(self):
         """Limpiar métricas antiguas empresariales"""
-        cutoff_time = datetime.now() - timedelta(
-            days=self.enterprise_config["monitoring_retention_days"]
-        )
+        cutoff_time = datetime.now() - timedelta(days=self.enterprise_config["monitoring_retention_days"])
 
         self.metrics_history = [
-            metric
-            for metric in self.metrics_history
-            if datetime.fromisoformat(metric.timestamp) > cutoff_time
+            metric for metric in self.metrics_history if datetime.fromisoformat(metric.timestamp) > cutoff_time
         ]
 
     def get_enterprise_health_report(self) -> Dict[str, Any]:
@@ -390,9 +377,7 @@ class EnterpriseMonitoringSystem:
             return 100.0
 
         # Calcular basado en estado de las métricas
-        healthy_count = sum(
-            1 for metric in self.metrics_history if metric.enterprise_status == "healthy"
-        )
+        healthy_count = sum(1 for metric in self.metrics_history if metric.enterprise_status == "healthy")
 
         return (healthy_count / len(self.metrics_history)) * 100
 
@@ -408,8 +393,7 @@ class EnterpriseMonitoringSystem:
                 "hostname": socket.gethostname(),
                 "platform": os.sys.platform,
                 "python_version": os.sys.version,
-                "monitoring_uptime": time.time()
-                - (self.start_time if hasattr(self, "start_time") else time.time()),
+                "monitoring_uptime": time.time() - (self.start_time if hasattr(self, "start_time") else time.time()),
             },
         }
 

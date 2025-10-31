@@ -94,9 +94,7 @@ class UltraFastFileSearcher:
 
             # Procesar lotes en paralelo
             loop = asyncio.get_event_loop()
-            tasks = [
-                loop.run_in_executor(executor, self._process_batch, batch) for batch in batches
-            ]
+            tasks = [loop.run_in_executor(executor, self._process_batch, batch) for batch in batches]
 
             batch_results = await asyncio.gather(*tasks)
 
@@ -350,9 +348,7 @@ class UltraFastFileSearcher:
             key = result.file_path
             if key in all_results:
                 # Combinar puntuaciones
-                all_results[key].relevance_score = max(
-                    all_results[key].relevance_score, result.relevance_score
-                )
+                all_results[key].relevance_score = max(all_results[key].relevance_score, result.relevance_score)
             else:
                 all_results[key] = result
 
@@ -369,9 +365,7 @@ class UltraFastFileSearcher:
         for result in final_results:
             result.response_time = response_time
 
-        logger.info(
-            f"🔍 Búsqueda '{query}' completada en {response_time:.3f}s - {len(final_results)} resultados"
-        )
+        logger.info(f"🔍 Búsqueda '{query}' completada en {response_time:.3f}s - {len(final_results)} resultados")
 
         return final_results
 
@@ -476,9 +470,7 @@ class UltraFastFileSearcher:
 
         # Factor 2: Frecuencia de palabras clave
         file_word_count = sum(
-            self.index.word_frequency.get(word, 0)
-            for word in query_words
-            if word in self.index.word_frequency
+            self.index.word_frequency.get(word, 0) for word in query_words if word in self.index.word_frequency
         )
 
         if file_word_count > 0:
@@ -526,11 +518,7 @@ class UltraFastFileSearcher:
                     relevant_lines.append(context)
 
             if relevant_lines:
-                return (
-                    relevant_lines[0][:200] + "..."
-                    if len(relevant_lines[0]) > 200
-                    else relevant_lines[0]
-                )
+                return relevant_lines[0][:200] + "..." if len(relevant_lines[0]) > 200 else relevant_lines[0]
 
         except Exception as e:
             logger.error(f"Error extrayendo snippet de {file_path}: {e}")
@@ -623,9 +611,7 @@ class SEILiCoreOptimizer:
             },
         }
 
-    async def _process_context_parallel(
-        self, search_results: List[SearchResult], query: str
-    ) -> Dict[str, Any]:
+    async def _process_context_parallel(self, search_results: List[SearchResult], query: str) -> Dict[str, Any]:
         """Procesar contexto en paralelo para máxima velocidad"""
 
         async def process_single_result(result: SearchResult) -> Dict[str, Any]:
@@ -661,22 +647,16 @@ class SEILiCoreOptimizer:
 
         # Construir respuesta basada en fuentes relevantes
         response_parts = []
-        response_parts.append(
-            f"Encontré {context['relevant_sources']} fuentes relevantes para tu consulta."
-        )
+        response_parts.append(f"Encontré {context['relevant_sources']} fuentes relevantes para tu consulta.")
 
         # Incluir snippets de las fuentes más relevantes
         for source in context["top_sources"][:3]:
             if source["snippet"]:
-                response_parts.append(
-                    f"📄 {Path(source['file']).name}: {source['snippet'][:100]}..."
-                )
+                response_parts.append(f"📄 {Path(source['file']).name}: {source['snippet'][:100]}...")
 
         # Añadir recomendaciones basadas en el contexto
         if any("config" in source["file"].lower() for source in context["top_sources"]):
-            response_parts.append(
-                "💡 Sugiero revisar los archivos de configuración para ajustes específicos."
-            )
+            response_parts.append("💡 Sugiero revisar los archivos de configuración para ajustes específicos.")
 
         if any(
             "error" in source["file"].lower() or "exception" in source["file"].lower()
@@ -700,9 +680,7 @@ class SEILiCoreOptimizer:
 
         # Limpiar cache antiguo (mantener últimos 100 elementos)
         if len(self.response_cache) > 100:
-            oldest_keys = sorted(
-                self.response_cache.keys(), key=lambda k: self.response_cache[k]["timestamp"]
-            )[:10]
+            oldest_keys = sorted(self.response_cache.keys(), key=lambda k: self.response_cache[k]["timestamp"])[:10]
             for key in oldest_keys:
                 del self.response_cache[key]
 
@@ -719,9 +697,7 @@ class SEILiCoreOptimizer:
         current_avg = self.performance_metrics["avg_response_time"]
         total = self.performance_metrics["total_responses"]
 
-        self.performance_metrics["avg_response_time"] = (
-            current_avg * (total - 1) + response_time
-        ) / total
+        self.performance_metrics["avg_response_time"] = (current_avg * (total - 1) + response_time) / total
 
         # Actualizar tasa de aciertos de caché
         cache_hits = sum(1 for v in self.response_cache.values() if v.get("hit", False))

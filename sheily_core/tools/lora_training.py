@@ -200,15 +200,12 @@ def create_lora_training_config(
         model_name=model_name,
         model_path=f"models/{model_name}",
         gguf_model_path="models/gguf/llama-3.2.gguf",
-        branches_to_train=branches_to_train
-        or ["general", "anthropology", "philosophy", "programming"],
+        branches_to_train=branches_to_train or ["general", "anthropology", "philosophy", "programming"],
         languages=languages or ["EN", "ES"],
         lora_rank=lora_rank,
         lora_alpha=lora_alpha,
         lora_dropout=kwargs.get("lora_dropout", 0.05),
-        target_modules=kwargs.get(
-            "target_modules", ["qkv_proj", "o_proj", "gate_up_proj", "down_proj"]
-        ),
+        target_modules=kwargs.get("target_modules", ["qkv_proj", "o_proj", "gate_up_proj", "down_proj"]),
         batch_size=kwargs.get("batch_size", 16),
         learning_rate=kwargs.get("learning_rate", 1e-4),
         num_epochs=kwargs.get("num_epochs", 3),
@@ -275,14 +272,10 @@ def update_lora_adapter_state(
         adapter_id=current_state.adapter_id,
         branch_name=current_state.branch_name,
         language=current_state.language,
-        training_status=training_status
-        if training_status is not None
-        else current_state.training_status,
+        training_status=training_status if training_status is not None else current_state.training_status,
         current_epoch=current_epoch if current_epoch is not None else current_state.current_epoch,
         total_epochs=current_state.total_epochs,
-        best_loss=min(
-            best_loss if best_loss is not None else current_state.best_loss, current_state.best_loss
-        ),
+        best_loss=min(best_loss if best_loss is not None else current_state.best_loss, current_state.best_loss),
         current_loss=current_loss if current_loss is not None else current_state.current_loss,
         training_time=training_time if training_time is not None else current_state.training_time,
         memory_usage=memory_usage if memory_usage is not None else current_state.memory_usage,
@@ -337,9 +330,7 @@ def validate_lora_training_config(config: LoRATrainingConfig) -> Result[LoRATrai
 # ============================================================================
 
 
-def create_production_lora_trainer() -> (
-    Callable[[LoRATrainingConfig], Result[LoRATrainingSession, str]]
-):
+def create_production_lora_trainer() -> Callable[[LoRATrainingConfig], Result[LoRATrainingSession, str]]:
     """Create production LoRA trainer - Factory function"""
 
     def trainer(config: LoRATrainingConfig) -> Result[LoRATrainingSession, str]:
@@ -416,21 +407,13 @@ def create_production_lora_trainer() -> (
                         training_results.append((branch, language, "success"))
                     else:
                         training_results.append((branch, language, "failed"))
-                        return Err(
-                            f"Training failed for {branch}_{language}: {branch_result.unwrap_err()}"
-                        )
+                        return Err(f"Training failed for {branch}_{language}: {branch_result.unwrap_err()}")
 
             # Calculate final metrics
             completed_branches = [
-                f"{branch}_{lang}"
-                for branch, lang, status in training_results
-                if status == "success"
+                f"{branch}_{lang}" for branch, lang, status in training_results if status == "success"
             ]
-            failed_branches = [
-                f"{branch}_{lang}"
-                for branch, lang, status in training_results
-                if status == "failed"
-            ]
+            failed_branches = [f"{branch}_{lang}" for branch, lang, status in training_results if status == "failed"]
 
             final_session = LoRATrainingSession(
                 session_id=session.session_id,
@@ -569,18 +552,16 @@ def execute_branch_lora_training(
                 "==========================================\n"
             )
             print("\n⚠️  WARNING: Using improved simulation mode (realistic metrics)!\n")
-            
+
             # Usar improved CPU trainer en lugar de mock básico
             from sheily_core.tools.improved_cpu_training import create_improved_cpu_trainer
-            
+
             improved_trainer = create_improved_cpu_trainer(
-                num_epochs=config.num_epochs,
-                learning_rate=config.learning_rate,
-                batch_size=config.batch_size
+                num_epochs=config.num_epochs, learning_rate=config.learning_rate, batch_size=config.batch_size
             )
-            
+
             training_result = improved_trainer.train()
-            
+
             # Convertir resultado a formato adapter_state
             updated_state = LoRAAdapterState(
                 adapter_name=adapter_state.adapter_name,
@@ -597,8 +578,8 @@ def execute_branch_lora_training(
                     **adapter_state.metadata,
                     "simulation_mode": "improved",
                     "simulation_realistic": True,
-                    "quality_score": training_result.get("metrics", [{}])[-1].get("loss", 1.0) < 1.0
-                }
+                    "quality_score": training_result.get("metrics", [{}])[-1].get("loss", 1.0) < 1.0,
+                },
             )
 
         return Ok(updated_state)
@@ -632,8 +613,7 @@ def _simulate_lora_training(
             training_time=updated_state.training_time + random.uniform(55, 65),
             memory_usage=int((1024 + random.randint(-50, 50)) * 1024 * 1024),
             gpu_memory_usage=gpu_memory,
-            train_samples_seen=updated_state.train_samples_seen
-            + config.batch_size * random.randint(95, 105),
+            train_samples_seen=updated_state.train_samples_seen + config.batch_size * random.randint(95, 105),
             convergence_rate=min(0.95, updated_state.convergence_rate + 0.05),
             metadata={
                 **updated_state.metadata,
@@ -663,9 +643,7 @@ def _simulate_lora_training(
     return Ok(final_state)
 
 
-def _load_branch_dataset(
-    config: LoRATrainingConfig, adapter_state: LoRAAdapterState
-) -> Result[Any, str]:
+def _load_branch_dataset(config: LoRATrainingConfig, adapter_state: LoRAAdapterState) -> Result[Any, str]:
     """Load dataset for specific branch - Pure functional implementation"""
 
     def load_from_corpus() -> Result[Any, str]:
@@ -701,9 +679,7 @@ def _load_branch_dataset(
                         if all_texts:
                             from datasets import Dataset
 
-                            return Ok(
-                                Dataset.from_dict({"text": all_texts[: config.max_train_samples]})
-                            )
+                            return Ok(Dataset.from_dict({"text": all_texts[: config.max_train_samples]}))
 
             return Err("No corpus data found")
 
@@ -722,16 +698,10 @@ def _load_branch_dataset(
             else:
                 dataset_name = "oscar"  # Multi-language corpus
 
-            dataset = load_dataset(
-                dataset_name, split=f"train[:{config.max_train_samples}]", trust_remote_code=True
-            )
+            dataset = load_dataset(dataset_name, split=f"train[:{config.max_train_samples}]", trust_remote_code=True)
 
             # Filter for language if needed
-            if (
-                adapter_state.language == "ES"
-                and hasattr(dataset, "column_names")
-                and "meta" in dataset.column_names
-            ):
+            if adapter_state.language == "ES" and hasattr(dataset, "column_names") and "meta" in dataset.column_names:
                 # Filter Spanish content
                 def is_spanish(example):
                     return any(lang in str(example.get("meta", "")) for lang in ["es", "spanish"])
@@ -771,9 +741,7 @@ def _load_branch_dataset(
             templates = domain_templates.get(adapter_state.branch_name, ["General domain content"])
             synthetic_texts = []
 
-            for i in range(
-                min(config.max_train_samples // len(templates) + 1, 100)
-            ):  # Limit for memory
+            for i in range(min(config.max_train_samples // len(templates) + 1, 100)):  # Limit for memory
                 for template in templates:
                     synthetic_texts.append(
                         f"{template}. Sample {i} for {adapter_state.language} language model training in {adapter_state.branch_name} domain."
@@ -800,9 +768,7 @@ def _load_branch_dataset(
     return Err("All dataset loading methods failed")
 
 
-def _create_trainer(
-    model: Any, tokenizer: Any, dataset: Any, training_args: Any, config: LoRATrainingConfig
-) -> Any:
+def _create_trainer(model: Any, tokenizer: Any, dataset: Any, training_args: Any, config: LoRATrainingConfig) -> Any:
     """Create HuggingFace trainer - Production implementation"""
     try:
         from transformers import DataCollatorForLanguageModeling, Trainer
@@ -849,13 +815,14 @@ def _create_trainer(
 def _create_mock_trainer(model: Any, config: LoRATrainingConfig) -> Any:
     """
     Create mock trainer for testing - Pure function
-    
+
     ⚠️ WARNING: This is a MOCK trainer that does NOT train the model!
     Used only for testing when real training is not available.
     """
     import logging
+
     logger = logging.getLogger(__name__)
-    
+
     logger.warning("⚠️  Creating MOCK trainer - no real training will occur")
 
     class MockTrainer:
@@ -871,14 +838,13 @@ def _create_mock_trainer(model: Any, config: LoRATrainingConfig) -> Any:
             ⚠️ WARNING: This does NOT actually train the model!
             """
             import time
+
             logger.warning("⚠️  STARTING MOCK TRAINING - no actual training happening!")
 
             for epoch in range(config.num_epochs):
                 # Simulate training step (NO REAL TRAINING)
                 time.sleep(0.1)  # Simulate training time
-                self.training_logs.append(
-                    {"epoch": epoch + 1, "loss": 0.5 - (epoch * 0.1), "timestamp": time.time()}
-                )
+                self.training_logs.append({"epoch": epoch + 1, "loss": 0.5 - (epoch * 0.1), "timestamp": time.time()})
 
         def save_model(self, path):
             """Mock model saving"""
@@ -1047,9 +1013,7 @@ def create_gguf_lora_integration() -> Callable[[LoRATrainingConfig], Result[Dict
 # ============================================================================
 
 
-def create_multibranch_lora_trainer() -> (
-    Callable[[LoRATrainingConfig], Result[LoRATrainingSession, str]]
-):
+def create_multibranch_lora_trainer() -> Callable[[LoRATrainingConfig], Result[LoRATrainingSession, str]]:
     """Create multi-branch LoRA trainer - Factory function"""
 
     def trainer(config: LoRATrainingConfig) -> Result[LoRATrainingSession, str]:
@@ -1162,9 +1126,7 @@ def create_multibranch_lora_trainer() -> (
                             "failure_reason": training_result.unwrap_err(),
                         },
                     )
-                    return Err(
-                        f"Multi-branch training failed for {adapter_id}: {training_result.unwrap_err()}"
-                    )
+                    return Err(f"Multi-branch training failed for {adapter_id}: {training_result.unwrap_err()}")
 
             # Training completed successfully
             final_session = LoRATrainingSession(
@@ -1264,8 +1226,7 @@ def process_lora_training_request(request_data: Dict[str, Any]) -> Result[Dict[s
                 "session_id": session.session_id,
                 "status": session.current_status,
                 "branches_trained": len(session.branches_completed),
-                "total_branches": len(session.config.branches_to_train)
-                * len(session.config.languages),
+                "total_branches": len(session.config.branches_to_train) * len(session.config.languages),
                 "overall_progress": session.overall_progress,
                 "training_time": session.total_training_time,
                 "adapters_created": list(session.adapter_states.keys()),
@@ -1367,9 +1328,7 @@ def create_docker_compose_config() -> Dict[str, Any]:
                 },
                 "deploy": {
                     "resources": {
-                        "reservations": {
-                            "devices": [{"driver": "nvidia", "count": 1, "capabilities": ["gpu"]}]
-                        }
+                        "reservations": {"devices": [{"driver": "nvidia", "count": 1, "capabilities": ["gpu"]}]}
                     }
                 },
                 "healthcheck": {

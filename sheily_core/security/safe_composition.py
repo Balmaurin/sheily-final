@@ -75,9 +75,7 @@ class SafeOperator(Generic[T, U]):
 
     def __init__(self, func: Callable[[T], U], error_context: ErrorContext = None):
         self.func = func
-        self.error_context = error_context or ErrorContext(
-            component="safe_operator", operation=func.__name__
-        )
+        self.error_context = error_context or ErrorContext(component="safe_operator", operation=func.__name__)
         self.logger = get_logger("safe_operator")
 
     def __call__(self, value: T) -> Result[U, SheilyError]:
@@ -226,9 +224,7 @@ class SafePipeline(Generic[T]):
 
         return SafePipeline(self._current_value)  # Type: ignore
 
-    def handle_error(
-        self, handler: Callable[[SheilyError], Result[T, SheilyError]]
-    ) -> "SafePipeline[T]":
+    def handle_error(self, handler: Callable[[SheilyError], Result[T, SheilyError]]) -> "SafePipeline[T]":
         """Agregar manejador de errores"""
         self._error_handlers.append(handler)
 
@@ -458,9 +454,7 @@ def safe_bind(
 def retry_on_failure(max_attempts: int = 3, delay: float = 1.0):
     """Decorador para reintentar operaciones en caso de fallo"""
 
-    def decorator(
-        func: Callable[[T], Result[U, SheilyError]]
-    ) -> Callable[[T], Result[U, SheilyError]]:
+    def decorator(func: Callable[[T], Result[U, SheilyError]]) -> Callable[[T], Result[U, SheilyError]]:
         @functools.wraps(func)
         def wrapper(value: T) -> Result[U, SheilyError]:
             last_error = None

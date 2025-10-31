@@ -45,9 +45,7 @@ class TextAnalyzer:
 
         return analysis_result
 
-    def analyze_similarity(
-        self, text1: str, text2: str, similarity_types: List[str] = None
-    ) -> Dict:
+    def analyze_similarity(self, text1: str, text2: str, similarity_types: List[str] = None) -> Dict:
         """Análisis de similitud entre textos"""
         if similarity_types is None:
             similarity_types = ["cosine", "jaccard", "overlap"]
@@ -61,28 +59,18 @@ class TextAnalyzer:
         }
 
         if "cosine" in similarity_types:
-            similarity_results["similarities"]["cosine"] = self._calculate_cosine_similarity(
-                text1, text2
-            )
+            similarity_results["similarities"]["cosine"] = self._calculate_cosine_similarity(text1, text2)
 
         if "jaccard" in similarity_types:
-            similarity_results["similarities"]["jaccard"] = self._calculate_jaccard_similarity(
-                text1, text2
-            )
+            similarity_results["similarities"]["jaccard"] = self._calculate_jaccard_similarity(text1, text2)
 
         if "overlap" in similarity_types:
-            similarity_results["similarities"]["overlap"] = self._calculate_overlap_similarity(
-                text1, text2
-            )
+            similarity_results["similarities"]["overlap"] = self._calculate_overlap_similarity(text1, text2)
 
         if "semantic" in similarity_types and self.rag_pipeline:
-            similarity_results["similarities"]["semantic"] = self._calculate_semantic_similarity(
-                text1, text2
-            )
+            similarity_results["similarities"]["semantic"] = self._calculate_semantic_similarity(text1, text2)
 
-        avg_similarity = sum(similarity_results["similarities"].values()) / len(
-            similarity_results["similarities"]
-        )
+        avg_similarity = sum(similarity_results["similarities"].values()) / len(similarity_results["similarities"])
         similarity_results["average_similarity"] = avg_similarity
         similarity_results["interpretation"] = self._interpret_similarity(avg_similarity)
 
@@ -100,13 +88,9 @@ class TextAnalyzer:
             "sentence_count": len([s for s in sentences if s.strip()]),
             "paragraph_count": len([p for p in paragraphs if p.strip()]),
             "avg_word_length": sum(len(word) for word in words) / len(words) if words else 0,
-            "avg_sentence_length": len(words) / len([s for s in sentences if s.strip()])
-            if sentences
-            else 0,
+            "avg_sentence_length": len(words) / len([s for s in sentences if s.strip()]) if sentences else 0,
             "unique_words": len(set(word.lower() for word in words)),
-            "lexical_diversity": len(set(word.lower() for word in words)) / len(words)
-            if words
-            else 0,
+            "lexical_diversity": len(set(word.lower() for word in words)) / len(words) if words else 0,
         }
 
     def _analyze_text_linguistic(self, text: str) -> Dict:
@@ -217,9 +201,7 @@ class TextAnalyzer:
             score = sum(1 for word in words if word in keywords)
             topic_scores[topic] = score / len(words) if words else 0
 
-        main_topic = (
-            max(topic_scores.keys(), key=lambda k: topic_scores[k]) if topic_scores else "general"
-        )
+        main_topic = max(topic_scores.keys(), key=lambda k: topic_scores[k]) if topic_scores else "general"
 
         return {
             "topic_scores": topic_scores,
@@ -265,9 +247,7 @@ class TextAnalyzer:
     def _extract_entities(self, text: str) -> Dict:
         """Extracción básica de entidades"""
         email_pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
-        url_pattern = (
-            r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
-        )
+        url_pattern = r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
         number_pattern = r"\b\d+(?:\.\d+)?\b"
         date_pattern = r"\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b"
 

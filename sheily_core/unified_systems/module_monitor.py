@@ -107,21 +107,15 @@ class ModulePerformanceMetrics:
         return {
             "module_name": self.module_name,
             "total_calls": self.total_calls,
-            "avg_processing_time": (
-                self.total_processing_time / self.total_calls if self.total_calls > 0 else 0
-            ),
+            "avg_processing_time": (self.total_processing_time / self.total_calls if self.total_calls > 0 else 0),
             "max_processing_time": self.max_processing_time,
             "min_processing_time": self.min_processing_time,
             "error_count": self.error_count,
             "last_error": self.last_error,
             "peak_memory_usage": self.peak_memory_usage,
-            "avg_memory_usage": (
-                self.total_memory_usage / self.total_calls if self.total_calls > 0 else 0
-            ),
+            "avg_memory_usage": (self.total_memory_usage / self.total_calls if self.total_calls > 0 else 0),
             "avg_cpu_usage": (
-                sum(self.cpu_usage_history) / len(self.cpu_usage_history)
-                if self.cpu_usage_history
-                else 0
+                sum(self.cpu_usage_history) / len(self.cpu_usage_history) if self.cpu_usage_history else 0
             ),
         }
 
@@ -318,13 +312,9 @@ class ModuleMonitor:
             return self.module_metrics[module_name].get_performance_summary()
 
         # Informe de todos los módulos
-        return {
-            name: metrics.get_performance_summary() for name, metrics in self.module_metrics.items()
-        }
+        return {name: metrics.get_performance_summary() for name, metrics in self.module_metrics.items()}
 
-    def export_module_logs(
-        self, module_name: str, log_type: str = "calls", days: int = 1
-    ) -> List[Dict[str, Any]]:
+    def export_module_logs(self, module_name: str, log_type: str = "calls", days: int = 1) -> List[Dict[str, Any]]:
         """
         Exportar logs de un módulo
 

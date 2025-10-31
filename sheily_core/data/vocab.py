@@ -73,15 +73,11 @@ class SpecialVocab:
                 logger.info(f"Adding {len(self.merges)} merge(s).")
             gw.add_token_merges(self.merges)
         elif self.load_merges:
-            logger.warning(
-                "Adding merges requested but no merges found, output may be non-functional."
-            )
+            logger.warning("Adding merges requested but no merges found, output may be non-functional.")
         for typ, tokid in self.special_token_ids.items():
             id_handler: Callable[[int], None] | None = getattr(gw, f"add_{typ}_token_id", None)
             if id_handler is None:
-                logger.warning(
-                    f"No handler for special token type {typ} with id {tokid} - skipping"
-                )
+                logger.warning(f"No handler for special token type {typ} with id {tokid} - skipping")
                 continue
             if not quiet:
                 logger.info(f"Setting special token type {typ} to {tokid}")
@@ -124,9 +120,7 @@ class SpecialVocab:
                     continue
                 parts = line.split(None, 3)
                 if len(parts) != 2:
-                    logger.warning(
-                        f"{merges_file.name}: Line {line_num}: Entry malformed, ignoring"
-                    )
+                    logger.warning(f"{merges_file.name}: Line {line_num}: Entry malformed, ignoring")
                     continue
                 merges.append(f"{parts[0]} {parts[1]}")
         self.merges = merges
@@ -142,9 +136,7 @@ class SpecialVocab:
                 return
             self.special_token_ids[typ] = tid
             return
-        logger.warning(
-            f"Special token type {typ}, id {tid} out of range, must be under {self.n_vocab} - skipping"
-        )
+        logger.warning(f"Special token type {typ}, id {tid} out of range, must be under {self.n_vocab} - skipping")
 
     def _try_load_from_tokenizer_json(self, path: Path) -> bool:
         tokenizer = None
@@ -157,18 +149,12 @@ class SpecialVocab:
                 if isinstance(merges, list) and merges:
                     if isinstance(merges[0], str):
                         self.merges = merges
-                    elif (
-                        isinstance(merges[0], list)
-                        and len(merges[0]) == 2
-                        and isinstance(merges[0][0], str)
-                    ):
+                    elif isinstance(merges[0], list) and len(merges[0]) == 2 and isinstance(merges[0][0], str):
                         # New format since transformers 4.45 to support spaces in merges
                         # ref: https://github.com/ggml-org/llama.cpp/issues/9692
                         # TODO: internally store as the new format instead of converting to old
                         if any(" " in s for pair in merges for s in pair):
-                            logger.warning(
-                                f'Spaces in merges detected, encoding as {chr(ord(" ") + 256)!r}'
-                            )
+                            logger.warning(f'Spaces in merges detected, encoding as {chr(ord(" ") + 256)!r}')
                         self.merges = [
                             " ".join(
                                 [
@@ -234,23 +220,17 @@ class SpecialVocab:
                                     special_eos = special_last
                                 elif special_last != special_eos:
                                     if "eot" not in self.special_token_types:
-                                        self.special_token_types = tuple(
-                                            self.special_token_types
-                                        ) + ("eot",)
+                                        self.special_token_types = tuple(self.special_token_types) + ("eot",)
                                         tokenizer_config["eot_token"] = special_eos
                                     elif "eom" not in self.special_token_types:
-                                        self.special_token_types = tuple(
-                                            self.special_token_types
-                                        ) + ("eom",)
+                                        self.special_token_types = tuple(self.special_token_types) + ("eom",)
                                         tokenizer_config["eom_token"] = special_eos
                                     else:
                                         logger.warning(
                                             f"Overriding EOS token {special_eos!r} with {special_last!r} without EOT/EOM fallback!"
                                         )
                                     tokenizer_config["eos_token"] = special_eos = special_last
-                                self.add_special_token["eos"] = (
-                                    True if special_last == special_eos else False
-                                )
+                                self.add_special_token["eos"] = True if special_last == special_eos else False
                                 if special_last != special_eos:
                                     logger.warning(
                                         f"Unknown trailing special token {special_last!r} in TemplateProcessing<single>"
@@ -258,19 +238,15 @@ class SpecialVocab:
                         if tmpl_pair:
                             seq_start = (
                                 1
-                                if special_first
-                                and tmpl_pair[0].get("SpecialToken", {}).get("id") == special_first
+                                if special_first and tmpl_pair[0].get("SpecialToken", {}).get("id") == special_first
                                 else 0
                             )
                             seq_stop = (
                                 -1
-                                if special_last
-                                and tmpl_pair[-1].get("SpecialToken", {}).get("id") == special_last
+                                if special_last and tmpl_pair[-1].get("SpecialToken", {}).get("id") == special_last
                                 else None
                             )
-                            if (special_first and seq_start == 0) or (
-                                special_last and seq_stop is None
-                            ):
+                            if (special_first and seq_start == 0) or (special_last and seq_stop is None):
                                 logger.warning(
                                     "TemplateProcessing<single> leading/trailing special tokens do not match TemplateProcessing<pair>"
                                 )
@@ -278,25 +254,12 @@ class SpecialVocab:
                                 tmpl_a = tmpl_pair[0].get("Sequence", {}).get("id")
                                 tmpl_b = tmpl_pair[-1].get("Sequence", {}).get("id")
                                 if tmpl_a != "A" or tmpl_b != "B":
-                                    logger.warning(
-                                        f"Unknown sequence {tmpl_a}...{tmpl_b} in TemplateProcessing<pair>"
-                                    )
+                                    logger.warning(f"Unknown sequence {tmpl_a}...{tmpl_b} in TemplateProcessing<pair>")
                                 # A [sep] [eos] B
-                                if (
-                                    tmpl_a == "A"
-                                    and tmpl_b == "B"
-                                    and (tmpl_pair := tmpl_pair[1:-1])
-                                ):
+                                if tmpl_a == "A" and tmpl_b == "B" and (tmpl_pair := tmpl_pair[1:-1]):
                                     add_sep = False
-                                    if (
-                                        special_entry := tmpl_pair[0]
-                                        .get("SpecialToken", {})
-                                        .get("id")
-                                    ):
-                                        if (
-                                            special_entry in (special_sep, special_eos)
-                                            and not special_last
-                                        ):
+                                    if special_entry := tmpl_pair[0].get("SpecialToken", {}).get("id"):
+                                        if special_entry in (special_sep, special_eos) and not special_last:
                                             add_sep = True
                                         if special_entry not in (special_sep, special_eos):
                                             logger.warning(
@@ -307,11 +270,7 @@ class SpecialVocab:
                                             f"Unknown middle sequence {tmpl_pair[0]!r} in TemplateProcessing<pair>"
                                         )
                                     if len(tmpl_pair) == 2:
-                                        if (
-                                            special_entry := tmpl_pair[1]
-                                            .get("SpecialToken", {})
-                                            .get("id")
-                                        ):
+                                        if special_entry := tmpl_pair[1].get("SpecialToken", {}).get("id"):
                                             if special_entry in (special_sep, special_eos):
                                                 add_sep = True
                                             if special_entry not in (special_sep, special_eos):
@@ -338,9 +297,7 @@ class SpecialVocab:
                 chat_template_alt = [{"name": "default", "template": chat_template_alt}]
                 for template_path in additional_templates:
                     with open(template_path, encoding="utf-8") as fp:
-                        chat_template_alt.append(
-                            {"name": template_path.stem, "template": fp.read()}
-                        )
+                        chat_template_alt.append({"name": template_path.stem, "template": fp.read()})
         elif chat_template_json.is_file():
             with open(chat_template_json, encoding="utf-8") as f:
                 chat_template_alt = json.load(f).get("chat_template")
@@ -348,9 +305,7 @@ class SpecialVocab:
         if chat_template is None or isinstance(chat_template, (str, list)):
             self.chat_template = chat_template
         else:
-            logger.warning(
-                f"Bad type for chat_template field in {tokenizer_config_file!r} - ignoring"
-            )
+            logger.warning(f"Bad type for chat_template field in {tokenizer_config_file!r} - ignoring")
         for typ in self.special_token_types:
             add_entry = tokenizer_config.get(f"add_{typ}_token")
             if isinstance(add_entry, bool):
@@ -454,11 +409,7 @@ class BpeVocab(Vocab):
 
             if (added := tokenizer_json.get("added_tokens")) is not None:
                 # Added tokens here can be duplicates of the main vocabulary.
-                added_tokens = {
-                    item["content"]: item["id"]
-                    for item in added
-                    if item["content"] not in self.vocab
-                }
+                added_tokens = {item["content"]: item["id"] for item in added if item["content"] not in self.vocab}
 
         vocab_size = len(self.vocab)
         expected_ids = list(range(vocab_size, vocab_size + len(added_tokens)))
@@ -525,9 +476,7 @@ class SentencePieceVocab(Vocab):
         actual_new_ids = sorted(new_tokens.keys())
 
         if expected_new_ids != actual_new_ids:
-            raise ValueError(
-                f"Expected new token IDs {expected_new_ids} to be sequential; got {actual_new_ids}"
-            )
+            raise ValueError(f"Expected new token IDs {expected_new_ids} to be sequential; got {actual_new_ids}")
 
         # Token pieces that were added to the base vocabulary.
         self.added_tokens_dict = added_tokens
@@ -631,9 +580,7 @@ class LlamaHfVocab(Vocab):
                 self.added_tokens_ids.add(tokidx)
 
         # Store special tokens and their IDs
-        self.specials = {
-            tok: self.tokenizer.get_vocab()[tok] for tok in self.tokenizer.all_special_tokens
-        }
+        self.specials = {tok: self.tokenizer.get_vocab()[tok] for tok in self.tokenizer.all_special_tokens}
         self.special_ids = set(self.tokenizer.all_special_ids)
 
         # Set vocabulary sizes
@@ -658,9 +605,7 @@ class LlamaHfVocab(Vocab):
                 token_id, token_text, self.special_ids  # Reuse already stored special IDs
             )
 
-    def get_token_type(
-        self, token_id: int, token_text: bytes, special_ids: set[int]
-    ) -> gguf.TokenType:
+    def get_token_type(self, token_id: int, token_text: bytes, special_ids: set[int]) -> gguf.TokenType:
         # Special case for byte tokens
         if re.fullmatch(rb"<0x[0-9A-Fa-f]{2}>", token_text):
             return gguf.TokenType.BYTE
@@ -714,11 +659,7 @@ def bytes_to_unicode() -> dict[int, str]:
     decent coverage. This is a significant percentage of your normal, say, 32K bpe vocab. To avoid that, we want lookup
     tables between utf-8 bytes and unicode strings.
     """
-    bs = (
-        list(range(ord("!"), ord("~") + 1))
-        + list(range(ord("¡"), ord("¬") + 1))
-        + list(range(ord("®"), ord("ÿ") + 1))
-    )
+    bs = list(range(ord("!"), ord("~") + 1)) + list(range(ord("¡"), ord("¬") + 1)) + list(range(ord("®"), ord("ÿ") + 1))
     cs = bs[:]
     n = 0
     for b in range(2**8):
@@ -765,13 +706,9 @@ class MistralVocab(Vocab):
         else:
             tokenizer_file = valid_tokenizer_files[0]
 
-        self.tokenizer = MistralTokenizer.from_file(
-            base_path / tokenizer_file
-        ).instruct_tokenizer.tokenizer
+        self.tokenizer = MistralTokenizer.from_file(base_path / tokenizer_file).instruct_tokenizer.tokenizer
         self.tokenizer_type = (
-            MistralTokenizerType.tekken
-            if isinstance(self.tokenizer, Tekkenizer)
-            else MistralTokenizerType.spm
+            MistralTokenizerType.tekken if isinstance(self.tokenizer, Tekkenizer) else MistralTokenizerType.spm
         )
         self.vocab_size = self.tokenizer.n_words
         self.fname_tokenizer = base_path / tokenizer_file
@@ -811,9 +748,7 @@ class MistralVocab(Vocab):
 
     def _tekken_tokens(self) -> Iterable[tuple[bytes, float, gguf.TokenType]]:
         assert Tekkenizer is not None, "mistral_common is not installed"
-        assert isinstance(
-            self.tokenizer, Tekkenizer
-        ), f"Expected Tekkenizer, got {type(self.tokenizer)}"
+        assert isinstance(self.tokenizer, Tekkenizer), f"Expected Tekkenizer, got {type(self.tokenizer)}"
 
         byte_encoder = bytes_to_unicode()
         for token_id in range(self.tokenizer.num_special_tokens):
@@ -826,9 +761,7 @@ class MistralVocab(Vocab):
             )
 
     def get_token_id(self, token: str) -> int:
-        assert (
-            SentencePieceTokenizer is not None and Tekkenizer is not None
-        ), "mistral_common is not installed"
+        assert SentencePieceTokenizer is not None and Tekkenizer is not None, "mistral_common is not installed"
         if self.tokenizer_type == MistralTokenizerType.spm:
             assert isinstance(self.tokenizer, SentencePieceTokenizer)
             return self.tokenizer._vocab.index(token)
@@ -903,16 +836,10 @@ class MistralVocab(Vocab):
             for j in range(1, len(merged_token)):
                 left = merged_token[:j]
                 right = merged_token[j:]
-                if (
-                    left in mergeable_ranks
-                    and right in mergeable_ranks
-                    and (left + right) in mergeable_ranks
-                ):
+                if left in mergeable_ranks and right in mergeable_ranks and (left + right) in mergeable_ranks:
                     local.append((left, right, i))
             if not local:
-                raise ValueError(
-                    f"Could not find valid merge for token at rank {i}: {merged_token.decode('latin-1')}"
-                )
+                raise ValueError(f"Could not find valid merge for token at rank {i}: {merged_token.decode('latin-1')}")
             local = sorted(
                 local,
                 key=lambda x: (mergeable_ranks[x[0]], mergeable_ranks[x[1]]),

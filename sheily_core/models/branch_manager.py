@@ -117,9 +117,7 @@ class BranchManager:
         self.enable_merging = config.get("enable_merging", True)
 
         # Componentes especializados
-        self.specialization_engine = (
-            SpecializationEngine(config) if self.enable_specialization else None
-        )
+        self.specialization_engine = SpecializationEngine(config) if self.enable_specialization else None
         self.branch_merger = BranchMerger(config) if self.enable_merging else None
 
         # Cache de respuestas
@@ -607,9 +605,7 @@ class BranchManager:
 
         # Generar respuesta basada en especialización de la rama
         if branch_info.type == BranchType.TECHNICAL:
-            response_text = (
-                f"[Respuesta técnica especializada en {branch_info.domain}] {query.query}"
-            )
+            response_text = f"[Respuesta técnica especializada en {branch_info.domain}] {query.query}"
         elif branch_info.type == BranchType.ACADEMIC:
             response_text = f"[Análisis académico en {branch_info.domain}] {query.query}"
         elif branch_info.type == BranchType.CREATIVE:
@@ -661,9 +657,7 @@ class BranchManager:
 
         return min(confidence, 1.0)
 
-    async def _apply_specialization(
-        self, query: BranchQuery, response: BranchResponse
-    ) -> BranchResponse:
+    async def _apply_specialization(self, query: BranchQuery, response: BranchResponse) -> BranchResponse:
         """Aplicar especialización a la respuesta"""
         if not self.specialization_engine:
             return response
@@ -686,9 +680,7 @@ class BranchManager:
             logger.error(f"Error aplicando especialización: {e}")
             return response
 
-    async def _merge_with_general(
-        self, query: BranchQuery, response: BranchResponse
-    ) -> BranchResponse:
+    async def _merge_with_general(self, query: BranchQuery, response: BranchResponse) -> BranchResponse:
         """Fusionar respuesta con conocimiento general"""
         if not self.branch_merger:
             return response
@@ -710,9 +702,7 @@ class BranchManager:
             logger.error(f"Error fusionando con general: {e}")
             return response
 
-    async def _update_branch_stats(
-        self, branch_name: str, response: BranchResponse, processing_time: float
-    ):
+    async def _update_branch_stats(self, branch_name: str, response: BranchResponse, processing_time: float):
         """Actualizar estadísticas de rama"""
         # Estadísticas globales
         self.stats["total_queries"] += 1
@@ -723,9 +713,7 @@ class BranchManager:
         # Actualizar tiempo promedio
         total_queries = self.stats["total_queries"]
         current_avg = self.stats["average_response_time"]
-        self.stats["average_response_time"] = (
-            current_avg * (total_queries - 1) + processing_time
-        ) / total_queries
+        self.stats["average_response_time"] = (current_avg * (total_queries - 1) + processing_time) / total_queries
 
         # Estadísticas por rama
         if branch_name not in self.stats["branches_by_usage"]:
@@ -743,9 +731,7 @@ class BranchManager:
                 branch_info.accuracy_score = response.confidence
             else:
                 # Promedio móvil
-                branch_info.accuracy_score = (branch_info.accuracy_score * 0.9) + (
-                    response.confidence * 0.1
-                )
+                branch_info.accuracy_score = (branch_info.accuracy_score * 0.9) + (response.confidence * 0.1)
 
     def _generate_cache_key(self, query: BranchQuery) -> str:
         """Generar clave de cache para la consulta"""
@@ -865,9 +851,7 @@ class BranchManager:
 
     async def health_check(self) -> Dict:
         """Verificar estado de salud del gestor"""
-        healthy_branches = len(
-            [b for b in self.branches.values() if b.status == BranchStatus.ACTIVE]
-        )
+        healthy_branches = len([b for b in self.branches.values() if b.status == BranchStatus.ACTIVE])
         total_branches = len(self.branches)
 
         return {

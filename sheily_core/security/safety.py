@@ -216,9 +216,7 @@ class EnterpriseSecurityValidator:
             for pattern in patterns:
                 if pattern in q_lower:
                     # Registrar amenaza empresarial
-                    self.threat_intelligence.log_enterprise_threat(
-                        category, pattern, client_id, q_original
-                    )
+                    self.threat_intelligence.log_enterprise_threat(category, pattern, client_id, q_original)
                     return False, f"Patrón empresarial peligroso detectado: {category}"
 
         # Verificaciones adicionales empresariales

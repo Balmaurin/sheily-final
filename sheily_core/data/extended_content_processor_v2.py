@@ -232,9 +232,7 @@ class ExtendedContentProcessor:
 
             # Procesar contenido
             start_time = time.time()
-            chunks, metadata = self._process_content(
-                content, file_path, content_type, processing_options
-            )
+            chunks, metadata = self._process_content(content, file_path, content_type, processing_options)
             processing_time = time.time() - start_time
 
             # Crear metadatos avanzados
@@ -258,21 +256,15 @@ class ExtendedContentProcessor:
             elif content_type == "academic":
                 content_metadata.academic_metadata = self._extract_academic_metadata(content)
             elif content_type == "conversation":
-                content_metadata.conversation_metadata = self._extract_conversation_metadata(
-                    content
-                )
+                content_metadata.conversation_metadata = self._extract_conversation_metadata(content)
 
             # Estadísticas de procesamiento
             processing_stats = {
                 "processing_time": processing_time,
                 "content_length": len(content),
                 "chunks_created": len(chunks),
-                "compression_ratio": len(content) / sum(len(chunk["content"]) for chunk in chunks)
-                if chunks
-                else 1.0,
-                "average_chunk_size": sum(len(chunk["content"]) for chunk in chunks) / len(chunks)
-                if chunks
-                else 0,
+                "compression_ratio": len(content) / sum(len(chunk["content"]) for chunk in chunks) if chunks else 1.0,
+                "average_chunk_size": sum(len(chunk["content"]) for chunk in chunks) / len(chunks) if chunks else 0,
             }
 
             return ProcessingResult(
@@ -349,24 +341,15 @@ class ExtendedContentProcessor:
                 sample_content = f.read(1024)  # Leer primeros 1KB
 
             # Detectar por contenido
-            if any(
-                indicator in sample_content
-                for indicator in ["def ", "function ", "class ", "import "]
-            ):
+            if any(indicator in sample_content for indicator in ["def ", "function ", "class ", "import "]):
                 return "code"
             elif any(
-                indicator in sample_content
-                for indicator in ["capítulo", "introducción", "conclusión", "abstract"]
+                indicator in sample_content for indicator in ["capítulo", "introducción", "conclusión", "abstract"]
             ):
                 return "academic"
-            elif any(
-                indicator in sample_content
-                for indicator in ["usuario:", "asistente:", "human:", "assistant:"]
-            ):
+            elif any(indicator in sample_content for indicator in ["usuario:", "asistente:", "human:", "assistant:"]):
                 return "conversation"
-            elif any(
-                indicator in sample_content for indicator in ["ERROR", "WARN", "INFO", "DEBUG"]
-            ):
+            elif any(indicator in sample_content for indicator in ["ERROR", "WARN", "INFO", "DEBUG"]):
                 return "log"
             else:
                 return "text"
@@ -502,8 +485,7 @@ class ExtendedContentProcessor:
                             "content": current_section.strip(),
                             "chunk_type": "code_section",
                             "metadata": {
-                                "has_functions": "def " in current_section
-                                or "function " in current_section,
+                                "has_functions": "def " in current_section or "function " in current_section,
                                 "has_classes": "class " in current_section,
                                 "language": self._detect_code_language(current_section),
                                 "line_count": current_section.count("\n"),
@@ -519,8 +501,7 @@ class ExtendedContentProcessor:
                     "content": current_section.strip(),
                     "chunk_type": "code_section",
                     "metadata": {
-                        "has_functions": "def " in current_section
-                        or "function " in current_section,
+                        "has_functions": "def " in current_section or "function " in current_section,
                         "has_classes": "class " in current_section,
                         "language": self._detect_code_language(current_section),
                         "line_count": current_section.count("\n"),
@@ -530,9 +511,7 @@ class ExtendedContentProcessor:
 
         return chunks
 
-    def _process_academic_content(
-        self, content: str, options: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+    def _process_academic_content(self, content: str, options: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Procesar contenido académico"""
         chunks = []
 
@@ -604,9 +583,7 @@ class ExtendedContentProcessor:
 
         return chunks
 
-    def _process_conversation_content(
-        self, content: str, options: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+    def _process_conversation_content(self, content: str, options: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Procesar contenido de conversación"""
         chunks = []
 
@@ -640,11 +617,7 @@ class ExtendedContentProcessor:
                         "metadata": {
                             "turn_count": current_chunk.count("\n"),
                             "participant_count": len(
-                                set(
-                                    re.findall(
-                                        r"(Usuario|Asistente|Human|Assistant)", current_chunk
-                                    )
-                                )
+                                set(re.findall(r"(Usuario|Asistente|Human|Assistant)", current_chunk))
                             ),
                         },
                     }
@@ -704,8 +677,7 @@ class ExtendedContentProcessor:
                         "chunk_type": "log_segment",
                         "metadata": {
                             "entry_count": current_chunk.count("\n"),
-                            "error_count": current_chunk.count("ERROR")
-                            + current_chunk.count("FATAL"),
+                            "error_count": current_chunk.count("ERROR") + current_chunk.count("FATAL"),
                             "warning_count": current_chunk.count("WARN"),
                         },
                     }
@@ -879,9 +851,7 @@ class ExtendedContentProcessor:
             matches = re.findall(pattern, content, flags)
             for match in matches:
                 if len(match.strip()) > 100:  # Solo secciones sustanciales
-                    sections.append(
-                        {"content": match.strip(), "type": section_type, "length": len(match)}
-                    )
+                    sections.append({"content": match.strip(), "type": section_type, "length": len(match)})
 
         # Si no se detectaron secciones, tratar como texto general
         if not sections:
@@ -938,9 +908,7 @@ class ExtendedContentProcessor:
 
         elif content_type == "conversation":
             structure["user_turns"] = len(re.findall(r"\b(?:Usuario|Human|User):\s*", content))
-            structure["assistant_turns"] = len(
-                re.findall(r"\b(?:Asistente|Assistant|Bot):\s*", content)
-            )
+            structure["assistant_turns"] = len(re.findall(r"\b(?:Asistente|Assistant|Bot):\s*", content))
 
         return structure
 
@@ -967,16 +935,11 @@ class ExtendedContentProcessor:
                 quality_score += 0.1  # Tiene clases
 
         elif content_type == "academic":
-            if any(
-                section in content.lower()
-                for section in ["introducción", "conclusión", "metodología"]
-            ):
+            if any(section in content.lower() for section in ["introducción", "conclusión", "metodología"]):
                 quality_score += 0.2  # Tiene secciones académicas clave
 
         elif content_type == "conversation":
-            if ("Usuario:" in content or "Human:" in content) and (
-                "Asistente:" in content or "Assistant:" in content
-            ):
+            if ("Usuario:" in content or "Human:" in content) and ("Asistente:" in content or "Assistant:" in content):
                 quality_score += 0.2  # Tiene ambos participantes
 
         return min(1.0, quality_score)
@@ -988,8 +951,7 @@ class ExtendedContentProcessor:
             "function_count": len(re.findall(r"\bdef \b|\bfunction \b", content)),
             "class_count": len(re.findall(r"\bclass \b", content)),
             "import_count": len(re.findall(r"\bimport \b|\bfrom \b|\binclude\b", content)),
-            "comment_ratio": len(re.findall(r"#.*|//.*|/\*.*\*/", content))
-            / max(len(content.split("\n")), 1),
+            "comment_ratio": len(re.findall(r"#.*|//.*|/\*.*\*/", content)) / max(len(content.split("\n")), 1),
             "complexity_score": self._calculate_code_complexity(content),
         }
 
@@ -998,12 +960,8 @@ class ExtendedContentProcessor:
         return {
             "section_count": len(re.findall(r"\b\d+\.\s+[A-ZÁÉÍÓÚÑ]", content)),
             "citation_count": len(re.findall(r"\[\d+\]|\(\w+\s+\d+\)", content)),
-            "figure_count": len(
-                re.findall(r"(?:figura|figure|tabla|table)\s+\d+", content.lower())
-            ),
-            "reference_count": len(
-                re.findall(r"(?:bibliografía|referencias|references)", content.lower())
-            ),
+            "figure_count": len(re.findall(r"(?:figura|figure|tabla|table)\s+\d+", content.lower())),
+            "reference_count": len(re.findall(r"(?:bibliografía|referencias|references)", content.lower())),
             "academic_level": self._estimate_academic_level(content),
         }
 
@@ -1043,9 +1001,7 @@ class ExtendedContentProcessor:
         non_empty_lines = [line for line in lines if line.strip()]
 
         # Complejidad basada en estructuras de control
-        control_structures = len(
-            re.findall(r"\bif\b|\bfor\b|\bwhile\b|\bswitch\b|\btry\b", content)
-        )
+        control_structures = len(re.findall(r"\bif\b|\bfor\b|\bwhile\b|\bswitch\b|\btry\b", content))
 
         # Complejidad basada en nesting
         max_nesting = 0
@@ -1172,9 +1128,7 @@ class ExtendedContentProcessor:
 
             # Crear contenido estructurado
             content_parts = []
-            content_parts.append(
-                f"# RAMAS ACADÉMICAS OFICIALES - {ramas_data['metadata']['total_ramas']} ramas"
-            )
+            content_parts.append(f"# RAMAS ACADÉMICAS OFICIALES - {ramas_data['metadata']['total_ramas']} ramas")
             content_parts.append(f"Versión: {ramas_data['metadata']['version']}")
             content_parts.append(f"Fecha: {ramas_data['metadata']['fecha_creacion']}")
             content_parts.append("")
@@ -1255,8 +1209,7 @@ class ExtendedContentProcessor:
             "files_processed": self.processing_stats["files_processed"],
             "total_chunks_created": self.processing_stats["chunks_created"],
             "total_processing_time": self.processing_stats["processing_time"],
-            "average_chunk_size": self.processing_stats["total_size"]
-            / max(self.processing_stats["chunks_created"], 1),
+            "average_chunk_size": self.processing_stats["total_size"] / max(self.processing_stats["chunks_created"], 1),
             "content_types_processed": list(self.processing_stats["content_types"].keys()),
             "errors_encountered": self.processing_stats["errors"],
         }
@@ -1269,9 +1222,7 @@ def integrate_extended_content_processor() -> ExtendedContentProcessor:
 
 
 # Función de procesamiento masivo
-def process_multiple_files(
-    file_paths: List[str], content_types: List[str] = None
-) -> List[ProcessingResult]:
+def process_multiple_files(file_paths: List[str], content_types: List[str] = None) -> List[ProcessingResult]:
     """Procesar múltiples archivos en paralelo"""
     processor = ExtendedContentProcessor()
     results = []

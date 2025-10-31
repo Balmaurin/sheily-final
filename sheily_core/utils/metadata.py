@@ -62,9 +62,7 @@ class Metadata:
         # TODO: load adapter_config.json when possible, it usually contains the base model of the LoRA adapter
 
         # heuristics
-        metadata = Metadata.apply_metadata_heuristic(
-            metadata, model_card, hf_params, model_path, total_params
-        )
+        metadata = Metadata.apply_metadata_heuristic(metadata, model_card, hf_params, model_path, total_params)
 
         # Metadata Override File Provided
         # This is based on LLM_KV_NAMES mapping in llama.cpp
@@ -73,25 +71,17 @@ class Metadata:
         metadata.name = metadata_override.get(Keys.General.NAME, metadata.name)
         metadata.author = metadata_override.get(Keys.General.AUTHOR, metadata.author)
         metadata.version = metadata_override.get(Keys.General.VERSION, metadata.version)
-        metadata.organization = metadata_override.get(
-            Keys.General.ORGANIZATION, metadata.organization
-        )
+        metadata.organization = metadata_override.get(Keys.General.ORGANIZATION, metadata.organization)
 
         metadata.finetune = metadata_override.get(Keys.General.FINETUNE, metadata.finetune)
         metadata.basename = metadata_override.get(Keys.General.BASENAME, metadata.basename)
 
         metadata.description = metadata_override.get(Keys.General.DESCRIPTION, metadata.description)
-        metadata.quantized_by = metadata_override.get(
-            Keys.General.QUANTIZED_BY, metadata.quantized_by
-        )
+        metadata.quantized_by = metadata_override.get(Keys.General.QUANTIZED_BY, metadata.quantized_by)
 
         metadata.size_label = metadata_override.get(Keys.General.SIZE_LABEL, metadata.size_label)
-        metadata.license_name = metadata_override.get(
-            Keys.General.LICENSE_NAME, metadata.license_name
-        )
-        metadata.license_link = metadata_override.get(
-            Keys.General.LICENSE_LINK, metadata.license_link
-        )
+        metadata.license_name = metadata_override.get(Keys.General.LICENSE_NAME, metadata.license_name)
+        metadata.license_link = metadata_override.get(Keys.General.LICENSE_LINK, metadata.license_link)
 
         metadata.url = metadata_override.get(Keys.General.URL, metadata.url)
         metadata.doi = metadata_override.get(Keys.General.DOI, metadata.doi)
@@ -101,9 +91,7 @@ class Metadata:
         metadata.source_url = metadata_override.get(Keys.General.SOURCE_URL, metadata.source_url)
         metadata.source_doi = metadata_override.get(Keys.General.SOURCE_DOI, metadata.source_doi)
         metadata.source_uuid = metadata_override.get(Keys.General.SOURCE_UUID, metadata.source_uuid)
-        metadata.source_repo_url = metadata_override.get(
-            Keys.General.SOURCE_REPO_URL, metadata.source_repo_url
-        )
+        metadata.source_repo_url = metadata_override.get(Keys.General.SOURCE_REPO_URL, metadata.source_repo_url)
 
         # Base Models is received here as an array of models
         metadata.base_models = metadata_override.get("general.base_models", metadata.base_models)
@@ -171,9 +159,7 @@ class Metadata:
             if isinstance(data, dict):
                 return data
             else:
-                logger.error(
-                    f"while reading YAML model card frontmatter, data is {type(data)} instead of dict"
-                )
+                logger.error(f"while reading YAML model card frontmatter, data is {type(data)} instead of dict")
                 return {}
         else:
             return {}
@@ -295,9 +281,7 @@ class Metadata:
 
         # Ignore word-based size labels when there is at least a number-based one present
         # TODO: should word-based size labels always be removed instead?
-        if any(
-            c.isdecimal() for n, t in zip(name_parts, name_types) if "size_label" in t for c in n
-        ):
+        if any(c.isdecimal() for n, t in zip(name_parts, name_types) if "size_label" in t for c in n):
             for n, t in zip(name_parts, name_types):
                 if "size_label" in t:
                     if all(c.isalpha() for c in n):
@@ -324,20 +308,12 @@ class Metadata:
         basename = "-".join(n for n, t in zip(name_parts, name_types) if "basename" in t) or None
         # Deduplicate size labels using order-preserving 'dict' ('set' seems to sort the keys)
         size_label = (
-            "-".join(
-                dict.fromkeys(s for s, t in zip(name_parts, name_types) if "size_label" in t).keys()
-            )
-            or None
+            "-".join(dict.fromkeys(s for s, t in zip(name_parts, name_types) if "size_label" in t).keys()) or None
         )
         finetune = "-".join(f for f, t in zip(name_parts, name_types) if "finetune" in t) or None
         # TODO: should the basename version always be excluded?
         # NOTE: multiple finetune versions are joined together
-        version = (
-            "-".join(
-                v for v, t, in zip(name_parts, name_types) if "version" in t and "basename" not in t
-            )
-            or None
-        )
+        version = "-".join(v for v, t, in zip(name_parts, name_types) if "version" in t and "basename" not in t) or None
 
         if size_label is None and finetune is None and version is None:
             # Too ambiguous, output nothing
@@ -421,11 +397,7 @@ class Metadata:
             use_model_card_metadata("author", "model_creator")
             use_model_card_metadata("basename", "model_type")
 
-            if (
-                "base_model" in model_card
-                or "base_models" in model_card
-                or "base_model_sources" in model_card
-            ):
+            if "base_model" in model_card or "base_models" in model_card or "base_model_sources" in model_card:
                 # This represents the parent models that this is based on
                 # Example: stabilityai/stable-diffusion-xl-base-1.0. Can also be a list (for merges)
                 # Example of merges: https://huggingface.co/EmbeddedLLM/Mistral-7B-Merge-14-v0.1/blob/main/README.md
@@ -457,9 +429,7 @@ class Metadata:
 
                             # Check if Hugging Face ID is present in URL
                             if "huggingface.co" in model_id:
-                                match = re.match(
-                                    r"https?://huggingface.co/([^/]+/[^/]+)$", model_id
-                                )
+                                match = re.match(r"https?://huggingface.co/([^/]+/[^/]+)$", model_id)
                                 if match:
                                     model_id_component = match.group(1)
                                     (
@@ -469,19 +439,13 @@ class Metadata:
                                         finetune,
                                         version,
                                         size_label,
-                                    ) = Metadata.get_model_id_components(
-                                        model_id_component, total_params
-                                    )
+                                    ) = Metadata.get_model_id_components(model_id_component, total_params)
 
                                     # Populate model dictionary with extracted components
                                     if model_full_name_component is not None:
-                                        base_model["name"] = Metadata.id_to_title(
-                                            model_full_name_component
-                                        )
+                                        base_model["name"] = Metadata.id_to_title(model_full_name_component)
                                     if org_component is not None:
-                                        base_model["organization"] = Metadata.id_to_title(
-                                            org_component
-                                        )
+                                        base_model["organization"] = Metadata.id_to_title(org_component)
                                     if version is not None:
                                         base_model["version"] = version
 
@@ -516,11 +480,7 @@ class Metadata:
 
                     metadata.base_models.append(base_model)
 
-            if (
-                "datasets" in model_card
-                or "dataset" in model_card
-                or "dataset_sources" in model_card
-            ):
+            if "datasets" in model_card or "dataset" in model_card or "dataset_sources" in model_card:
                 # This represents the datasets that this was trained from
                 metadata_datasets = []
                 dataset_value = model_card.get(
@@ -545,9 +505,7 @@ class Metadata:
 
                             # Check if Hugging Face ID is present in URL
                             if "huggingface.co" in dataset_id:
-                                match = re.match(
-                                    r"https?://huggingface.co/([^/]+/[^/]+)$", dataset_id
-                                )
+                                match = re.match(r"https?://huggingface.co/([^/]+/[^/]+)$", dataset_id)
                                 if match:
                                     dataset_id_component = match.group(1)
                                     (
@@ -557,19 +515,13 @@ class Metadata:
                                         finetune,
                                         version,
                                         size_label,
-                                    ) = Metadata.get_model_id_components(
-                                        dataset_id_component, total_params
-                                    )
+                                    ) = Metadata.get_model_id_components(dataset_id_component, total_params)
 
                                     # Populate dataset dictionary with extracted components
                                     if dataset_name_component is not None:
-                                        dataset["name"] = Metadata.id_to_title(
-                                            dataset_name_component
-                                        )
+                                        dataset["name"] = Metadata.id_to_title(dataset_name_component)
                                     if org_component is not None:
-                                        dataset["organization"] = Metadata.id_to_title(
-                                            org_component
-                                        )
+                                        dataset["organization"] = Metadata.id_to_title(org_component)
                                     if version is not None:
                                         dataset["version"] = version
 
@@ -592,9 +544,7 @@ class Metadata:
                             if version is not None:
                                 dataset["version"] = version
                             if org_component is not None and dataset_name_component is not None:
-                                dataset[
-                                    "repo_url"
-                                ] = f"https://huggingface.co/{org_component}/{dataset_name_component}"
+                                dataset["repo_url"] = f"https://huggingface.co/{org_component}/{dataset_name_component}"
 
                     elif isinstance(dataset_id, dict):
                         dataset = dataset_id

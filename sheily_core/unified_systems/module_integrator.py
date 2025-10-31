@@ -62,11 +62,7 @@ class ModuleIntegrator:
             for file in files:
                 if file.endswith(".py") and not file.startswith("__"):
                     module_path = os.path.join(root, file)
-                    module_name = (
-                        os.path.relpath(module_path, self.base_path)
-                        .replace("/", ".")
-                        .replace(".py", "")
-                    )
+                    module_name = os.path.relpath(module_path, self.base_path).replace("/", ".").replace(".py", "")
                     modules[module_name] = module_path
         return modules
 
@@ -106,11 +102,7 @@ class ModuleIntegrator:
         """Encuentra las clases principales en un módulo"""
         main_classes = []
         for name, obj in module.__dict__.items():
-            if (
-                isinstance(obj, type)
-                and hasattr(obj, "__module__")
-                and obj.__module__ == module.__name__
-            ):
+            if isinstance(obj, type) and hasattr(obj, "__module__") and obj.__module__ == module.__name__:
                 main_classes.append(obj)
         return main_classes
 

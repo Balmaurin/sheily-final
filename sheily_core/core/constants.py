@@ -68,9 +68,7 @@ class Keys:
         BASE_MODEL_URL = "general.base_model.{id}.url"  # Model Website/Paper
         BASE_MODEL_DOI = "general.base_model.{id}.doi"
         BASE_MODEL_UUID = "general.base_model.{id}.uuid"
-        BASE_MODEL_REPO_URL = (
-            "general.base_model.{id}.repo_url"  # Model Source Repository (git/svn/etc...)
-        )
+        BASE_MODEL_REPO_URL = "general.base_model.{id}.repo_url"  # Model Source Repository (git/svn/etc...)
 
         # Dataset Source
         DATASET_COUNT = "general.dataset.count"
@@ -82,9 +80,7 @@ class Keys:
         DATASET_URL = "general.dataset.{id}.url"  # Model Website/Paper
         DATASET_DOI = "general.dataset.{id}.doi"
         DATASET_UUID = "general.dataset.{id}.uuid"
-        DATASET_REPO_URL = (
-            "general.dataset.{id}.repo_url"  # Model Source Repository (git/svn/etc...)
-        )
+        DATASET_REPO_URL = "general.dataset.{id}.repo_url"  # Model Source Repository (git/svn/etc...)
 
         # Array based KV stores
         TAGS = "general.tags"

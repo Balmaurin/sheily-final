@@ -235,17 +235,13 @@ class HyperRouter:
         analyzed_type = await self._analyze_query_type(request.query)
 
         # Seleccionar rama especializada si aplica
-        selected_branch = await self.branch_selector.select_branch(
-            request.query, request.language, request.domain
-        )
+        selected_branch = await self.branch_selector.select_branch(request.query, request.language, request.domain)
 
         # Determinar componentes necesarios
         components = await self._select_components(analyzed_type, selected_branch)
 
         # Balancear carga entre componentes disponibles
-        balanced_components = await self.load_balancer.balance_components(
-            components, request.priority
-        )
+        balanced_components = await self.load_balancer.balance_components(components, request.priority)
 
         # Ejecutar routing
         try:
@@ -256,9 +252,7 @@ class HyperRouter:
             elif analyzed_type == RouteType.HYBRID_RAG_LLM:
                 result = await self._execute_hybrid_route(request, balanced_components)
             elif analyzed_type == RouteType.SPECIALIZED_BRANCH:
-                result = await self._execute_specialized_branch(
-                    request, balanced_components, selected_branch
-                )
+                result = await self._execute_specialized_branch(request, balanced_components, selected_branch)
             else:
                 result = await self._execute_fallback_route(request)
                 analyzed_type = RouteType.FALLBACK
@@ -387,9 +381,7 @@ class HyperRouter:
 
         return components
 
-    async def _execute_rag_search(
-        self, request: RouteRequest, components: List[str]
-    ) -> Dict[str, Any]:
+    async def _execute_rag_search(self, request: RouteRequest, components: List[str]) -> Dict[str, Any]:
         """Ejecutar routing de búsqueda RAG"""
         # En implementación real, llamaría al RAG Engine
         result = {
@@ -418,9 +410,7 @@ class HyperRouter:
 
         return result
 
-    async def _execute_llm_generation(
-        self, request: RouteRequest, components: List[str]
-    ) -> Dict[str, Any]:
+    async def _execute_llm_generation(self, request: RouteRequest, components: List[str]) -> Dict[str, Any]:
         """Ejecutar routing de generación LLM"""
         # En implementación real, llamaría al LLM Engine
         result = {
@@ -438,9 +428,7 @@ class HyperRouter:
 
         return result
 
-    async def _execute_hybrid_route(
-        self, request: RouteRequest, components: List[str]
-    ) -> Dict[str, Any]:
+    async def _execute_hybrid_route(self, request: RouteRequest, components: List[str]) -> Dict[str, Any]:
         """Ejecutar routing híbrido RAG+LLM"""
         # Combinar búsqueda RAG con generación LLM
 
@@ -508,9 +496,7 @@ class HyperRouter:
     async def _execute_specific_route(self, request: RouteRequest) -> RouteResponse:
         """Ejecutar routing específico solicitado"""
         components = await self._select_components(request.route_type, None)
-        balanced_components = await self.load_balancer.balance_components(
-            components, request.priority
-        )
+        balanced_components = await self.load_balancer.balance_components(components, request.priority)
 
         if request.route_type == RouteType.RAG_SEARCH:
             result = await self._execute_rag_search(request, balanced_components)
@@ -544,9 +530,7 @@ class HyperRouter:
                 healthy_components = sum(1 for status in component_health.values() if status)
                 total_components = len(component_health)
 
-                logger.info(
-                    f"Health check: {healthy_components}/{total_components} componentes healthy"
-                )
+                logger.info(f"Health check: {healthy_components}/{total_components} componentes healthy")
 
                 await asyncio.sleep(health_check_interval)
 

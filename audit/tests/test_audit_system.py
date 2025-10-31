@@ -5,19 +5,21 @@ Validación completa de todas las funcionalidades de auditoría
 """
 
 import json
-import pytest
-import tempfile
-from datetime import datetime
-from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 # Importar sistema de auditoría
 import sys
+import tempfile
+from datetime import datetime
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from advanced_audit_system import AdvancedAuditSystem
-from realtime_audit_dashboard import RealTimeAuditDashboard, ComplianceFramework
-from monitoring_system import MonitoringService, MetricsCollector
+from monitoring_system import MetricsCollector, MonitoringService
+from realtime_audit_dashboard import ComplianceFramework, RealTimeAuditDashboard
 from utils.audit_utils import AuditUtils
 
 
@@ -32,6 +34,7 @@ class TestAdvancedAuditSystem:
     def teardown_method(self):
         """Limpieza después de cada test"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_audit_system_initialization(self):
@@ -43,13 +46,7 @@ class TestAdvancedAuditSystem:
     def test_file_system_analysis(self):
         """Test análisis del sistema de archivos"""
         # Crear archivos de prueba
-        test_files = [
-            "test1.py",
-            "test2.py",
-            "config.json",
-            "README.md",
-            "requirements.txt"
-        ]
+        test_files = ["test1.py", "test2.py", "config.json", "README.md", "requirements.txt"]
 
         for file in test_files:
             (Path(self.temp_dir) / file).touch()
@@ -65,7 +62,7 @@ class TestAdvancedAuditSystem:
     def test_code_complexity_analysis(self):
         """Test análisis de complejidad de código"""
         # Crear archivo Python de prueba
-        test_code = '''
+        test_code = """
 def simple_function():
     return "hello"
 
@@ -87,7 +84,7 @@ class TestClass:
             return a / b
         except ZeroDivisionError:
             return None
-'''
+"""
 
         py_file = Path(self.temp_dir) / "test_complexity.py"
         py_file.write_text(test_code)
@@ -102,7 +99,7 @@ class TestClass:
     def test_security_scanning(self):
         """Test escaneo de seguridad"""
         # Crear archivo con posibles problemas de seguridad
-        test_code = '''
+        test_code = """
 import os
 password = "hardcoded_password_123"
 api_key = "sk-1234567890abcdef"
@@ -112,7 +109,7 @@ def execute_command(cmd):
 
 def eval_code(code):
     eval(code)  # Security risk
-'''
+"""
 
         py_file = Path(self.temp_dir) / "test_security.py"
         py_file.write_text(test_code)
@@ -131,7 +128,7 @@ def eval_code(code):
             "security": {"issues_found": 2},
             "files": {"python": 100},
             "statistics": {"total_lines": 5000},
-            "dependencies": {"total": 50, "outdated_count": 0}
+            "dependencies": {"total": 50, "outdated_count": 0},
         }
 
         result = self.audit_system.check_quality_gates()
@@ -149,7 +146,7 @@ def eval_code(code):
             "testing": {"estimated_coverage": 75, "total_tests": 50},
             "security": {"issues_found": 1, "issues": []},
             "statistics": {"total_lines": 1000},
-            "dependencies": {"total": 20, "outdated_count": 0}
+            "dependencies": {"total": 20, "outdated_count": 0},
         }
 
         self.audit_system.create_audit_reports()
@@ -180,6 +177,7 @@ class TestRealTimeDashboard:
     def teardown_method(self):
         """Limpieza después de tests"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_dashboard_initialization(self):
@@ -193,7 +191,7 @@ class TestRealTimeDashboard:
         test_metrics = {
             "testing": {"estimated_coverage": 75},
             "security": {"issues_found": 2},
-            "files": {"python": 100}
+            "files": {"python": 100},
         }
 
         report = self.dashboard.generate_compliance_report(test_metrics)
@@ -226,6 +224,7 @@ class TestMonitoringService:
     def teardown_method(self):
         """Limpieza después de tests"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_monitoring_initialization(self):
@@ -277,6 +276,7 @@ class TestAuditUtils:
     def teardown_method(self):
         """Limpieza después de tests"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_audit_utils_initialization(self):
@@ -330,6 +330,7 @@ class TestIntegration:
     def teardown_method(self):
         """Limpieza después de tests"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_full_audit_workflow(self):
@@ -343,7 +344,7 @@ class TestIntegration:
             "testing": {"estimated_coverage": 75, "total_tests": 100},
             "security": {"issues_found": 2, "issues": []},
             "statistics": {"total_lines": 2500},
-            "dependencies": {"total": 30, "outdated_count": 1}
+            "dependencies": {"total": 30, "outdated_count": 1},
         }
 
         # Ejecutar flujo completo
@@ -374,7 +375,7 @@ class TestIntegration:
             "security": {"issues_found": 1, "issues": []},
             "files": {"python": 50},
             "statistics": {"total_lines": 2000},
-            "dependencies": {"total": 25, "outdated_count": 0}
+            "dependencies": {"total": 25, "outdated_count": 0},
         }
 
         # Generar reporte de cumplimiento

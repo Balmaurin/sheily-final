@@ -80,9 +80,10 @@ class AuditSystemInstaller:
                 f.write(f"{dep}\n")
 
         # Instalar dependencias
-        success = self.run_command([
-            sys.executable, "-m", "pip", "install", "-r", str(requirements_file)
-        ], "Instalación de dependencias de auditoría")
+        success = self.run_command(
+            [sys.executable, "-m", "pip", "install", "-r", str(requirements_file)],
+            "Instalación de dependencias de auditoría",
+        )
 
         if success:
             self.log("✅ Dependencias de auditoría instaladas correctamente")
@@ -131,14 +132,14 @@ class AuditSystemInstaller:
                 "retention_days": 365,
                 "enable_real_time_monitoring": True,
                 "enable_continuous_integration": True,
-                "enable_compliance_reporting": True
+                "enable_compliance_reporting": True,
             },
             "quality_gates": {
                 "code_coverage": {"target": 70, "critical": 50, "warning": 60},
                 "security_issues": {"target": 0, "critical": 5, "warning": 3},
                 "test_pass_rate": {"target": 100, "critical": 95, "warning": 98},
                 "code_quality": {"target": 8.0, "critical": 6.0, "warning": 7.0},
-                "compilation_errors": {"target": 0, "critical": 1, "warning": 0}
+                "compilation_errors": {"target": 0, "critical": 1, "warning": 0},
             },
             "monitoring": {
                 "metrics_collection_interval": 60,
@@ -147,9 +148,9 @@ class AuditSystemInstaller:
                     "memory_percent": 85,
                     "disk_percent": 90,
                     "test_pass_rate": 95,
-                    "code_coverage": 70
-                }
-            }
+                    "code_coverage": 70,
+                },
+            },
         }
 
         config_file = self.config_dir / "audit_config.json"
@@ -373,7 +374,7 @@ def test_config_file_exists():
         self.log("📖 CREANDO DOCUMENTACIÓN")
 
         # README principal actualizado
-        readme_content = f'''# 📊 Sistema de Auditoría Sheily AI - Versión 2.0
+        readme_content = f"""# 📊 Sistema de Auditoría Sheily AI - Versión 2.0
 
 ## 🎯 PROPÓSITO PRINCIPAL
 Sistema de auditoría avanzada y completa para el proyecto Sheily AI, con capacidades de monitoreo en tiempo real, análisis de calidad y cumplimiento normativo.
@@ -410,10 +411,10 @@ audit_2025/
 └── 📄 Reportes y Logs
     ├── reports/                     # Reportes generados
     └── logs/                        # Logs de auditoría
-'''
+"""
 
         # Funcionalidades principales
-        readme_content += '''
+        readme_content += """
 
 ## 🚀 FUNCIONALIDADES PRINCIPALES
 
@@ -559,7 +560,7 @@ pytest audit_2025/tests/ --cov=audit_2025 --cov-report=html
 **📊 Calidad**: Enterprise-grade con estándares internacionales
 
 *Última actualización: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*
-'''
+"""
 
         readme_file = self.audit_dir / "README.md"
         with open(readme_file, "w", encoding="utf-8") as f:

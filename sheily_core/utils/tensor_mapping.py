@@ -433,9 +433,7 @@ class TensorNameMap:
             "model.layers.{bid}.feed_forward.shared_expert.gate_proj",  # llama4
             "model.layers.{bid}.mlp.shared_mlp.gate_proj",  # hunyuan
         ),
-        MODEL_TENSOR.FFN_GATE_CHEXP: (
-            "model.layers.{bid}.mlp.chunk_experts.gate_proj",  # grovemoe
-        ),
+        MODEL_TENSOR.FFN_GATE_CHEXP: ("model.layers.{bid}.mlp.chunk_experts.gate_proj",),  # grovemoe
         # Feed-forward down
         MODEL_TENSOR.FFN_DOWN: (
             "gpt_neox.layers.{bid}.mlp.dense_4h_to_h",  # gptneox
@@ -489,9 +487,7 @@ class TensorNameMap:
             "model.layers.{bid}.shared_mlp.output_linear",  # granitemoe
             "model.layers.{bid}.mlp.shared_mlp.down_proj",  # hunyuan
         ),
-        MODEL_TENSOR.FFN_DOWN_CHEXP: (
-            "model.layers.{bid}.mlp.chunk_experts.down_proj",  # grovemoe
-        ),
+        MODEL_TENSOR.FFN_DOWN_CHEXP: ("model.layers.{bid}.mlp.chunk_experts.down_proj",),  # grovemoe
         MODEL_TENSOR.ATTN_Q_NORM: (
             "language_model.encoder.layers.{bid}.self_attention.q_layernorm",
             "model.layers.{bid}.self_attn.q_layernorm",  # persimmon
@@ -536,13 +532,9 @@ class TensorNameMap:
         MODEL_TENSOR.ALTUP_UNEMBD_PROJ: ("model.altup_unembed_projections",),  # gemma3n
         MODEL_TENSOR.PER_LAYER_INP_GATE: ("model.layers.{bid}.per_layer_input_gate",),  # gemma3n
         MODEL_TENSOR.PER_LAYER_PROJ: ("model.layers.{bid}.per_layer_projection",),  # gemma3n
-        MODEL_TENSOR.PER_LAYER_POST_NORM: (
-            "model.layers.{bid}.post_per_layer_input_norm",  # gemma3n
-        ),
+        MODEL_TENSOR.PER_LAYER_POST_NORM: ("model.layers.{bid}.post_per_layer_input_norm",),  # gemma3n
         MODEL_TENSOR.ALTUP_CORRECT_COEF: ("model.layers.{bid}.altup.correction_coefs",),  # gemma3n
-        MODEL_TENSOR.ALTUP_CORRECT_SCALE: (
-            "model.layers.{bid}.altup.correct_output_scale",  # gemma3n
-        ),
+        MODEL_TENSOR.ALTUP_CORRECT_SCALE: ("model.layers.{bid}.altup.correct_output_scale",),  # gemma3n
         MODEL_TENSOR.ALTUP_PREDICT_COEF: ("model.layers.{bid}.altup.prediction_coefs",),  # gemma3n
         MODEL_TENSOR.ALTUP_ROUTER: ("model.layers.{bid}.altup.modality_router",),  # gemma3n
         MODEL_TENSOR.ALTUP_ROUTER_NORM: ("model.layers.{bid}.altup.router_norm",),  # gemma3n
@@ -709,18 +701,14 @@ class TensorNameMap:
             "rwkv.blocks.{bid}.feed_forward.key",  # rwkv6
             "model.layers.{bid}.feed_forward.key",  # rwkv7
         ),
-        MODEL_TENSOR.CHANNEL_MIX_RECEPTANCE: (
-            "rwkv.blocks.{bid}.feed_forward.receptance",  # rwkv6
-        ),
+        MODEL_TENSOR.CHANNEL_MIX_RECEPTANCE: ("rwkv.blocks.{bid}.feed_forward.receptance",),  # rwkv6
         MODEL_TENSOR.CHANNEL_MIX_VALUE: (
             "rwkv.blocks.{bid}.feed_forward.value",  # rwkv6
             "model.layers.{bid}.feed_forward.value",  # rwkv7
         ),
         MODEL_TENSOR.ATTN_Q_A: ("model.layers.{bid}.self_attn.q_a_proj",),  # deepseek2
         MODEL_TENSOR.ATTN_Q_B: ("model.layers.{bid}.self_attn.q_b_proj",),  # deepseek2
-        MODEL_TENSOR.ATTN_KV_A_MQA: (
-            "model.layers.{bid}.self_attn.kv_a_proj_with_mqa",  # deepseek2
-        ),
+        MODEL_TENSOR.ATTN_KV_A_MQA: ("model.layers.{bid}.self_attn.kv_a_proj_with_mqa",),  # deepseek2
         MODEL_TENSOR.ATTN_KV_B: ("model.layers.{bid}.self_attn.kv_b_proj",),  # deepseek2
         MODEL_TENSOR.ATTN_K_B: ("model.layers.{bid}.self_attn.k_b_proj",),  # deepseek2
         MODEL_TENSOR.ATTN_V_B: ("model.layers.{bid}.self_attn.v_b_proj",),  # deepseek2
@@ -733,9 +721,7 @@ class TensorNameMap:
         MODEL_TENSOR.DEC_ATTN_K: ("decoder.block.{bid}.layer.0.SelfAttention.k",),  # t5
         MODEL_TENSOR.DEC_ATTN_V: ("decoder.block.{bid}.layer.0.SelfAttention.v",),  # t5
         MODEL_TENSOR.DEC_ATTN_OUT: ("decoder.block.{bid}.layer.0.SelfAttention.o",),  # t5
-        MODEL_TENSOR.DEC_ATTN_REL_B: (
-            "decoder.block.{bid}.layer.0.SelfAttention.relative_attention_bias",  # t5
-        ),
+        MODEL_TENSOR.DEC_ATTN_REL_B: ("decoder.block.{bid}.layer.0.SelfAttention.relative_attention_bias",),  # t5
         MODEL_TENSOR.DEC_CROSS_ATTN_NORM: ("decoder.block.{bid}.layer.1.layer_norm",),  # t5
         MODEL_TENSOR.DEC_CROSS_ATTN_Q: ("decoder.block.{bid}.layer.1.EncDecAttention.q",),  # t5
         MODEL_TENSOR.DEC_CROSS_ATTN_K: ("decoder.block.{bid}.layer.1.EncDecAttention.k",),  # t5
@@ -757,9 +743,7 @@ class TensorNameMap:
         MODEL_TENSOR.ENC_ATTN_K: ("encoder.block.{bid}.layer.0.SelfAttention.k",),  # t5
         MODEL_TENSOR.ENC_ATTN_V: ("encoder.block.{bid}.layer.0.SelfAttention.v",),  # t5
         MODEL_TENSOR.ENC_ATTN_OUT: ("encoder.block.{bid}.layer.0.SelfAttention.o",),  # t5
-        MODEL_TENSOR.ENC_ATTN_REL_B: (
-            "encoder.block.{bid}.layer.0.SelfAttention.relative_attention_bias",  # t5
-        ),
+        MODEL_TENSOR.ENC_ATTN_REL_B: ("encoder.block.{bid}.layer.0.SelfAttention.relative_attention_bias",),  # t5
         MODEL_TENSOR.ENC_FFN_NORM: ("encoder.block.{bid}.layer.1.layer_norm",),  # t5
         MODEL_TENSOR.ENC_FFN_GATE: ("encoder.block.{bid}.layer.1.DenseReluDense.wi_0",),  # flan-t5
         MODEL_TENSOR.ENC_FFN_UP: (
@@ -972,15 +956,9 @@ class TensorNameMap:
         ),
         MODEL_TENSOR.V_MM_SOFT_EMB_NORM: ("multi_modal_projector.mm_soft_emb_norm",),
         MODEL_TENSOR.V_RESMPL_POS_EMBD_K: ("resampler.pos_embed_k",),
-        MODEL_TENSOR.V_RESMPL_ATTN_Q: (
-            "resampler.attn.in_proj_q",  # tensor generated from resampler.attn.in_proj
-        ),
-        MODEL_TENSOR.V_RESMPL_ATTN_K: (
-            "resampler.attn.in_proj_k",  # tensor generated from resampler.attn.in_proj
-        ),
-        MODEL_TENSOR.V_RESMPL_ATTN_V: (
-            "resampler.attn.in_proj_v",  # tensor generated from resampler.attn.in_proj
-        ),
+        MODEL_TENSOR.V_RESMPL_ATTN_Q: ("resampler.attn.in_proj_q",),  # tensor generated from resampler.attn.in_proj
+        MODEL_TENSOR.V_RESMPL_ATTN_K: ("resampler.attn.in_proj_k",),  # tensor generated from resampler.attn.in_proj
+        MODEL_TENSOR.V_RESMPL_ATTN_V: ("resampler.attn.in_proj_v",),  # tensor generated from resampler.attn.in_proj
         MODEL_TENSOR.V_RESMPL_ATTN_OUT: ("resampler.attn.out_proj",),
         MODEL_TENSOR.V_RESMPL_KV: ("resampler.kv_proj",),
         MODEL_TENSOR.V_RESMPL_POST_NORM: ("resampler.ln_post",),
@@ -988,9 +966,7 @@ class TensorNameMap:
         MODEL_TENSOR.V_RESMPL_Q_NORM: ("resampler.ln_q",),
         MODEL_TENSOR.V_RESMPL_PROJ: ("resampler.proj",),
         MODEL_TENSOR.V_RESMPL_QUERY: ("resampler.query",),
-        MODEL_TENSOR.V_TOK_EMBD_IMG_BREAK: (
-            "v.token_embd.img_break",  # for pixtral, this is a generated vector
-        ),
+        MODEL_TENSOR.V_TOK_EMBD_IMG_BREAK: ("v.token_embd.img_break",),  # for pixtral, this is a generated vector
         MODEL_TENSOR.V_MM_PATCH_MERGER: (
             "multi_modal_projector.patch_merger.merging_layer",  # mistral small 3.1 - hf
             "patch_merger.merging_layer",  # mistral
@@ -1006,9 +982,7 @@ class TensorNameMap:
         MODEL_TENSOR.A_ENC_ATTN_Q: ("audio_tower.layers.{bid}.self_attn.q_proj",),  # ultravox
         MODEL_TENSOR.A_ENC_ATTN_K: ("audio_tower.layers.{bid}.self_attn.k_proj",),  # ultravox
         MODEL_TENSOR.A_ENC_ATTN_V: ("audio_tower.layers.{bid}.self_attn.v_proj",),  # ultravox
-        MODEL_TENSOR.A_ENC_INPUT_NORM: (
-            "audio_tower.layers.{bid}.self_attn_layer_norm",  # ultravox
-        ),
+        MODEL_TENSOR.A_ENC_INPUT_NORM: ("audio_tower.layers.{bid}.self_attn_layer_norm",),  # ultravox
         MODEL_TENSOR.A_ENC_OUTPUT: ("audio_tower.layers.{bid}.self_attn.out_proj",),  # ultravox
         MODEL_TENSOR.A_ENC_OUTPUT_NORM: ("audio_tower.layers.{bid}.final_layer_norm",),  # ultravox
         MODEL_TENSOR.A_ENC_FFN_UP: ("audio_tower.layers.{bid}.fc1",),  # ultravox
@@ -1064,9 +1038,7 @@ class TensorNameMap:
                     key = key.format(bid=bid)
                     self.mapping[key] = (tensor, tensor_name)
 
-    def get_type_and_name(
-        self, key: str, try_suffixes: Sequence[str] = ()
-    ) -> tuple[MODEL_TENSOR, str] | None:
+    def get_type_and_name(self, key: str, try_suffixes: Sequence[str] = ()) -> tuple[MODEL_TENSOR, str] | None:
         result = self.mapping.get(key)
         if result is not None:
             return result

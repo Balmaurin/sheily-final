@@ -191,9 +191,7 @@ def sheily_operation(
 
                 except Exception as e:
                     execution_time = time.time() - start_time
-                    memory_used = (
-                        psutil.Process().memory_info().rss - memory_before if enable_metrics else 0
-                    )
+                    memory_used = psutil.Process().memory_info().rss - memory_before if enable_metrics else 0
 
                     # Crear error estructurado
                     error = SheilyError(
@@ -298,9 +296,7 @@ def sheily_operation(
 
                 except Exception as e:
                     execution_time = time.time() - start_time
-                    memory_used = (
-                        psutil.Process().memory_info().rss - memory_before if enable_metrics else 0
-                    )
+                    memory_used = psutil.Process().memory_info().rss - memory_before if enable_metrics else 0
 
                     # Crear error estructurado
                     error = SheilyError(
@@ -421,9 +417,7 @@ def validate_params(*param_validators):
                     try:
                         validation_result = validator(param_value)
                         if validation_result is not True:
-                            raise ValueError(
-                                f"Parameter '{param_name}' validation failed: {validation_result}"
-                            )
+                            raise ValueError(f"Parameter '{param_name}' validation failed: {validation_result}")
                     except Exception as e:
                         raise ValueError(f"Parameter '{param_name}' validation error: {str(e)}")
 
@@ -455,9 +449,7 @@ def validate_types(type_hints: Optional[Dict[str, Type]] = None):
                     expected_type = type_hints[param_name]
 
                     # Manejar tipos genéricos (List[str], Optional[str], etc.)
-                    if hasattr(expected_type, "__origin__") or str(expected_type).startswith(
-                        "typing."
-                    ):
+                    if hasattr(expected_type, "__origin__") or str(expected_type).startswith("typing."):
                         if not _validate_generic_type(param_value, expected_type):
                             raise TypeError(
                                 f"Parameter '{param_name}' has incorrect type. Expected {expected_type}, got {type(param_value)}"
@@ -484,9 +476,7 @@ def _validate_generic_type(value: Any, expected_type: Type) -> bool:
 
         if origin is Union:
             # Para Union types (como Optional)
-            return any(
-                isinstance(value, arg) if arg is not type(None) else value is None for arg in args
-            )
+            return any(isinstance(value, arg) if arg is not type(None) else value is None for arg in args)
         elif origin is list:
             # Para List[T]
             if not isinstance(value, list):
@@ -498,9 +488,7 @@ def _validate_generic_type(value: Any, expected_type: Type) -> bool:
             if not isinstance(value, dict):
                 return False
             key_type, value_type = args if len(args) == 2 else (Any, Any)
-            return all(
-                isinstance(k, key_type) and isinstance(v, value_type) for k, v in value.items()
-            )
+            return all(isinstance(k, key_type) and isinstance(v, value_type) for k, v in value.items())
         else:
             return isinstance(value, origin or expected_type)
 
@@ -570,9 +558,7 @@ def with_performance_monitoring(
 
                 except Exception as e:
                     execution_time = time.time() - start_time
-                    memory_used = (
-                        psutil.Process().memory_info().rss - memory_before if track_memory else 0
-                    )
+                    memory_used = psutil.Process().memory_info().rss - memory_before if track_memory else 0
 
                     logger.warning(
                         f"Performance metrics for failed operation {operation_name}",
@@ -630,9 +616,7 @@ def with_performance_monitoring(
 
                 except Exception as e:
                     execution_time = time.time() - start_time
-                    memory_used = (
-                        psutil.Process().memory_info().rss - memory_before if track_memory else 0
-                    )
+                    memory_used = psutil.Process().memory_info().rss - memory_before if track_memory else 0
 
                     logger.warning(
                         f"Performance metrics for failed operation {operation_name}",
@@ -763,9 +747,7 @@ def with_structured_logging(
                     if include_result:
                         success_data["result"] = _sanitize_result_for_logging(result)
 
-                    getattr(logger, log_level.lower())(
-                        f"Completed {operation_name}", extra=success_data
-                    )
+                    getattr(logger, log_level.lower())(f"Completed {operation_name}", extra=success_data)
 
                     return result
 
@@ -853,9 +835,7 @@ def with_structured_logging(
 # ============================================================================
 
 
-def _record_operation_metrics(
-    component: str, operation: str, execution_time: float, memory_used: int, success: bool
-):
+def _record_operation_metrics(component: str, operation: str, execution_time: float, memory_used: int, success: bool):
     """Registrar métricas de operación"""
     # Esta función podría integrarse con un sistema de métricas más avanzado
     # Por ahora, solo registra en el monitor de errores
@@ -874,9 +854,7 @@ def _check_performance_alerts(
     alerts = []
 
     if "execution_time" in thresholds and execution_time > thresholds["execution_time"]:
-        alerts.append(
-            f"Execution time {execution_time:.2f}s exceeds threshold {thresholds['execution_time']}s"
-        )
+        alerts.append(f"Execution time {execution_time:.2f}s exceeds threshold {thresholds['execution_time']}s")
 
     if "memory_used" in thresholds and memory_used > thresholds["memory_used"]:
         alerts.append(
@@ -890,9 +868,7 @@ def _check_performance_alerts(
         logger.warning(f"Performance alert for {operation}: {alert}")
 
 
-async def _validate_function_params(
-    func: Callable, args: tuple, kwargs: dict
-) -> Result[None, SheilyError]:
+async def _validate_function_params(func: Callable, args: tuple, kwargs: dict) -> Result[None, SheilyError]:
     """Validar parámetros de función"""
     try:
         # Validaciones básicas

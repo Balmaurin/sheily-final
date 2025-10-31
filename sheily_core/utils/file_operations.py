@@ -97,9 +97,7 @@ class FileOperations:
         except Exception as e:
             return {"error": f"Error eliminando documento: {str(e)}"}
 
-    def handle_update_document(
-        self, doc_id: str, put_data: bytes, rag_pipeline=None
-    ) -> Dict[str, Any]:
+    def handle_update_document(self, doc_id: str, put_data: bytes, rag_pipeline=None) -> Dict[str, Any]:
         """Actualizar documento completo"""
         try:
             data = json.loads(put_data.decode("utf-8"))
@@ -127,9 +125,7 @@ class FileOperations:
         except Exception as e:
             return {"error": f"Error actualizando documento: {str(e)}"}
 
-    def handle_patch_document(
-        self, doc_id: str, patch_data: bytes, rag_pipeline=None
-    ) -> Dict[str, Any]:
+    def handle_patch_document(self, doc_id: str, patch_data: bytes, rag_pipeline=None) -> Dict[str, Any]:
         """Aplicar cambios parciales a documento"""
         try:
             data = json.loads(patch_data.decode("utf-8"))
@@ -153,9 +149,7 @@ class FileOperations:
             elif operation == "replace_section":
                 section_start = data.get("section_start", "")
                 section_end = data.get("section_end", "")
-                new_content = self._replace_section(
-                    current_content, content, section_start, section_end
-                )
+                new_content = self._replace_section(current_content, content, section_start, section_end)
             else:
                 return {"error": "Invalid operation"}
 
@@ -336,17 +330,13 @@ class FileOperations:
                 "message": "Reindexación completada",
                 "documents_before": old_count,
                 "documents_after": new_count,
-                "vocabulary_size": len(rag_pipeline.embedder.vocabulary)
-                if rag_pipeline.embedder.fitted
-                else 0,
+                "vocabulary_size": len(rag_pipeline.embedder.vocabulary) if rag_pipeline.embedder.fitted else 0,
             }
 
         except Exception as e:
             return {"error": f"Error en reindexación: {str(e)}"}
 
-    def _upload_single_document(
-        self, filename: str, content: str, category: str, overwrite: bool
-    ) -> Dict:
+    def _upload_single_document(self, filename: str, content: str, category: str, overwrite: bool) -> Dict:
         """Subir un documento individual"""
         try:
             category_path = Path(self.corpus_root) / category
@@ -384,9 +374,7 @@ class FileOperations:
                 return doc["path"]
         return ""
 
-    def _replace_section(
-        self, content: str, new_section: str, section_start: str, section_end: str
-    ) -> str:
+    def _replace_section(self, content: str, new_section: str, section_start: str, section_end: str) -> str:
         """Reemplazar una sección específica del contenido"""
         if not section_start or not section_end:
             return content + "\n\n" + new_section
@@ -437,9 +425,7 @@ class FileOperations:
 
         return backup_info
 
-    def _export_corpus_data(
-        self, export_format: str, include_metadata: bool, rag_pipeline=None
-    ) -> Dict:
+    def _export_corpus_data(self, export_format: str, include_metadata: bool, rag_pipeline=None) -> Dict:
         """Exportar datos del corpus"""
         if not rag_pipeline:
             return {"error": "No RAG pipeline available"}

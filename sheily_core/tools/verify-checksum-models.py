@@ -68,9 +68,7 @@ for line in hash_list:
         file_missing = "X"
 
     # Add the results to the array
-    results.append(
-        {"filename": filename, "valid checksum": valid_checksum, "file missing": file_missing}
-    )
+    results.append({"filename": filename, "valid checksum": valid_checksum, "file missing": file_missing})
 
 
 # Print column headers for results table

@@ -39,9 +39,7 @@ def require_torch(func):
 
     def wrapper(*args, **kwargs):
         if not TORCH_AVAILABLE:
-            raise RuntimeError(
-                f"PyTorch no está disponible. La función '{func.__name__}' no puede ejecutarse."
-            )
+            raise RuntimeError(f"PyTorch no está disponible. La función '{func.__name__}' no puede ejecutarse.")
         return func(*args, **kwargs)
 
     return wrapper

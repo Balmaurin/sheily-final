@@ -88,11 +88,7 @@ def bytes_to_unicode():
     To avoid that, we want lookup tables between utf-8 bytes and unicode strings.
     And avoids mapping to whitespace/control characters the bpe code barfs on.
     """
-    bs = (
-        list(range(ord("!"), ord("~") + 1))
-        + list(range(ord("¡"), ord("¬") + 1))
-        + list(range(ord("®"), ord("ÿ") + 1))
-    )
+    bs = list(range(ord("!"), ord("~") + 1)) + list(range(ord("¡"), ord("¬") + 1)) + list(range(ord("®"), ord("ÿ") + 1))
     cs = bs[:]
     n = 0
     for b in range(2**8):
@@ -105,9 +101,7 @@ def bytes_to_unicode():
 
 
 ap = argparse.ArgumentParser()
-ap.add_argument(
-    "-m", "--model-dir", help="Path to model directory cloned from HF Hub", required=True
-)
+ap.add_argument("-m", "--model-dir", help="Path to model directory cloned from HF Hub", required=True)
 ap.add_argument("--use-f32", action="store_true", default=False, help="Use f32 instead of f16")
 ap.add_argument(
     "--bigendian",
@@ -318,9 +312,7 @@ def get_non_negative_vision_feature_layers(v_hparams):
     the model as an unset value. If no vision feature layer is found, we leave it unset.
     """
     num_hidden_layers = v_hparams["num_hidden_layers"]
-    to_non_negative = (
-        lambda layer_idx: layer_idx if layer_idx >= 0 else num_hidden_layers + layer_idx + 1
-    )
+    to_non_negative = lambda layer_idx: layer_idx if layer_idx >= 0 else num_hidden_layers + layer_idx + 1
     feature_layers_key = None
     # Key used for llava models in transformers
     if "vision_feature_layer" in config:
@@ -356,11 +348,7 @@ if has_vision_encoder:
     if feature_layers:
         block_count = max(feature_layers)
     else:
-        block_count = (
-            v_hparams["num_hidden_layers"] - 1
-            if has_llava_projector
-            else v_hparams["num_hidden_layers"]
-        )
+        block_count = v_hparams["num_hidden_layers"] - 1 if has_llava_projector else v_hparams["num_hidden_layers"]
     fout.add_uint32(k(KEY_BLOCK_COUNT, VISION), block_count)
     #     /**
     #      "image_grid_pinpoints": [

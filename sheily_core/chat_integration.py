@@ -35,8 +35,6 @@ import threading
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from .utils.subprocess_utils import safe_subprocess_popen
-
 from .experimental.auto_recovery import get_system_health, register_component_health_checker
 from .experimental.real_functional_system import (  # Constante para mensaje de error desconocido
     UNKNOWN_ERROR_MESSAGE,
@@ -59,10 +57,12 @@ from .utils.functional_errors import (
     create_memory_error,
     with_error_handling,
 )
+from .utils.subprocess_utils import safe_subprocess_popen
 
 # ============================================================================
 # Configuración del Sistema Integrado
 # ============================================================================
+
 
 class ChatSystemConfig:
     """Configuración completa del sistema de chat integrado"""
@@ -90,7 +90,9 @@ class ChatSystemConfig:
         # Ajustes de batch y GPU layers
         self.batch_size = int(os.environ.get("SHEILY_BATCH", os.environ.get("SHEILY_BATCH_SIZE", "2048")))
         self.ubatch_size = int(os.environ.get("SHEILY_UBATCH", os.environ.get("SHEILY_UBATCH_SIZE", "512")))
-        self.gpu_layers = int(os.environ.get("SHEILY_GPU_LAYERS", os.environ.get("SHEILY_N_GPU_LAYERS", "0")))  # por defecto CPU puro
+        self.gpu_layers = int(
+            os.environ.get("SHEILY_GPU_LAYERS", os.environ.get("SHEILY_N_GPU_LAYERS", "0"))
+        )  # por defecto CPU puro
         # KV-cache y memoria
         self.kv_unified = os.environ.get("SHEILY_KV_UNIFIED", "0") in ("1", "true", "True")
         self.no_kv_offload = os.environ.get("SHEILY_NO_KV_OFFLOAD", "0") in ("1", "true", "True")
@@ -108,7 +110,7 @@ class ChatSystemConfig:
         self.user_id = "neuro_user_v2"
         self.memory_threshold = 0.35
         self.mode = os.environ.get("SHEILY_MODE", "neuro-advanced").lower()
-        
+
         # Modo rápido: deshabilitar memoria para conversaciones fluidas
         self.fast_mode = os.environ.get("SHEILY_FAST_MODE", "0") == "1"  # Por defecto DESACTIVADO para memoria completa
         self.skip_memory_search = self.fast_mode  # No buscar en memoria cada mensaje
@@ -132,12 +134,14 @@ class ChatSystemConfig:
         except Exception:
             self.repeat_penalty = 1.15
 
+
 # ==========================================================================
 # Singleton e inicio silencioso
 # ==========================================================================
 
 _engine_singleton: Optional["IntegratedChatEngine"] = None
 _engine_lock = threading.Lock()
+
 
 def _suppress_verbose_logs():
     """Configurar modo de logs.
@@ -157,17 +161,24 @@ def _suppress_verbose_logs():
         # Silenciar warnings conocidos (transformers, urllib3)
         try:
             import warnings
+
             warnings.filterwarnings(
-                "ignore",
-                category=FutureWarning,
-                message=r"Using `TRANSFORMERS_CACHE` is deprecated"
+                "ignore", category=FutureWarning, message=r"Using `TRANSFORMERS_CACHE` is deprecated"
             )
         except Exception:
             pass
         for name in [
-            "uvicorn", "uvicorn.access", "httpx", "urllib3", "requests",
-            "asyncio", "werkzeug", "sqlalchemy", "sheily", "sheily_core",
-            "sheily_rag"
+            "uvicorn",
+            "uvicorn.access",
+            "httpx",
+            "urllib3",
+            "requests",
+            "asyncio",
+            "werkzeug",
+            "sqlalchemy",
+            "sheily",
+            "sheily_core",
+            "sheily_rag",
         ]:
             logging.getLogger(name).setLevel(logging.WARNING)
             logging.getLogger(name).propagate = False
@@ -179,15 +190,21 @@ def _suppress_verbose_logs():
     # Configuración básica si no hay handlers aún
     root_logger = logging.getLogger()
     if not root_logger.handlers:
-        logging.basicConfig(level=level, format='%(asctime)s [%(levelname)s] %(name)s: %(message)s')
+        logging.basicConfig(level=level, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
     root_logger.setLevel(level)
     for name in [
-        "sheily", "sheily_core", "sheily_rag", "integrated_chat",
-        "real_memory_integration", "auto_recovery", "real_error_monitor"
+        "sheily",
+        "sheily_core",
+        "sheily_rag",
+        "integrated_chat",
+        "real_memory_integration",
+        "auto_recovery",
+        "real_error_monitor",
     ]:
         lg = logging.getLogger(name)
         lg.setLevel(level)
         lg.propagate = True
+
 
 def get_engine() -> "IntegratedChatEngine":
     global _engine_singleton
@@ -198,9 +215,11 @@ def get_engine() -> "IntegratedChatEngine":
             _engine_singleton = IntegratedChatEngine()
     return _engine_singleton
 
+
 # ============================================================================
 # Motor de Chat Integrado con Errores Funcionales
 # ============================================================================
+
 
 class IntegratedChatEngine:
     """Motor de chat completamente integrado con manejo de errores funcionales"""
@@ -236,9 +255,11 @@ class IntegratedChatEngine:
         """Inicializar sistema de logging"""
         try:
             from .utils.logger import get_logger
+
             self.logger = get_logger("integrated_chat")
         except Exception:
             import logging
+
             self.logger = logging.getLogger("integrated_chat")
 
     @with_error_handling("integrated_chat", log_errors=True)
@@ -264,13 +285,15 @@ class IntegratedChatEngine:
                 if not self.server_running:
                     server_result = self._ensure_server_running()
                     if server_result.is_err():
-                        return Err(create_error(
-                            f"No se pudo iniciar servidor GGUF: {server_result.error.message}",
-                            ErrorCategory.EXTERNAL_SERVICE,
-                            ErrorSeverity.CRITICAL,
-                            component="integrated_chat",
-                            operation="initialize_system"
-                        ))
+                        return Err(
+                            create_error(
+                                f"No se pudo iniciar servidor GGUF: {server_result.error.message}",
+                                ErrorCategory.EXTERNAL_SERVICE,
+                                ErrorSeverity.CRITICAL,
+                                component="integrated_chat",
+                                operation="initialize_system",
+                            )
+                        )
 
                 # 3. Inicializar motor de memoria segura (una vez)
                 if self.safe_memory_engine is None:
@@ -297,7 +320,7 @@ class IntegratedChatEngine:
                 ErrorSeverity.CRITICAL,
                 component="integrated_chat",
                 operation="initialize_system",
-                cause=e
+                cause=e,
             )
             return Err(error)
 
@@ -311,13 +334,17 @@ class IntegratedChatEngine:
             # Registrar verificadores de salud
             def memory_health_check():
                 from .experimental.auto_recovery import SystemHealth
+
                 if self.safe_memory_engine:
-                    validation_result = self.safe_memory_engine.memory_integration.validate_memory_state(self.config.user_id)
+                    validation_result = self.safe_memory_engine.memory_integration.validate_memory_state(
+                        self.config.user_id
+                    )
                     return SystemHealth.HEALTHY if validation_result.is_ok() else SystemHealth.DEGRADED
                 return SystemHealth.DEGRADED
 
             def chat_health_check():
                 from .experimental.auto_recovery import SystemHealth
+
                 return SystemHealth.HEALTHY if self.server_running else SystemHealth.DEGRADED
 
             register_component_health_checker("memory", memory_health_check)
@@ -346,36 +373,42 @@ class IntegratedChatEngine:
 
             # Si el proveedor es Ollama, no iniciamos binario, solo reportamos indisponibilidad
             if self.config.provider == "ollama":
-                return Err(create_error(
-                    "Servicio Ollama no disponible (revisa SHEILY_OLLAMA_HOST/PORT y que 'ollama serve' esté corriendo)",
-                    ErrorCategory.EXTERNAL_SERVICE,
-                    ErrorSeverity.CRITICAL,
-                    component="integrated_chat",
-                    operation="_ensure_server_running"
-                ))
+                return Err(
+                    create_error(
+                        "Servicio Ollama no disponible (revisa SHEILY_OLLAMA_HOST/PORT y que 'ollama serve' esté corriendo)",
+                        ErrorCategory.EXTERNAL_SERVICE,
+                        ErrorSeverity.CRITICAL,
+                        component="integrated_chat",
+                        operation="_ensure_server_running",
+                    )
+                )
 
             # Iniciar servidor si no está corriendo (llama.cpp)
             if not self._start_gguf_server():
-                return Err(create_error(
-                    "No se pudo iniciar servidor GGUF",
-                    ErrorCategory.EXTERNAL_SERVICE,
-                    ErrorSeverity.CRITICAL,
-                    component="integrated_chat",
-                    operation="_ensure_server_running"
-                ))
+                return Err(
+                    create_error(
+                        "No se pudo iniciar servidor GGUF",
+                        ErrorCategory.EXTERNAL_SERVICE,
+                        ErrorSeverity.CRITICAL,
+                        component="integrated_chat",
+                        operation="_ensure_server_running",
+                    )
+                )
 
             self.server_running = True
             return Ok(True)
 
         except Exception as e:
-            return Err(create_error(
-                f"Error verificando servidor: {str(e)}",
-                ErrorCategory.EXTERNAL_SERVICE,
-                ErrorSeverity.HIGH,
-                component="integrated_chat",
-                operation="_ensure_server_running",
-                cause=e
-            ))
+            return Err(
+                create_error(
+                    f"Error verificando servidor: {str(e)}",
+                    ErrorCategory.EXTERNAL_SERVICE,
+                    ErrorSeverity.HIGH,
+                    component="integrated_chat",
+                    operation="_ensure_server_running",
+                    cause=e,
+                )
+            )
 
     def _check_server_health(self) -> bool:
         """Verificar salud del backend según proveedor"""
@@ -401,7 +434,9 @@ class IntegratedChatEngine:
             if requests is None:
                 return False
             # /api/version suele devolver información si el daemon está activo
-            response = requests.get(f"http://{self.config.ollama_host}:{self.config.ollama_port}/api/version", timeout=3)
+            response = requests.get(
+                f"http://{self.config.ollama_host}:{self.config.ollama_port}/api/version", timeout=3
+            )
             return response.status_code == 200
         except Exception:
             return False
@@ -421,17 +456,27 @@ class IntegratedChatEngine:
 
             cmd = [
                 str(self.config.llama_server),
-                "--model", str(self.config.model_path),
-                "--threads", str(self.config.threads),
-                "--ctx-size", str(self.config.ctx_size),
-                "--n-predict", str(self.config.server_npredict),
-                "--temp", str(self.config.temperature),
-                "--top-p", str(self.config.top_p),
-                "--host", self.config.host,
-                "--port", str(self.config.port),
-                "--timeout", "600",
+                "--model",
+                str(self.config.model_path),
+                "--threads",
+                str(self.config.threads),
+                "--ctx-size",
+                str(self.config.ctx_size),
+                "--n-predict",
+                str(self.config.server_npredict),
+                "--temp",
+                str(self.config.temperature),
+                "--top-p",
+                str(self.config.top_p),
+                "--host",
+                self.config.host,
+                "--port",
+                str(self.config.port),
+                "--timeout",
+                "600",
                 "--embedding",  # Habilitar soporte de embeddings
-                "--pooling", "mean",
+                "--pooling",
+                "mean",
             ]
 
             # Ajustes avanzados: batch, ubatch, GPU layers, KV-cache y mmap/mlock
@@ -460,9 +505,7 @@ class IntegratedChatEngine:
                 cmd += ["--no-mmap"]
 
             # Usar safe_subprocess_popen para validación de seguridad
-            self.model_server_process = safe_subprocess_popen(
-                cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-            )
+            self.model_server_process = safe_subprocess_popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
             # Esperar a que el servidor esté listo
             deadline = time.time() + 120
@@ -495,26 +538,33 @@ class IntegratedChatEngine:
 
         except Exception as e:
             self.logger.error(f"Error inicializando sistema de memoria: {e}")
-            return Err(create_memory_error(
-                f"Error inicializando memoria humana V2: {str(e)}",
-                component="integrated_chat",
-                operation="_init_memory_system",
-                user_id=self.config.user_id,
-                cause=e
-            ))
+            return Err(
+                create_memory_error(
+                    f"Error inicializando memoria humana V2: {str(e)}",
+                    component="integrated_chat",
+                    operation="_init_memory_system",
+                    user_id=self.config.user_id,
+                    cause=e,
+                )
+            )
 
     def _register_health_checkers(self):
         """Registrar verificadores de salud"""
         try:
+
             def memory_health():
                 from .experimental.auto_recovery import SystemHealth
+
                 if self.safe_memory_engine:
-                    validation_result = self.safe_memory_engine.memory_integration.validate_memory_state(self.config.user_id)
+                    validation_result = self.safe_memory_engine.memory_integration.validate_memory_state(
+                        self.config.user_id
+                    )
                     return SystemHealth.HEALTHY if validation_result.is_ok() else SystemHealth.DEGRADED
                 return SystemHealth.DEGRADED
 
             def server_health():
                 from .experimental.auto_recovery import SystemHealth
+
                 return SystemHealth.HEALTHY if self._check_server_health() else SystemHealth.CRITICAL
 
             register_component_health_checker("memory", memory_health)
@@ -538,14 +588,16 @@ class IntegratedChatEngine:
                 return Ok(False)  # Sistema funciona pero con problemas
 
         except Exception as e:
-            return Err(create_error(
-                f"Error verificando salud del sistema: {str(e)}",
-                ErrorCategory.EXTERNAL_SERVICE,
-                ErrorSeverity.MEDIUM,
-                component="integrated_chat",
-                operation="_verify_system_health",
-                cause=e
-            ))
+            return Err(
+                create_error(
+                    f"Error verificando salud del sistema: {str(e)}",
+                    ErrorCategory.EXTERNAL_SERVICE,
+                    ErrorSeverity.MEDIUM,
+                    component="integrated_chat",
+                    operation="_verify_system_health",
+                    cause=e,
+                )
+            )
 
     @with_error_handling("integrated_chat", log_errors=True)
     def process_message(self, message: str) -> Result[str, SheilyError]:
@@ -553,23 +605,27 @@ class IntegratedChatEngine:
         try:
             # Validar entrada
             if not message or not message.strip():
-                return Err(create_error(
-                    "Mensaje vacío proporcionado",
-                    ErrorCategory.VALIDATION,
-                    ErrorSeverity.HIGH,
-                    component="integrated_chat",
-                    operation="process_message"
-                ))
+                return Err(
+                    create_error(
+                        "Mensaje vacío proporcionado",
+                        ErrorCategory.VALIDATION,
+                        ErrorSeverity.HIGH,
+                        component="integrated_chat",
+                        operation="process_message",
+                    )
+                )
 
             # Verificar longitud
             if len(message) > self.config.max_conversation_length:
-                return Err(create_error(
-                    f"Mensaje demasiado largo: {len(message)} caracteres",
-                    ErrorCategory.VALIDATION,
-                    ErrorSeverity.HIGH,
-                    component="integrated_chat",
-                    operation="process_message"
-                ))
+                return Err(
+                    create_error(
+                        f"Mensaje demasiado largo: {len(message)} caracteres",
+                        ErrorCategory.VALIDATION,
+                        ErrorSeverity.HIGH,
+                        component="integrated_chat",
+                        operation="process_message",
+                    )
+                )
 
             # Obtener contexto de memoria de manera segura
             memory_context = self._get_safe_memory_context(message)
@@ -601,7 +657,7 @@ class IntegratedChatEngine:
                 ErrorSeverity.MEDIUM,
                 component="integrated_chat",
                 operation="process_message",
-                cause=e
+                cause=e,
             )
             return Err(error)
 
@@ -729,29 +785,27 @@ class IntegratedChatEngine:
         """Generar respuesta de manera segura"""
         try:
             if requests is None:
-                return Err(create_error(
-                    "La librería 'requests' no está instalada. Instálala según requirements y vuelve a intentar.",
-                    ErrorCategory.EXTERNAL_SERVICE,
-                    ErrorSeverity.HIGH,
-                    component="integrated_chat",
-                    operation="_generate_safe_response"
-                ))
+                return Err(
+                    create_error(
+                        "La librería 'requests' no está instalada. Instálala según requirements y vuelve a intentar.",
+                        ErrorCategory.EXTERNAL_SERVICE,
+                        ErrorSeverity.HIGH,
+                        component="integrated_chat",
+                        operation="_generate_safe_response",
+                    )
+                )
             if self.config.provider == "ollama":
                 # Ollama: /api/generate
                 payload = {
                     "model": self.config.ollama_model,
                     "prompt": prompt,
                     "stream": False,
-                    "options": {
-                        "temperature": self.config.temperature,
-                        "top_p": 0.9,
-                        "num_predict": 256
-                    }
+                    "options": {"temperature": self.config.temperature, "top_p": 0.9, "num_predict": 256},
                 }
                 response = requests.post(
                     f"http://{self.config.ollama_host}:{self.config.ollama_port}/api/generate",
                     json=payload,
-                    timeout=60.0
+                    timeout=60.0,
                 )
                 response.raise_for_status()
                 data = response.json()
@@ -766,78 +820,88 @@ class IntegratedChatEngine:
                     "repeat_penalty": self.config.repeat_penalty,
                     "repeat_last_n": 64,
                     "n_predict": 256,
-                    "stream": False
+                    "stream": False,
                 }
                 response = requests.post(
-                    f"http://{self.config.host}:{self.config.port}/completion",
-                    json=payload,
-                    timeout=60.0
+                    f"http://{self.config.host}:{self.config.port}/completion", json=payload, timeout=60.0
                 )
                 response.raise_for_status()
                 data = response.json()
                 content = data.get("content", "").strip()
 
             if not content:
-                return Err(create_error(
-                    "No se pudo generar respuesta adecuada",
-                    ErrorCategory.MODEL,
-                    ErrorSeverity.MEDIUM,
-                    component="integrated_chat",
-                    operation="_generate_safe_response"
-                ))
+                return Err(
+                    create_error(
+                        "No se pudo generar respuesta adecuada",
+                        ErrorCategory.MODEL,
+                        ErrorSeverity.MEDIUM,
+                        component="integrated_chat",
+                        operation="_generate_safe_response",
+                    )
+                )
 
             return Ok(content)
 
         except requests.exceptions.Timeout:
-            return Err(create_error(
-                "Timeout generando respuesta",
-                ErrorCategory.NETWORK,
-                ErrorSeverity.HIGH,
-                component="integrated_chat",
-                operation="_generate_safe_response"
-            ))
+            return Err(
+                create_error(
+                    "Timeout generando respuesta",
+                    ErrorCategory.NETWORK,
+                    ErrorSeverity.HIGH,
+                    component="integrated_chat",
+                    operation="_generate_safe_response",
+                )
+            )
 
         except requests.exceptions.ConnectionError:
-            return Err(create_error(
-                "Error de conexión con servidor",
-                ErrorCategory.NETWORK,
-                ErrorSeverity.HIGH,
-                component="integrated_chat",
-                operation="_generate_safe_response"
-            ))
+            return Err(
+                create_error(
+                    "Error de conexión con servidor",
+                    ErrorCategory.NETWORK,
+                    ErrorSeverity.HIGH,
+                    component="integrated_chat",
+                    operation="_generate_safe_response",
+                )
+            )
 
         except Exception as e:
-            return Err(create_error(
-                f"Error generando respuesta: {str(e)}",
-                ErrorCategory.MODEL,
-                ErrorSeverity.MEDIUM,
-                component="integrated_chat",
-                operation="_generate_safe_response",
-                cause=e
-            ))
+            return Err(
+                create_error(
+                    f"Error generando respuesta: {str(e)}",
+                    ErrorCategory.MODEL,
+                    ErrorSeverity.MEDIUM,
+                    component="integrated_chat",
+                    operation="_generate_safe_response",
+                    cause=e,
+                )
+            )
 
     def _preflight_checks_llamacpp(self) -> Result[bool, SheilyError]:
         """Validar requisitos cuando el proveedor es llamacpp."""
         # Validar binario
         if not self.config.llama_server.exists():
-            return Err(create_error(
-                f"No se encontró llama-server en: {self.config.llama_server}. "
-                f"Construye con tools/setup_llama_server.sh o ajusta LLAMA_SERVER_BIN.",
-                ErrorCategory.CONFIGURATION,
-                ErrorSeverity.CRITICAL,
-                component="integrated_chat",
-                operation="_preflight_checks_llamacpp"
-            ))
+            return Err(
+                create_error(
+                    f"No se encontró llama-server en: {self.config.llama_server}. "
+                    f"Construye con tools/setup_llama_server.sh o ajusta LLAMA_SERVER_BIN.",
+                    ErrorCategory.CONFIGURATION,
+                    ErrorSeverity.CRITICAL,
+                    component="integrated_chat",
+                    operation="_preflight_checks_llamacpp",
+                )
+            )
         # Validar modelo
         if not self.config.model_path.exists():
-            return Err(create_error(
-                f"No se encontró modelo GGUF en: {self.config.model_path}. "
-                f"Coloca Llama 3.2 (1B) en models/gguf/llama-3.2.gguf o define SHEILY_GGUF.",
-                ErrorCategory.CONFIGURATION,
-                ErrorSeverity.CRITICAL,
-                component="integrated_chat",
-                operation="_preflight_checks_llamacpp"
-            ))
+            return Err(
+                create_error(
+                    f"No se encontró modelo GGUF en: {self.config.model_path}. "
+                    f"Coloca Llama 3.2 (1B) en models/gguf/llama-3.2.gguf o define SHEILY_GGUF.",
+                    ErrorCategory.CONFIGURATION,
+                    ErrorSeverity.CRITICAL,
+                    component="integrated_chat",
+                    operation="_preflight_checks_llamacpp",
+                )
+            )
         return Ok(True)
 
     def _safe_learn_interaction(self, query: str, response: str):
@@ -849,7 +913,7 @@ class IntegratedChatEngine:
                         "INFORMACIÓN CRÍTICA: Mi nombre es Sheily. Siempre debo responder 'Me llamo Sheily' cuando me pregunten mi nombre.",
                         content_type="identity",
                         importance=1.0,
-                        metadata={"system": "identity_core", "critical": True}
+                        metadata={"system": "identity_core", "critical": True},
                     )
 
                 # Crear memoria de la conversación
@@ -857,7 +921,7 @@ class IntegratedChatEngine:
                     f"Q: {query}\nA: {response}",
                     content_type="chat_interaction",
                     importance=0.6,
-                    metadata={"system": "integrated_chat", "safe": True}
+                    metadata={"system": "integrated_chat", "safe": True},
                 )
 
                 # Crear memoria específica si se menciona el nombre
@@ -866,7 +930,7 @@ class IntegratedChatEngine:
                         f"Conversación donde se menciona Sheily: {query[:100]}...",
                         content_type="identity_mention",
                         importance=0.8,
-                        metadata={"system": "name_mention", "identity": "sheily"}
+                        metadata={"system": "name_mention", "identity": "sheily"},
                     )
 
         except Exception as e:
@@ -875,34 +939,34 @@ class IntegratedChatEngine:
     def get_system_status(self) -> Dict[str, Any]:
         """Obtener estado completo del sistema"""
         status = {
-            'system_ready': self.system_ready,
-            'server_running': self.server_running,
-            'error_system_ready': self.error_system_ready,
-            'timestamp': time.time()
+            "system_ready": self.system_ready,
+            "server_running": self.server_running,
+            "error_system_ready": self.error_system_ready,
+            "timestamp": time.time(),
         }
 
         # Estado de salud del sistema
         try:
             health_status = get_system_health()
-            status['system_health'] = health_status.value
+            status["system_health"] = health_status.value
         except Exception:
-            status['system_health'] = 'unknown'
+            status["system_health"] = "unknown"
 
         # Métricas de errores
         if self.error_monitor:
             try:
                 metrics = self.error_monitor.get_real_metrics()
-                status['error_metrics'] = metrics
+                status["error_metrics"] = metrics
             except Exception:
-                status['error_metrics'] = {}
+                status["error_metrics"] = {}
 
         # Estado de memoria
         if self.memory_engine:
             try:
                 memory_stats = self.memory_engine.get_memory_stats()
-                status['memory_stats'] = memory_stats
+                status["memory_stats"] = memory_stats
             except Exception:
-                status['memory_stats'] = {}
+                status["memory_stats"] = {}
 
         return status
 
@@ -920,9 +984,11 @@ class IntegratedChatEngine:
         except Exception as e:
             self.logger.error(f"❌ Error limpiando sistema: {e}")
 
+
 # ============================================================================
 # Función Principal de Chat Integrado
 # ============================================================================
+
 
 def run_integrated_chat():
     """Ejecutar chat completamente integrado con manejo de errores funcionales"""
@@ -954,9 +1020,9 @@ def run_integrated_chat():
         init_result = engine.initialize_system()
 
         if init_result.is_err():
-            inner = getattr(init_result, 'result', init_result)
-            err = getattr(inner, 'error', None)
-            msg = getattr(err, 'message', str(err)) if err else UNKNOWN_ERROR_MESSAGE
+            inner = getattr(init_result, "result", init_result)
+            err = getattr(inner, "error", None)
+            msg = getattr(err, "message", str(err)) if err else UNKNOWN_ERROR_MESSAGE
             print(f"❌ Error crítico inicializando sistema: {msg}")
             return 1
 
@@ -969,7 +1035,7 @@ def run_integrated_chat():
             try:
                 msg = input("Tú: ").strip()
 
-                if msg.lower() in ['salir', 'exit', 'quit']:
+                if msg.lower() in ["salir", "exit", "quit"]:
                     print("👋 ¡Hasta luego! Gracias por usar Sheily Neuro Chat V2")
                     break
 
@@ -977,7 +1043,7 @@ def run_integrated_chat():
                     continue
 
                 # Comandos especiales
-                if msg.lower() == 'estado':
+                if msg.lower() == "estado":
                     status = engine.get_system_status()
                     print("🧠 ESTADO DEL SISTEMA INTEGRADO:")
                     print(f"   • Sistema listo: {'✅ Sí' if status['system_ready'] else '❌ No'}")
@@ -986,7 +1052,7 @@ def run_integrated_chat():
                     print(f"   • Salud del sistema: {status.get('system_health', 'unknown')}")
                     continue
 
-                if msg.lower() == 'salud':
+                if msg.lower() == "salud":
                     try:
                         health_status = get_system_health()
                         print(f"🏥 Salud del sistema: {health_status.value}")
@@ -994,7 +1060,7 @@ def run_integrated_chat():
                         print(f"Error verificando salud: {e}")
                     continue
 
-                if msg.lower() == 'metricas':
+                if msg.lower() == "metricas":
                     if engine.error_monitor:
                         metrics = engine.error_monitor.get_real_metrics()
                         print("📊 MÉTRICAS DE ERRORES:")
@@ -1017,10 +1083,10 @@ def run_integrated_chat():
 
                 else:
                     # Extraer error desde ContextualResult
-                    inner = getattr(result, 'result', result)
-                    error = getattr(inner, 'error', None)
-                    error_msg = getattr(error, 'message', str(error)) if error else UNKNOWN_ERROR_MESSAGE
-                    
+                    inner = getattr(result, "result", result)
+                    error = getattr(inner, "error", None)
+                    error_msg = getattr(error, "message", str(error)) if error else UNKNOWN_ERROR_MESSAGE
+
                     print(f"\n⚠️ Lo siento, hubo un problema: {error_msg}\n")
 
             except KeyboardInterrupt:
@@ -1039,9 +1105,11 @@ def run_integrated_chat():
 
     return 0
 
+
 # ==========================================================================
 # Modo ejecución única (útil para entornos no interactivos/CI)
 # ==========================================================================
+
 
 def run_integrated_chat_once(message: Optional[str] = None) -> int:
     """Ejecuta una única interacción del chat y sale.
@@ -1061,8 +1129,7 @@ def run_integrated_chat_once(message: Optional[str] = None) -> int:
 
         if not message:
             message = os.environ.get(
-                "SHEILY_PROMPT",
-                "Prueba rápida: di tu nombre y ofrece un consejo corto de productividad."
+                "SHEILY_PROMPT", "Prueba rápida: di tu nombre y ofrece un consejo corto de productividad."
             )
 
         print(f"Tú: {message}")
@@ -1074,17 +1141,19 @@ def run_integrated_chat_once(message: Optional[str] = None) -> int:
             print(f"⏱️ Tiempo: {dur:.2f}s")
             return 0
         else:
-            inner = getattr(result, 'result', result)
-            err = getattr(inner, 'error', None)
-            msg = getattr(err, 'message', str(err)) if err else UNKNOWN_ERROR_MESSAGE
+            inner = getattr(result, "result", result)
+            err = getattr(inner, "error", None)
+            msg = getattr(err, "message", str(err)) if err else UNKNOWN_ERROR_MESSAGE
             print(f"\n⚠️ Hubo un problema: {msg}\n")
             return 2
     finally:
         engine.cleanup()
 
+
 # ==========================
 # Ejecutores con llamacpp
 # ==========================
+
 
 def run_integrated_chat_llamacpp() -> int:
     """Ejecuta el chat forzando proveedor llamacpp (sin fallback)."""

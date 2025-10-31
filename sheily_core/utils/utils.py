@@ -99,9 +99,7 @@ class ServerProcess:
 
     def start(self, timeout_seconds: int | None = DEFAULT_HTTP_TIMEOUT) -> None:
         if self.external_server:
-            print(
-                f"[external_server]: Assuming external server running on {self.server_host}:{self.server_port}"
-            )
+            print(f"[external_server]: Assuming external server running on {self.server_host}:{self.server_port}")
             return
         if self.server_path is not None:
             server_path = self.server_path
@@ -241,9 +239,7 @@ class ServerProcess:
                 pass
             # Check if process died
             if self.process.poll() is not None:
-                raise RuntimeError(
-                    f"Server process died with return code {self.process.returncode}"
-                )
+                raise RuntimeError(f"Server process died with return code {self.process.returncode}")
 
             print(f"Waiting for server to start...")
             time.sleep(0.5)
@@ -332,14 +328,10 @@ class ServerProcess:
 
             for chunk in self.make_stream_request(method, path, data, headers):
                 if chunk["choices"]:
-                    assert (
-                        len(chunk["choices"]) == 1
-                    ), f'Expected 1 choice, got {len(chunk["choices"])}'
+                    assert len(chunk["choices"]) == 1, f'Expected 1 choice, got {len(chunk["choices"])}'
                     choice = chunk["choices"][0]
                     if choice["delta"].get("content") is not None:
-                        assert (
-                            len(choice["delta"]["content"]) > 0
-                        ), f"Expected non empty content delta!"
+                        assert len(choice["delta"]["content"]) > 0, f"Expected non empty content delta!"
                         content.append(choice["delta"]["content"])
                         content_parts += 1
                     if choice["delta"].get("reasoning_content") is not None:
@@ -357,9 +349,7 @@ class ServerProcess:
                             assert "id" in tc
                             assert tc.get("type") == "function"
                             assert (
-                                "function" in tc
-                                and "name" in tc["function"]
-                                and len(tc["function"]["name"]) > 0
+                                "function" in tc and "name" in tc["function"] and len(tc["function"]["name"]) > 0
                             ), f"Expected function call with name, got {tc.get('function')}"
                             tool_calls.append(
                                 dict(
@@ -377,9 +367,7 @@ class ServerProcess:
                         fct = tc["function"]
                         assert "id" not in fct, f"Function call should not have id: {fct}"
                         if fct.get("name") is not None:
-                            tool_call["function"]["name"] = (
-                                tool_call["function"].get("name", "") + fct["name"]
-                            )
+                            tool_call["function"]["name"] = tool_call["function"].get("name", "") + fct["name"]
                         if fct.get("arguments") is not None:
                             tool_call["function"]["arguments"] += fct["arguments"]
                             arguments_parts += 1
@@ -402,9 +390,7 @@ class ServerProcess:
                         message=dict(
                             role="assistant",
                             content="".join(content) if content else None,
-                            reasoning_content="".join(reasoning_content)
-                            if reasoning_content
-                            else None,
+                            reasoning_content="".join(reasoning_content) if reasoning_content else None,
                             tool_calls=tool_calls if tool_calls else None,
                         ),
                     )
@@ -426,9 +412,7 @@ class ServerPreset:
     def load_all() -> None:
         """Load all server presets to ensure model files are cached."""
         servers: List[ServerProcess] = [
-            method()
-            for name, method in ServerPreset.__dict__.items()
-            if callable(method) and name != "load_all"
+            method() for name, method in ServerPreset.__dict__.items() if callable(method) and name != "load_all"
         ]
         for server in servers:
             server.offline = False
@@ -530,9 +514,7 @@ class ServerPreset:
         # mmproj is already provided by HF registry API
         server.model_hf_repo = "ggml-org/tinygemma3-GGUF"
         server.model_hf_file = "tinygemma3-Q8_0.gguf"
-        server.mmproj_url = (
-            "https://huggingface.co/ggml-org/tinygemma3-GGUF/resolve/main/mmproj-tinygemma3.gguf"
-        )
+        server.mmproj_url = "https://huggingface.co/ggml-org/tinygemma3-GGUF/resolve/main/mmproj-tinygemma3.gguf"
         server.model_alias = "tinygemma3"
         server.n_ctx = 1024
         server.n_batch = 32
@@ -542,9 +524,7 @@ class ServerPreset:
         return server
 
 
-def parallel_function_calls(
-    function_list: List[Tuple[Callable[..., Any], Tuple[Any, ...]]]
-) -> List[Any]:
+def parallel_function_calls(function_list: List[Tuple[Callable[..., Any], Tuple[Any, ...]]]) -> List[Any]:
     """
     Run multiple functions in parallel and return results in the same order as calls. Equivalent to Promise.all in JS.
 
@@ -586,10 +566,7 @@ def parallel_function_calls(
 
 def match_regex(regex: str, text: str) -> bool:
     return (
-        re.compile(
-            regex, flags=RegexFlag.IGNORECASE | RegexFlag.MULTILINE | RegexFlag.DOTALL
-        ).search(text)
-        is not None
+        re.compile(regex, flags=RegexFlag.IGNORECASE | RegexFlag.MULTILINE | RegexFlag.DOTALL).search(text) is not None
     )
 
 

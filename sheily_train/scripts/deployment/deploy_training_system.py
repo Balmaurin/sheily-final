@@ -102,9 +102,7 @@ class ProductionDeployer:
                 checks.append("⚠️  nvidia-smi not found (GPU support limited)")
 
         # Check Python version
-        python_version = (
-            f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-        )
+        python_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
         if sys.version_info >= (3, 9):
             checks.append(f"✅ Python {python_version} compatible")
         else:
@@ -139,9 +137,7 @@ class ProductionDeployer:
                 ".",
             ]
 
-            result = subprocess.run(
-                cmd, cwd=self.project_root, check=True, capture_output=True, text=True
-            )
+            result = subprocess.run(cmd, cwd=self.project_root, check=True, capture_output=True, text=True)
 
             self.log_step(f"✅ Docker image built: {image_tag}")
             return Ok(image_tag)
@@ -159,9 +155,7 @@ class ProductionDeployer:
 
             cmd = ["docker-compose", "--profile", profile, "up", "-d"]
 
-            result = subprocess.run(
-                cmd, cwd=self.project_root, check=True, capture_output=True, text=True
-            )
+            result = subprocess.run(cmd, cwd=self.project_root, check=True, capture_output=True, text=True)
 
             # Wait for services to be healthy
             self.log_step("Waiting for services to be healthy...")
@@ -169,9 +163,7 @@ class ProductionDeployer:
 
             # Check service health
             health_cmd = ["docker-compose", "ps"]
-            health_result = subprocess.run(
-                health_cmd, cwd=self.project_root, capture_output=True, text=True
-            )
+            health_result = subprocess.run(health_cmd, cwd=self.project_root, capture_output=True, text=True)
 
             if health_result.returncode == 0:
                 self.log_step("✅ Docker Compose deployment successful")
@@ -199,17 +191,13 @@ class ProductionDeployer:
             # Start monitoring services
             cmd = ["docker-compose", "--profile", "monitoring", "up", "-d"]
 
-            result = subprocess.run(
-                cmd, cwd=self.project_root, check=True, capture_output=True, text=True
-            )
+            result = subprocess.run(cmd, cwd=self.project_root, check=True, capture_output=True, text=True)
 
             # Verify Prometheus is responding
             time.sleep(15)
 
             # Test Prometheus endpoint
-            prometheus_test = subprocess.run(
-                ["curl", "-f", "http://localhost:9090/-/healthy"], capture_output=True
-            )
+            prometheus_test = subprocess.run(["curl", "-f", "http://localhost:9090/-/healthy"], capture_output=True)
 
             if prometheus_test.returncode == 0:
                 self.log_step("✅ Monitoring stack deployed successfully")
@@ -288,10 +276,7 @@ class ProductionDeployer:
         """Test LoRA training functionality"""
         try:
             # Test LoRA configuration creation
-            from sheily_core.llm_engine import (
-                create_lora_training_config,
-                validate_lora_training_config,
-            )
+            from sheily_core.llm_engine import create_lora_training_config, validate_lora_training_config
 
             config = create_lora_training_config(
                 model_name="test_model",
@@ -389,9 +374,7 @@ Examples:
         help="Target deployment platform (default: docker)",
     )
 
-    parser.add_argument(
-        "--region", default="us-west-2", help="Cloud region for deployment (default: us-west-2)"
-    )
+    parser.add_argument("--region", default="us-west-2", help="Cloud region for deployment (default: us-west-2)")
 
     parser.add_argument(
         "--instance-type",
@@ -399,13 +382,9 @@ Examples:
         help="Instance type for cloud deployment (default: g4dn.xlarge)",
     )
 
-    parser.add_argument(
-        "--gpu-count", type=int, default=1, help="Number of GPUs to allocate (default: 1)"
-    )
+    parser.add_argument("--gpu-count", type=int, default=1, help="Number of GPUs to allocate (default: 1)")
 
-    parser.add_argument(
-        "--auto-scaling", action="store_true", help="Enable auto-scaling for production workloads"
-    )
+    parser.add_argument("--auto-scaling", action="store_true", help="Enable auto-scaling for production workloads")
 
     parser.add_argument(
         "--monitoring",
@@ -413,19 +392,13 @@ Examples:
         help="Enable full monitoring stack (Prometheus + Grafana)",
     )
 
-    parser.add_argument(
-        "--backup", action="store_true", help="Enable backup and disaster recovery features"
-    )
+    parser.add_argument("--backup", action="store_true", help="Enable backup and disaster recovery features")
 
-    parser.add_argument(
-        "--ssl", action="store_true", help="Enable SSL/TLS encryption for API endpoints"
-    )
+    parser.add_argument("--ssl", action="store_true", help="Enable SSL/TLS encryption for API endpoints")
 
     parser.add_argument("--domain", help="Custom domain name for API endpoints")
 
-    parser.add_argument(
-        "--validate-only", action="store_true", help="Only validate environment without deploying"
-    )
+    parser.add_argument("--validate-only", action="store_true", help="Only validate environment without deploying")
 
     return parser
 

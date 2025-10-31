@@ -246,9 +246,7 @@ PRIMITIVE_RULES = {
 
 # TODO: support "uri", "email" string formats
 STRING_FORMAT_RULES = {
-    "date": BuiltinRule(
-        '[0-9]{4} "-" ( "0" [1-9] | "1" [0-2] ) "-" ( "0" [1-9] | [1-2] [0-9] | "3" [0-1] )', []
-    ),
+    "date": BuiltinRule('[0-9]{4} "-" ( "0" [1-9] | "1" [0-2] ) "-" ( "0" [1-9] | [1-2] [0-9] | "3" [0-1] )', []),
     "time": BuiltinRule(
         '([01] [0-9] | "2" [0-3]) ":" [0-5] [0-9] ":" [0-5] [0-9] ( "." [0-9]{3} )? ( "Z" | ( "+" | "-" ) ( [01] [0-9] | "2" [0-3] ) ":" [0-5] [0-9] )',
         [],
@@ -291,9 +289,7 @@ class SchemaConverter:
         )
         return f'"{escaped}"'
 
-    def not_literal(
-        self, literal: str, dotall: bool = True, maybe_escaped_underscores=False
-    ) -> str:
+    def not_literal(self, literal: str, dotall: bool = True, maybe_escaped_underscores=False) -> str:
         """
         not_literal('a') -> '[^a]'
         not_literal('abc') -> '([^a] | "a" ([^b] | "b" ([^c])?)?)?'
@@ -389,9 +385,7 @@ class SchemaConverter:
                 ref = n.get("$ref")
                 if ref is not None and ref not in self._refs:
                     if ref.startswith("https://"):
-                        assert (
-                            self._allow_fetch
-                        ), "Fetching remote schemas is not allowed (use --allow-fetch for force)"
+                        assert self._allow_fetch, "Fetching remote schemas is not allowed (use --allow-fetch for force)"
                         import requests
 
                         frag_split = ref.split("#")
@@ -412,9 +406,7 @@ class SchemaConverter:
                         raise ValueError(f"Unsupported ref {ref}")
 
                     for sel in ref.split("#")[-1].split("/")[1:]:
-                        assert (
-                            target is not None and sel in target
-                        ), f"Error resolving ref {ref}: {sel} not in {target}"
+                        assert target is not None and sel in target, f"Error resolving ref {ref}: {sel} not in {target}"
                         target = target[sel]
 
                     self._refs[ref] = target
@@ -447,9 +439,7 @@ class SchemaConverter:
         we define sub-rules to keep the output lean.
         """
 
-        assert pattern.startswith("^") and pattern.endswith(
-            "$"
-        ), 'Pattern must start with "^" and end with "$"'
+        assert pattern.startswith("^") and pattern.endswith("$"), 'Pattern must start with "^" and end with "$"'
         pattern = pattern[1:-1]
         sub_rule_ids = {}
 
@@ -523,9 +513,7 @@ class SchemaConverter:
                         else:
                             square_brackets += pattern[i]
                             i += 1
-                    assert (
-                        i < length
-                    ), f"Unbalanced square brackets; start = {start}, i = {i}, pattern = {pattern}"
+                    assert i < length, f"Unbalanced square brackets; start = {start}, i = {i}, pattern = {pattern}"
                     square_brackets += "]"
                     i += 1
                     seq.append((square_brackets, False))
@@ -541,9 +529,7 @@ class SchemaConverter:
                     while i < length and pattern[i] != "}":
                         curly_brackets += pattern[i]
                         i += 1
-                    assert (
-                        i < length
-                    ), f"Unbalanced curly brackets; start = {start}, i = {i}, pattern = {pattern}"
+                    assert i < length, f"Unbalanced curly brackets; start = {start}, i = {i}, pattern = {pattern}"
                     curly_brackets += "}"
                     i += 1
                     nums = [s.strip() for s in curly_brackets[1:-1].split(",")]
@@ -570,9 +556,7 @@ class SchemaConverter:
                         sub = id
 
                     seq[-1] = (
-                        _build_repetition(
-                            f'"{sub}"' if sub_is_literal else sub, min_times, max_times
-                        ),
+                        _build_repetition(f'"{sub}"' if sub_is_literal else sub, min_times, max_times),
                         False,
                     )
                 else:
@@ -607,9 +591,7 @@ class SchemaConverter:
 
         return self._add_rule(
             name,
-            to_rule(transform())
-            if self._raw_pattern
-            else '"\\"" (' + to_rule(transform()) + ') "\\"" space',
+            to_rule(transform()) if self._raw_pattern else '"\\"" (' + to_rule(transform()) + ') "\\"" space',
         )
 
     def _resolve_ref(self, ref):
@@ -633,9 +615,7 @@ class SchemaConverter:
             return self._add_rule(rule_name, self._resolve_ref(ref))
 
         elif "oneOf" in schema or "anyOf" in schema:
-            return self._add_rule(
-                rule_name, self._generate_union_rule(name, schema.get("oneOf") or schema["anyOf"])
-            )
+            return self._add_rule(rule_name, self._generate_union_rule(name, schema.get("oneOf") or schema["anyOf"]))
 
         elif isinstance(schema_type, list):
             return self._add_rule(
@@ -644,29 +624,20 @@ class SchemaConverter:
             )
 
         elif "const" in schema:
-            return self._add_rule(
-                rule_name, self._generate_constant_rule(schema["const"]) + " space"
-            )
+            return self._add_rule(rule_name, self._generate_constant_rule(schema["const"]) + " space")
 
         elif "enum" in schema:
-            rule = (
-                "("
-                + " | ".join((self._generate_constant_rule(v) for v in schema["enum"]))
-                + ") space"
-            )
+            rule = "(" + " | ".join((self._generate_constant_rule(v) for v in schema["enum"])) + ") space"
             return self._add_rule(rule_name, rule)
 
         elif schema_type in (None, "object") and (
-            "properties" in schema
-            or ("additionalProperties" in schema and schema["additionalProperties"] is not True)
+            "properties" in schema or ("additionalProperties" in schema and schema["additionalProperties"] is not True)
         ):
             required = set(schema.get("required", []))
             properties = list(schema.get("properties", {}).items())
             return self._add_rule(
                 rule_name,
-                self._build_object_rule(
-                    properties, required, name, schema.get("additionalProperties")
-                ),
+                self._build_object_rule(properties, required, name, schema.get("additionalProperties")),
             )
 
         elif schema_type in (None, "object", "string") and "allOf" in schema:
@@ -703,18 +674,14 @@ class SchemaConverter:
                 if enum_intersection:
                     rule = (
                         "("
-                        + " | ".join(
-                            (self._generate_constant_rule(v) for v in sorted(enum_intersection))
-                        )
+                        + " | ".join((self._generate_constant_rule(v) for v in sorted(enum_intersection)))
                         + ") space"
                     )
                     return self._add_rule(rule_name, rule)
 
             return self._add_rule(
                 rule_name,
-                self._build_object_rule(
-                    properties, required, hybrid_name, additional_properties=None
-                ),
+                self._build_object_rule(properties, required, hybrid_name, additional_properties=None),
             )
 
         elif schema_type in (None, "array") and ("items" in schema or "prefixItems" in schema):
@@ -724,8 +691,7 @@ class SchemaConverter:
                     rule_name,
                     '"[" space '
                     + ' "," space '.join(
-                        self.visit(item, f'{name}{"-" if name else ""}tuple-{i}')
-                        for i, item in enumerate(items)
+                        self.visit(item, f'{name}{"-" if name else ""}tuple-{i}') for i, item in enumerate(items)
                     )
                     + ' "]" space',
                 )
@@ -736,9 +702,7 @@ class SchemaConverter:
                 return self._add_rule(
                     rule_name,
                     '"[" space '
-                    + _build_repetition(
-                        item_rule_name, min_items, max_items, separator_rule='"," space'
-                    )
+                    + _build_repetition(item_rule_name, min_items, max_items, separator_rule='"," space')
                     + ' "]" space',
                 )
 
@@ -746,15 +710,11 @@ class SchemaConverter:
             return self._visit_pattern(schema["pattern"], rule_name)
 
         elif schema_type in (None, "string") and re.match(r"^uuid[1-5]?$", schema_format or ""):
-            return self._add_primitive(
-                "root" if rule_name == "root" else schema_format, PRIMITIVE_RULES["uuid"]
-            )
+            return self._add_primitive("root" if rule_name == "root" else schema_format, PRIMITIVE_RULES["uuid"])
 
         elif schema_type in (None, "string") and f"{schema_format}-string" in STRING_FORMAT_RULES:
             prim_name = f"{schema_format}-string"
-            return self._add_rule(
-                rule_name, self._add_primitive(prim_name, STRING_FORMAT_RULES[prim_name])
-            )
+            return self._add_rule(rule_name, self._add_primitive(prim_name, STRING_FORMAT_RULES[prim_name]))
 
         elif schema_type == "string" and ("minLength" in schema or "maxLength" in schema):
             char_rule = self._add_primitive("char", PRIMITIVE_RULES["char"])
@@ -767,10 +727,7 @@ class SchemaConverter:
             )
 
         elif schema_type in (None, "integer") and (
-            "minimum" in schema
-            or "exclusiveMinimum" in schema
-            or "maximum" in schema
-            or "exclusiveMaximum" in schema
+            "minimum" in schema or "exclusiveMinimum" in schema or "maximum" in schema or "exclusiveMaximum" in schema
         ):
             min_value = None
             max_value = None
@@ -789,16 +746,12 @@ class SchemaConverter:
             return self._add_rule(rule_name, "".join(out))
 
         elif (schema_type == "object") or (len(schema) == 0):
-            return self._add_rule(
-                rule_name, self._add_primitive("object", PRIMITIVE_RULES["object"])
-            )
+            return self._add_rule(rule_name, self._add_primitive("object", PRIMITIVE_RULES["object"]))
 
         else:
             assert schema_type in PRIMITIVE_RULES, f"Unrecognized schema: {schema}"
             # TODO: support minimum, maximum, exclusiveMinimum, exclusiveMaximum at least for zero
-            return self._add_primitive(
-                "root" if rule_name == "root" else schema_type, PRIMITIVE_RULES[schema_type]
-            )
+            return self._add_primitive("root" if rule_name == "root" else schema_type, PRIMITIVE_RULES[schema_type])
 
     def _add_primitive(self, name: str, rule: BuiltinRule):
         n = self._add_rule(name, rule.content)
@@ -850,9 +803,7 @@ class SchemaConverter:
                 else self._add_rule(f"{sub_name}-k", self._not_strings(sorted_props))
             )
 
-            prop_kv_rule_names["*"] = self._add_rule(
-                f"{sub_name}-kv", f'{key_rule} ":" space {value_rule}'
-            )
+            prop_kv_rule_names["*"] = self._add_rule(f"{sub_name}-kv", f'{key_rule} ":" space {value_rule}')
             optional_props.append("*")
 
         rule = '"{" space '
@@ -879,8 +830,7 @@ class SchemaConverter:
                 return res
 
             rule += " | ".join(
-                get_recursive_refs(optional_props[i:], first_is_optional=False)
-                for i in range(len(optional_props))
+                get_recursive_refs(optional_props[i:], first_is_optional=False) for i in range(len(optional_props))
             )
             if required_props:
                 rule += " )"
@@ -891,9 +841,7 @@ class SchemaConverter:
         return rule
 
     def format_grammar(self):
-        return "\n".join(
-            f"{name} ::= {rule}" for name, rule in sorted(self._rules.items(), key=lambda kv: kv[0])
-        )
+        return "\n".join(f"{name} ::= {rule}" for name, rule in sorted(self._rules.items(), key=lambda kv: kv[0]))
 
 
 def main(args_in=None):

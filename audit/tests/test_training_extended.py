@@ -5,12 +5,12 @@ Extended Test Suite for Sheily Train Modules
 Tests for training orchestration, LoRA training, and related utilities
 """
 
-import pytest
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 import json
 import tempfile
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
 
+import pytest
 
 # ============================================================================
 # Test Fixtures
@@ -90,7 +90,7 @@ class TestTrainingConfig:
             "batch_size": 16,
         }
         config_file.write_text(json.dumps(config_data))
-        
+
         loaded = json.loads(config_file.read_text())
         assert loaded["model_name"] == "llama-3.2-1b"
         assert loaded["epochs"] == 5
@@ -153,10 +153,7 @@ class TestLoRATraining:
     def test_batch_creation(self, sample_training_data):
         """Test creating training batches"""
         batch_size = 2
-        batches = [
-            sample_training_data[i : i + batch_size]
-            for i in range(0, len(sample_training_data), batch_size)
-        ]
+        batches = [sample_training_data[i : i + batch_size] for i in range(0, len(sample_training_data), batch_size)]
         assert len(batches) == 2
         assert len(batches[0]) == 2
         assert len(batches[1]) == 1
@@ -225,12 +222,12 @@ class TestBranchDetection:
             "programming": ["python", "code"],
             "medicine": ["health"],
         }
-        
+
         scores = {}
         for branch, keywords in branches.items():
             score = sum(1 for kw in keywords if kw in query.lower())
             scores[branch] = score
-        
+
         best_branch = max(scores, key=scores.get)
         assert best_branch == "programming"
 
@@ -314,7 +311,7 @@ class TestErrorHandling:
         """Test handling memory errors"""
         large_array = None
         try:
-            large_array = [0] * (10 ** 9)
+            large_array = [0] * (10**9)
         except MemoryError:
             assert large_array is None
 
@@ -337,7 +334,7 @@ class TestTrainingIntegration:
         # Simulate pipeline steps
         config_valid = mock_config.epochs > 0
         data_loaded = len(sample_training_data) > 0
-        
+
         assert config_valid
         assert data_loaded
 
@@ -345,10 +342,10 @@ class TestTrainingIntegration:
         """Test training with validation data"""
         split_ratio = 0.8
         split_idx = int(len(sample_training_data) * split_ratio)
-        
+
         train_data = sample_training_data[:split_idx]
         val_data = sample_training_data[split_idx:]
-        
+
         assert len(train_data) > 0
         assert len(val_data) > 0
 
@@ -356,10 +353,10 @@ class TestTrainingIntegration:
         """Test checkpoint saving"""
         checkpoint_dir = temp_config_dir / "checkpoints"
         checkpoint_dir.mkdir()
-        
+
         checkpoint_file = checkpoint_dir / "checkpoint_epoch_1.pt"
         checkpoint_file.touch()
-        
+
         assert checkpoint_file.exists()
 
     def test_metrics_logging(self):
@@ -384,18 +381,20 @@ class TestPerformance:
     def test_batch_processing_speed(self, sample_training_data):
         """Test batch processing speed"""
         import time
+
         start = time.time()
-        batches = [sample_training_data[i:i+2] for i in range(0, len(sample_training_data), 2)]
+        batches = [sample_training_data[i : i + 2] for i in range(0, len(sample_training_data), 2)]
         elapsed = time.time() - start
-        
+
         assert elapsed < 1.0  # Should be very fast
 
     def test_memory_efficiency(self):
         """Test memory efficiency"""
         import sys
+
         small_list = [1, 2, 3, 4, 5]
         large_list = list(range(10000))
-        
+
         assert sys.getsizeof(small_list) < sys.getsizeof(large_list)
 
     def test_concurrent_data_loading(self):
@@ -421,7 +420,7 @@ class TestUtilities:
         """Test path resolution"""
         test_file = temp_config_dir / "test.txt"
         test_file.write_text("test")
-        
+
         resolved = test_file.resolve()
         assert resolved.exists()
 
@@ -434,7 +433,7 @@ class TestUtilities:
         }
         json_file = temp_config_dir / "data.json"
         json_file.write_text(json.dumps(data))
-        
+
         loaded = json.loads(json_file.read_text())
         assert loaded["name"] == "model"
 
@@ -442,7 +441,7 @@ class TestUtilities:
         """Test config merging"""
         default_config = {"epochs": 5, "batch_size": 8}
         custom_config = {"epochs": 10}
-        
+
         merged = {**default_config, **custom_config}
         assert merged["epochs"] == 10
         assert merged["batch_size"] == 8

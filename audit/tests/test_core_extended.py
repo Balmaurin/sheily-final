@@ -5,15 +5,15 @@ Extended Test Suite for Sheily Core Modules
 Tests for core utilities, configuration, logging, and security
 """
 
-import pytest
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 import json
-import tempfile
 import logging
-from datetime import datetime
 import sys
+import tempfile
+from datetime import datetime
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
 
+import pytest
 
 # ============================================================================
 # Test Fixtures
@@ -65,7 +65,7 @@ class TestConfiguration:
         """Test loading configuration from file"""
         config_file = temp_core_dir / "config.json"
         config_file.write_text(json.dumps(sample_config))
-        
+
         loaded = json.loads(config_file.read_text())
         assert loaded["app_name"] == "sheily"
         assert loaded["version"] == "1.0.0"
@@ -77,14 +77,14 @@ class TestConfiguration:
             "log_level": "INFO",
             "timeout": 300,
         }
-        
+
         assert config.get("debug", False) == True
         assert config.get("timeout", 300) == 300
 
     def test_config_validation(self, sample_config):
         """Test configuration validation"""
         required_fields = ["app_name", "version"]
-        
+
         for field in required_fields:
             assert field in sample_config
 
@@ -92,7 +92,7 @@ class TestConfiguration:
         """Test configuration overrides"""
         overrides = {"debug": False, "max_tokens": 4096}
         merged = {**sample_config, **overrides}
-        
+
         assert merged["debug"] == False
         assert merged["max_tokens"] == 4096
         assert merged["app_name"] == "sheily"  # Original preserved
@@ -100,15 +100,15 @@ class TestConfiguration:
     def test_environment_variable_config(self):
         """Test loading config from environment variables"""
         import os
-        
+
         os.environ["SHEILY_DEBUG"] = "true"
         os.environ["SHEILY_TIMEOUT"] = "600"
-        
+
         config = {
             "debug": os.getenv("SHEILY_DEBUG", "false").lower() == "true",
             "timeout": int(os.getenv("SHEILY_TIMEOUT", "300")),
         }
-        
+
         assert config["debug"] == True
         assert config["timeout"] == 600
 
@@ -134,7 +134,7 @@ class TestLogging:
             "WARNING": logging.WARNING,
             "ERROR": logging.ERROR,
         }
-        
+
         assert log_levels["DEBUG"] < log_levels["INFO"]
         assert log_levels["WARNING"] > log_levels["INFO"]
 
@@ -146,7 +146,7 @@ class TestLogging:
             "message": "Test message",
             "module": "test",
         }
-        
+
         assert "timestamp" in log_entry
         assert "message" in log_entry
 
@@ -157,7 +157,7 @@ class TestLogging:
             {"level": "ERROR", "message": "error msg"},
             {"level": "INFO", "message": "info msg"},
         ]
-        
+
         error_logs = [log for log in logs if log["level"] == "ERROR"]
         assert len(error_logs) == 1
 
@@ -168,7 +168,7 @@ class TestLogging:
             "session_id": "sess456",
             "request_id": "req789",
         }
-        
+
         assert context["user_id"] == "user123"
 
     def test_exception_logging(self, mock_logger):
@@ -191,7 +191,7 @@ class TestSecurity:
         """Test input sanitization"""
         untrusted_input = "<script>alert('xss')</script>"
         sanitized = untrusted_input.replace("<", "&lt;").replace(">", "&gt;")
-        
+
         assert "<script>" not in sanitized
         assert "&lt;script&gt;" in sanitized
 
@@ -199,16 +199,16 @@ class TestSecurity:
         """Test path traversal prevention"""
         user_input = "../../etc/passwd"
         base_path = Path("/safe/directory")
-        
+
         requested_path = (base_path / user_input).resolve()
         is_safe = str(requested_path).startswith(str(base_path.resolve()))
-        
+
         assert not is_safe or user_input.startswith("..")
 
     def test_command_injection_prevention(self):
         """Test command injection prevention"""
         user_input = "test; rm -rf /"
-        
+
         # Should not execute shell commands directly
         assert ";" in user_input
 
@@ -219,16 +219,16 @@ class TestSecurity:
             datetime.now().timestamp() + 0.1,
             datetime.now().timestamp() + 0.2,
         ]
-        
+
         requests_per_second = len(request_timestamps) / 1.0
         rate_limit = 100
-        
+
         assert requests_per_second < rate_limit
 
     def test_authentication_mocking(self):
         """Test authentication"""
         user = {"username": "admin", "password_hash": "hashed_pwd"}
-        
+
         assert "password_hash" in user
         assert "password" not in user  # Should not store plaintext
 
@@ -236,7 +236,7 @@ class TestSecurity:
         """Test authorization check"""
         user_permissions = ["read", "write"]
         required_permission = "write"
-        
+
         assert required_permission in user_permissions
 
 
@@ -251,10 +251,10 @@ class TestUtilityFunctions:
     def test_string_utilities(self):
         """Test string utility functions"""
         text = "  Hello World  "
-        
+
         stripped = text.strip()
         assert stripped == "Hello World"
-        
+
         lower = text.lower()
         assert "hello" in lower
 
@@ -262,7 +262,7 @@ class TestUtilityFunctions:
         """Test path utility functions"""
         test_path = temp_core_dir / "test" / "nested" / "path"
         test_path.mkdir(parents=True, exist_ok=True)
-        
+
         assert test_path.exists()
         assert test_path.is_dir()
 
@@ -270,7 +270,7 @@ class TestUtilityFunctions:
         """Test file utility functions"""
         test_file = temp_core_dir / "test.txt"
         test_file.write_text("test content")
-        
+
         assert test_file.exists()
         assert test_file.read_text() == "test content"
 
@@ -278,26 +278,26 @@ class TestUtilityFunctions:
         """Test JSON utility functions"""
         data = {"key": "value", "number": 42}
         json_file = temp_core_dir / "data.json"
-        
+
         json_file.write_text(json.dumps(data))
         loaded = json.loads(json_file.read_text())
-        
+
         assert loaded["key"] == "value"
 
     def test_time_utilities(self):
         """Test time utility functions"""
         now = datetime.now()
         iso_format = now.isoformat()
-        
+
         assert "T" in iso_format
 
     def test_hash_utilities(self):
         """Test hash utility functions"""
         import hashlib
-        
+
         text = "test"
         hash_value = hashlib.sha256(text.encode()).hexdigest()
-        
+
         assert len(hash_value) == 32
 
 
@@ -317,37 +317,38 @@ class TestContextManagement:
             "timestamp": datetime.now().isoformat(),
             "metadata": {"source": "api"},
         }
-        
+
         assert context["request_id"] == "req123"
         assert "timestamp" in context
 
     def test_context_enrichment(self):
         """Test context enrichment"""
         context = {"user_id": "user123"}
-        
+
         # Add enrichment data
         context["user_agent"] = "Mozilla/5.0"
         context["ip_address"] = "192.168.1.1"
-        
+
         assert context["user_agent"] == "Mozilla/5.0"
 
     def test_context_passing(self):
         """Test context passing through functions"""
+
         def process_with_context(context, data):
             return {"context": context, "result": data}
-        
+
         context = {"request_id": "123"}
         result = process_with_context(context, "data")
-        
+
         assert result["context"]["request_id"] == "123"
 
     def test_context_cleanup(self):
         """Test context cleanup"""
         context = {"temp_data": "value"}
-        
+
         # Cleanup
         context.pop("temp_data", None)
-        
+
         assert "temp_data" not in context
 
 
@@ -362,10 +363,10 @@ class TestCoreIntegration:
     def test_config_logger_integration(self, sample_config, mock_logger):
         """Test configuration and logger integration"""
         config = sample_config
-        
+
         log_level = config.get("log_level", "INFO")
         assert log_level == "INFO"
-        
+
         mock_logger.info("Config loaded")
         mock_logger.info.assert_called_with("Config loaded")
 
@@ -375,21 +376,21 @@ class TestCoreIntegration:
             "user_id": "user123",
             "permissions": ["read", "write"],
         }
-        
+
         required_perm = "read"
         has_permission = required_perm in context["permissions"]
-        
+
         assert has_permission
 
     def test_config_file_environment_integration(self, temp_core_dir, sample_config):
         """Test config file and environment integration"""
         import os
-        
+
         config_file = temp_core_dir / "config.json"
         config_file.write_text(json.dumps(sample_config))
-        
+
         os.environ["CONFIG_PATH"] = str(config_file)
-        
+
         config_path = os.getenv("CONFIG_PATH")
         assert Path(config_path).exists()
 
@@ -418,14 +419,14 @@ class TestDependencies:
             "datetime",
             "logging",
         ]
-        
+
         for module_name in required_modules:
             assert module_name in sys.modules or __import__(module_name)
 
     def test_optional_dependencies(self):
         """Test optional dependencies"""
         optional = ["numpy", "pandas"]
-        
+
         for module_name in optional:
             try:
                 __import__(module_name)
@@ -436,7 +437,7 @@ class TestDependencies:
         """Test version compatibility"""
         version = sample_config["version"]
         major, minor, patch = version.split(".")
-        
+
         assert int(major) >= 1
         assert int(minor) >= 0
 
@@ -457,7 +458,7 @@ class TestErrorHandling:
     def test_invalid_json_handling(self):
         """Test handling invalid JSON"""
         invalid_json = "{invalid"
-        
+
         try:
             json.loads(invalid_json)
             assert False, "Should raise JSONDecodeError"
@@ -468,7 +469,7 @@ class TestErrorHandling:
         """Test handling permission errors"""
         restricted_file = temp_core_dir / "restricted.txt"
         restricted_file.write_text("content")
-        
+
         try:
             restricted_file.chmod(0o000)
             # Try to read (should fail if permissions properly enforced)
@@ -480,10 +481,10 @@ class TestErrorHandling:
     def test_timeout_handling(self):
         """Test timeout handling"""
         import signal
-        
+
         def timeout_handler(signum, frame):
             raise TimeoutError("Operation timed out")
-        
+
         # Just verify handler is callable
         assert callable(timeout_handler)
 
@@ -499,36 +500,36 @@ class TestPerformance:
     def test_config_loading_speed(self, temp_core_dir, sample_config):
         """Test configuration loading speed"""
         import time
-        
+
         config_file = temp_core_dir / "config.json"
         config_file.write_text(json.dumps(sample_config))
-        
+
         start = time.time()
         loaded = json.loads(config_file.read_text())
         elapsed = time.time() - start
-        
+
         assert elapsed < 0.1
 
     def test_logger_efficiency(self, mock_logger):
         """Test logger efficiency"""
         import time
-        
+
         start = time.time()
         for _ in range(1000):
             mock_logger.info("Test message")
         elapsed = time.time() - start
-        
+
         assert elapsed < 1.0
 
     def test_path_resolution_speed(self, temp_core_dir):
         """Test path resolution speed"""
         import time
-        
+
         start = time.time()
         for _ in range(100):
             (temp_core_dir / "test" / "path").resolve()
         elapsed = time.time() - start
-        
+
         assert elapsed < 0.5
 
 
@@ -543,7 +544,7 @@ class TestStateManagement:
     def test_global_state_handling(self):
         """Test global state handling"""
         global_state = {"initialized": False}
-        
+
         global_state["initialized"] = True
         assert global_state["initialized"] == True
 
@@ -551,10 +552,10 @@ class TestStateManagement:
         """Test state persistence"""
         state = {"counter": 0}
         state_file = temp_core_dir / "state.json"
-        
+
         state["counter"] += 1
         state_file.write_text(json.dumps(state))
-        
+
         loaded_state = json.loads(state_file.read_text())
         assert loaded_state["counter"] == 1
 
@@ -562,7 +563,7 @@ class TestStateManagement:
         """Test state isolation between tests"""
         state1 = {"value": 1}
         state2 = {"value": 2}
-        
+
         assert state1["value"] != state2["value"]
 
 

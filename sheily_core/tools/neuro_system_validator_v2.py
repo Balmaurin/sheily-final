@@ -220,9 +220,7 @@ class NeuroSystemValidator:
         # Guardar reporte
         self._save_validation_report(report)
 
-        self.logger.info(
-            f"Validación completada en {(datetime.now() - validation_start).total_seconds():.2f}s"
-        )
+        self.logger.info(f"Validación completada en {(datetime.now() - validation_start).total_seconds():.2f}s")
 
         return report
 
@@ -308,9 +306,7 @@ class NeuroSystemValidator:
                         metrics={
                             "search_time": search_time,
                             "results_found": len(search_results),
-                            "avg_relevance": sum(
-                                r.get("relevance_score", 0) for r in search_results
-                            )
+                            "avg_relevance": sum(r.get("relevance_score", 0) for r in search_results)
                             / max(len(search_results), 1),
                         },
                         execution_time=search_time,
@@ -422,9 +418,7 @@ class NeuroSystemValidator:
                         metrics={
                             "search_time": search_time,
                             "results_found": len(search_results),
-                            "avg_relevance": sum(
-                                r.get("relevance_score", 0) for r in search_results
-                            )
+                            "avg_relevance": sum(r.get("relevance_score", 0) for r in search_results)
                             / max(len(search_results), 1),
                         },
                         execution_time=search_time,
@@ -632,9 +626,7 @@ class NeuroSystemValidator:
             start_time = time.time()
             try:
                 test_message = "¿Qué es la inteligencia artificial?"
-                chat_result = integration_engine.enhanced_chat_with_memory(
-                    test_message, "test_session"
-                )
+                chat_result = integration_engine.enhanced_chat_with_memory(test_message, "test_session")
                 chat_time = time.time() - start_time
 
                 results.append(
@@ -645,9 +637,7 @@ class NeuroSystemValidator:
                         metrics={
                             "chat_response_time": chat_time,
                             "response_length": len(chat_result.get("response", "")),
-                            "used_neuro_components": chat_result.get(
-                                "used_neuro_components", False
-                            ),
+                            "used_neuro_components": chat_result.get("used_neuro_components", False),
                         },
                         execution_time=chat_time,
                     )
@@ -739,12 +729,8 @@ class NeuroSystemValidator:
                         success="attention_weights" in attention_results,
                         metrics={
                             "computation_time": attention_time,
-                            "attention_patterns_count": len(
-                                attention_results.get("attention_patterns", {})
-                            ),
-                            "weights_calculated": len(
-                                attention_results.get("attention_weights", [])
-                            ),
+                            "attention_patterns_count": len(attention_results.get("attention_patterns", {})),
+                            "weights_calculated": len(attention_results.get("attention_weights", [])),
                         },
                         execution_time=attention_time,
                     )
@@ -784,9 +770,7 @@ class NeuroSystemValidator:
             # Test 1: Inicialización de almacenamiento
             start_time = time.time()
             try:
-                from sheily_core.memory.optimized_vector_store_v2 import (
-                    integrate_optimized_vector_store,
-                )
+                from sheily_core.memory.optimized_vector_store_v2 import integrate_optimized_vector_store
 
                 vector_store = integrate_optimized_vector_store()
                 init_time = time.time() - start_time
@@ -815,9 +799,7 @@ class NeuroSystemValidator:
             # Test 2: Almacenamiento de vectores
             start_time = time.time()
             try:
-                test_vectors = {
-                    f"vec_{i}": np.random.random(768).astype(np.float32) for i in range(100)
-                }
+                test_vectors = {f"vec_{i}": np.random.random(768).astype(np.float32) for i in range(100)}
 
                 stored_count = 0
                 for vector_id, vector in test_vectors.items():
@@ -866,9 +848,7 @@ class NeuroSystemValidator:
                         metrics={
                             "search_time": search_time,
                             "results_found": len(search_results),
-                            "avg_similarity": sum(
-                                r.get("similarity_score", 0) for r in search_results
-                            )
+                            "avg_similarity": sum(r.get("similarity_score", 0) for r in search_results)
                             / max(len(search_results), 1),
                         },
                         execution_time=search_time,
@@ -909,9 +889,7 @@ class NeuroSystemValidator:
             # Test 1: Inicialización de procesador
             start_time = time.time()
             try:
-                from sheily_core.content.extended_content_processor_v2 import (
-                    integrate_extended_content_processor,
-                )
+                from sheily_core.content.extended_content_processor_v2 import integrate_extended_content_processor
 
                 content_processor = integrate_extended_content_processor()
                 init_time = time.time() - start_time
@@ -1006,9 +984,7 @@ class NeuroSystemValidator:
             # Test 1: Inicialización de aprendizaje autónomo
             start_time = time.time()
             try:
-                from sheily_core.learning.autonomous_learning_v2 import (
-                    integrate_autonomous_learning,
-                )
+                from sheily_core.learning.autonomous_learning_v2 import integrate_autonomous_learning
 
                 learning_engine = integrate_autonomous_learning()
                 init_time = time.time() - start_time
@@ -1054,9 +1030,7 @@ class NeuroSystemValidator:
                         metrics={
                             "processing_time": processing_time,
                             "patterns_detected": learning_result.get("detected_patterns", 0),
-                            "best_strategy_fitness": learning_result.get(
-                                "best_strategy_fitness", 0.0
-                            ),
+                            "best_strategy_fitness": learning_result.get("best_strategy_fitness", 0.0),
                         },
                         execution_time=processing_time,
                     )
@@ -1104,9 +1078,7 @@ class NeuroSystemValidator:
             success_rate = successful_tests / total_tests if total_tests > 0 else 0.0
 
             # Calcular métricas de rendimiento promedio
-            avg_response_time = (
-                sum(r.execution_time for r in results) / total_tests if total_tests > 0 else 0.0
-            )
+            avg_response_time = sum(r.execution_time for r in results) / total_tests if total_tests > 0 else 0.0
 
             # Actualizar salud del componente
             if component_name == "human_memory":
@@ -1120,9 +1092,7 @@ class NeuroSystemValidator:
 
         # Calcular métricas generales del sistema
         all_results = [result for results in component_results.values() for result in results]
-        overall_success_rate = (
-            sum(1 for r in all_results if r.success) / len(all_results) if all_results else 0.0
-        )
+        overall_success_rate = sum(1 for r in all_results if r.success) / len(all_results) if all_results else 0.0
 
         report.system_metrics = {
             "overall_success_rate": overall_success_rate,
@@ -1145,15 +1115,11 @@ class NeuroSystemValidator:
         report.improvement_areas = self._identify_improvement_areas(component_results)
 
         # Generar oportunidades de optimización
-        report.optimization_opportunities = self._identify_optimization_opportunities(
-            component_results
-        )
+        report.optimization_opportunities = self._identify_optimization_opportunities(component_results)
 
         return report
 
-    def _identify_improvement_areas(
-        self, component_results: Dict[str, List[ValidationResult]]
-    ) -> List[str]:
+    def _identify_improvement_areas(self, component_results: Dict[str, List[ValidationResult]]) -> List[str]:
         """Identificar áreas que necesitan mejora"""
         improvement_areas = []
 
@@ -1170,9 +1136,7 @@ class NeuroSystemValidator:
 
         return improvement_areas
 
-    def _identify_optimization_opportunities(
-        self, component_results: Dict[str, List[ValidationResult]]
-    ) -> List[str]:
+    def _identify_optimization_opportunities(self, component_results: Dict[str, List[ValidationResult]]) -> List[str]:
         """Identificar oportunidades de optimización"""
         opportunities = []
 
@@ -1183,9 +1147,7 @@ class NeuroSystemValidator:
 
             # Identificar oportunidades
             if avg_response_time > 2.0:
-                opportunities.append(
-                    f"Optimizar velocidad de {component_name} (promedio: {avg_response_time:.2f}s)"
-                )
+                opportunities.append(f"Optimizar velocidad de {component_name} (promedio: {avg_response_time:.2f}s)")
 
             # Verificar uso de recursos
             high_resource_tests = [r for r in results if r.metrics.get("memory_usage", 0) > 0.8]
@@ -1197,17 +1159,13 @@ class NeuroSystemValidator:
     def _save_validation_report(self, report: SystemValidationReport):
         """Guardar reporte de validación"""
         try:
-            report_file = (
-                self.validation_root / "reports" / f"validation_report_{int(time.time())}.json"
-            )
+            report_file = self.validation_root / "reports" / f"validation_report_{int(time.time())}.json"
 
             with open(report_file, "w", encoding="utf-8") as f:
                 json.dump(asdict(report), f, ensure_ascii=False, indent=2, default=str)
 
             # También guardar métricas de rendimiento
-            metrics_file = (
-                self.validation_root / "metrics" / f"performance_metrics_{int(time.time())}.json"
-            )
+            metrics_file = self.validation_root / "metrics" / f"performance_metrics_{int(time.time())}.json"
             with open(metrics_file, "w", encoding="utf-8") as f:
                 json.dump(report.system_metrics, f, ensure_ascii=False, indent=2)
 
@@ -1253,9 +1211,7 @@ class NeuroSystemValidator:
             # Test de memorización masiva
             start_time = time.time()
             for i in range(100):
-                content = (
-                    f"Contenido de benchmark número {i} para probar rendimiento de memoria. " * 10
-                )
+                content = f"Contenido de benchmark número {i} para probar rendimiento de memoria. " * 10
                 memory_engine.memorize_content(content, "text", 0.5)
 
             memorization_time = time.time() - start_time
@@ -1273,9 +1229,7 @@ class NeuroSystemValidator:
                 "search_rate": 50 / max(search_time, 0.001),
                 "total_memorization_time": memorization_time,
                 "total_search_time": search_time,
-                "memory_efficiency": min(
-                    1.0, (memorization_time + search_time) / 10
-                ),  # Normalizado
+                "memory_efficiency": min(1.0, (memorization_time + search_time) / 10),  # Normalizado
             }
 
         except Exception as e:
@@ -1326,9 +1280,7 @@ class NeuroSystemValidator:
         benchmark_results = {}
 
         try:
-            from sheily_core.content.extended_content_processor_v2 import (
-                integrate_extended_content_processor,
-            )
+            from sheily_core.content.extended_content_processor_v2 import integrate_extended_content_processor
 
             content_processor = integrate_extended_content_processor()
 
@@ -1344,8 +1296,7 @@ class NeuroSystemValidator:
 
             benchmark_results = {
                 "processing_rate": len(test_content) / max(processing_time, 0.001),
-                "chunks_per_second": processing_result.get_total_chunks()
-                / max(processing_time, 0.001),
+                "chunks_per_second": processing_result.get_total_chunks() / max(processing_time, 0.001),
                 "processing_time": processing_time,
                 "content_size": len(test_content),
                 "processing_efficiency": min(1.0, processing_result.get_total_chunks() / 100),

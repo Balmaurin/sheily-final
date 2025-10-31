@@ -68,11 +68,7 @@ def validate_single_adapter(adapter_path):
                         config_score += 2
                     elif field == "r" and isinstance(config[field], int) and config[field] > 0:
                         config_score += 2
-                    elif (
-                        field == "lora_alpha"
-                        and isinstance(config[field], int)
-                        and config[field] > 0
-                    ):
+                    elif field == "lora_alpha" and isinstance(config[field], int) and config[field] > 0:
                         config_score += 2
                 else:
                     results["issues"].append(f"Campo crítico faltante: {field}")

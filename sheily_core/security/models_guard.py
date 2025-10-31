@@ -8,9 +8,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ALLOW = json.loads(
-    (Path(os.getenv("SHEILY_MODELS_ALLOWLIST_PATH", "models/ALLOWLIST.json"))).read_text("utf-8")
-)
+ALLOW = json.loads((Path(os.getenv("SHEILY_MODELS_ALLOWLIST_PATH", "models/ALLOWLIST.json"))).read_text("utf-8"))
 BLOCKED = [kw.lower() for kw in ALLOW["llm"]["blocked_keywords"]]
 VOICE_DIRS = [d for d in ALLOW["voice_models"]["allowed_dirs"]]
 

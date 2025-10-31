@@ -59,6 +59,9 @@ data/**/*.index
 # Corpus and training datasets (large)
 all-Branches/**/corpus/**
 all-Branches/**/training/**/*.jsonl
+all-Branches/**/adapters/**
+all-Branches/**/rag/**/*.json
+all-Branches/**/tokenizer.*
 memory/**/training/**/*.jsonl
 
 # Generated reports and build outputs

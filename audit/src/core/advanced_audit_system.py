@@ -219,9 +219,7 @@ class AdvancedAuditSystem:
                                 {
                                     "type": issue_type,
                                     "file": str(py_file.relative_to(self.project_root)),
-                                    "severity": "HIGH"
-                                    if issue_type in ["password", "api_key"]
-                                    else "MEDIUM",
+                                    "severity": "HIGH" if issue_type in ["password", "api_key"] else "MEDIUM",
                                 }
                             )
             except:
@@ -270,9 +268,7 @@ class AdvancedAuditSystem:
         if test_dir.exists():
             test_files = list(test_dir.glob("test_*.py"))
             test_stats["test_files"] = len(test_files)
-            test_stats["total_tests"] = sum(
-                len(open(f).read().split("def test_")) for f in test_files if f.is_file()
-            )
+            test_stats["total_tests"] = sum(len(open(f).read().split("def test_")) for f in test_files if f.is_file())
 
         self.metrics["testing"] = test_stats
 
@@ -347,9 +343,7 @@ class AdvancedAuditSystem:
     def create_audit_reports(self) -> None:
         """Create comprehensive audit reports"""
         # 1. JSON Report
-        report_path = (
-            self.reports_dir / f"audit_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        )
+        report_path = self.reports_dir / f"audit_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         with open(report_path, "w") as f:
             json.dump(self.metrics, f, indent=2)
 
@@ -387,7 +381,7 @@ class AdvancedAuditSystem:
     <div class="container">
         <h1>🔍 Sheily AI - Advanced Audit Report</h1>
         <p>Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
-        
+
         <h2>📊 Project Metrics</h2>
         <div class="metric">
             <div class="metric-value">{self.metrics['files']['python']}</div>
@@ -405,13 +399,13 @@ class AdvancedAuditSystem:
             <div class="metric-value">{self.metrics['dependencies']['total']}</div>
             <div class="metric-label">Dependencies</div>
         </div>
-        
+
         <h2>🔒 Security Status</h2>
         <div class="metric warning" style="border-left-color: #4CAF50;">
             <div class="metric-value">{self.metrics['security']['issues_found']}</div>
             <div class="metric-label">Security Issues</div>
         </div>
-        
+
         <h2>✅ Quality Gates</h2>
         <table>
             <tr><th>Gate</th><th>Target</th><th>Actual</th><th>Status</th></tr>
@@ -438,9 +432,7 @@ class AdvancedAuditSystem:
 </body>
 </html>
 """
-        html_path = (
-            self.reports_dir / f"audit_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
-        )
+        html_path = self.reports_dir / f"audit_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
         with open(html_path, "w") as f:
             f.write(html_content)
 
@@ -513,9 +505,7 @@ Outdated Packages:           {self.metrics['dependencies']['outdated_count']}
 Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 """
 
-        summary_path = (
-            self.reports_dir / f"audit_summary_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
-        )
+        summary_path = self.reports_dir / f"audit_summary_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
         with open(summary_path, "w") as f:
             f.write(summary)
 

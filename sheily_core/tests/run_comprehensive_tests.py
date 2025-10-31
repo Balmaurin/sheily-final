@@ -364,9 +364,7 @@ class EnterpriseTestReporter:
                 report.append(f"{test_type.upper()}: {status}")
 
                 if not result["success"]:
-                    report.append(
-                        f"   🔍 Revisión requerida: {result.get('error', 'Error desconocido')}"
-                    )
+                    report.append(f"   🔍 Revisión requerida: {result.get('error', 'Error desconocido')}")
 
         report.append("")
         report.append("🎯 CUMPLIMIENTO DE ESTÁNDARES EMPRESARIALES:")
@@ -391,9 +389,7 @@ class EnterpriseTestReporter:
         # Verificar cada suite de test empresarial
         required_suites = ["unit_tests", "integration_tests", "security_tests", "performance_tests"]
         completed_suites = sum(
-            1
-            for suite in required_suites
-            if suite in results and results[suite].get("success", False)
+            1 for suite in required_suites if suite in results and results[suite].get("success", False)
         )
 
         if completed_suites < len(required_suites):

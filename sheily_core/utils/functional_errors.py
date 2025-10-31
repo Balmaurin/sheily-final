@@ -30,20 +30,7 @@ from contextlib import asynccontextmanager, contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Generic,
-    List,
-    Optional,
-    Protocol,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import Any, Awaitable, Callable, Dict, Generic, List, Optional, Protocol, Tuple, Type, TypeVar, Union
 
 from .logger import get_logger
 
@@ -319,14 +306,10 @@ def with_error_handling(
 
                 # Si la función ya retorna un Result, devolverlo con contexto
                 if isinstance(result, Result):
-                    return ContextualResult(
-                        result=result, context=context, execution_time=execution_time
-                    )
+                    return ContextualResult(result=result, context=context, execution_time=execution_time)
 
                 # Si retorna un valor normal, envolverlo en Ok
-                return ContextualResult(
-                    result=Ok(result), context=context, execution_time=execution_time
-                )
+                return ContextualResult(result=Ok(result), context=context, execution_time=execution_time)
 
             except Exception as e:
                 execution_time = time.time() - start_time
@@ -347,9 +330,7 @@ def with_error_handling(
                             if recovery_result.is_ok():
                                 if log_errors:
                                     logger = get_logger(component)
-                                    logger.warning(
-                                        f"Recovered from error using {strategy.__class__.__name__}"
-                                    )
+                                    logger.warning(f"Recovered from error using {strategy.__class__.__name__}")
                                 return ContextualResult(
                                     result=recovery_result,
                                     context=context,
@@ -366,9 +347,7 @@ def with_error_handling(
                     )
 
                 # Crear resultado de error
-                error_result = ContextualResult(
-                    result=Err(error), context=context, execution_time=execution_time
-                )
+                error_result = ContextualResult(result=Err(error), context=context, execution_time=execution_time)
 
                 if rethrow_on_failure:
                     raise e
@@ -405,14 +384,10 @@ def async_with_error_handling(
 
                 # Si la función ya retorna un Result, devolverlo con contexto
                 if isinstance(result, (Ok, Err)):
-                    return ContextualResult(
-                        result=result, context=context, execution_time=execution_time
-                    )
+                    return ContextualResult(result=result, context=context, execution_time=execution_time)
 
                 # Si retorna un valor normal, envolverlo en Ok
-                return ContextualResult(
-                    result=Ok(result), context=context, execution_time=execution_time
-                )
+                return ContextualResult(result=Ok(result), context=context, execution_time=execution_time)
 
             except Exception as e:
                 execution_time = time.time() - start_time
@@ -433,9 +408,7 @@ def async_with_error_handling(
                             if recovery_result.is_ok():
                                 if log_errors:
                                     logger = get_logger(component)
-                                    logger.warning(
-                                        f"Recovered from error using {strategy.__class__.__name__}"
-                                    )
+                                    logger.warning(f"Recovered from error using {strategy.__class__.__name__}")
                                 return ContextualResult(
                                     result=recovery_result,
                                     context=context,
@@ -452,9 +425,7 @@ def async_with_error_handling(
                     )
 
                 # Crear resultado de error
-                error_result = ContextualResult(
-                    result=Err(error), context=context, execution_time=execution_time
-                )
+                error_result = ContextualResult(result=Err(error), context=context, execution_time=execution_time)
 
                 if rethrow_on_failure:
                     raise e
@@ -488,9 +459,7 @@ def with_retry(
                     if attempt < max_attempts - 1:
                         delay = min(base_delay * (2**attempt), max_delay)
                         logger = get_logger(component)
-                        logger.warning(
-                            f"Attempt {attempt + 1} failed, retrying in {delay}s: {str(e)}"
-                        )
+                        logger.warning(f"Attempt {attempt + 1} failed, retrying in {delay}s: {str(e)}")
                         time.sleep(delay)
 
             # Si llegamos aquí, todos los intentos fallaron
@@ -531,9 +500,7 @@ def safe_pipe(value: T, *funcs: Callable[[Any], Any]) -> Result[Any, SheilyError
     return result
 
 
-async def async_safe_pipe(
-    value: T, *funcs: Callable[[Any], Awaitable[Any]]
-) -> Result[Any, SheilyError]:
+async def async_safe_pipe(value: T, *funcs: Callable[[Any], Awaitable[Any]]) -> Result[Any, SheilyError]:
     """Ejecutar una serie de funciones asíncronas en pipeline con manejo de errores"""
     result = Ok(value)
 
@@ -603,9 +570,7 @@ class ErrorMetrics:
             else:
                 # Suavizado exponencial
                 alpha = 0.1
-                self.average_recovery_time = (
-                    alpha * recovery_time + (1 - alpha) * self.average_recovery_time
-                )
+                self.average_recovery_time = alpha * recovery_time + (1 - alpha) * self.average_recovery_time
 
         # Calcular tasa de errores por minuto
         if self.last_error_time:
@@ -630,14 +595,10 @@ class ErrorMonitor:
             self.metrics[component] = ErrorMetrics(component=component)
 
         self.metrics[component].record_error(error, recovery_time)
-        self.error_history.append(
-            {"error": error, "timestamp": datetime.now(), "recovery_time": recovery_time}
-        )
+        self.error_history.append({"error": error, "timestamp": datetime.now(), "recovery_time": recovery_time})
 
         # Log del error
-        self.logger.error(
-            f"Error recorded in {component}", extra={"error": error, "recovery_time": recovery_time}
-        )
+        self.logger.error(f"Error recorded in {component}", extra={"error": error, "recovery_time": recovery_time})
 
     def get_metrics(self, component: Optional[str] = None) -> Dict[str, ErrorMetrics]:
         """Obtener métricas de errores"""
@@ -653,9 +614,7 @@ class ErrorMonitor:
         return {
             "total_errors": total_errors,
             "components_with_errors": components_with_errors,
-            "most_problematic_component": max(
-                self.metrics.items(), key=lambda x: x[1].total_errors
-            )[0]
+            "most_problematic_component": max(self.metrics.items(), key=lambda x: x[1].total_errors)[0]
             if self.metrics
             else None,
             "error_rate_per_minute": sum(m.error_rate_per_minute for m in self.metrics.values()),
@@ -689,9 +648,7 @@ def _categorize_exception(e: Exception) -> ErrorCategory:
         return ErrorCategory.DATABASE
     elif any(word in error_msg for word in ["config", "configuration", "setting"]):
         return ErrorCategory.CONFIGURATION
-    elif any(
-        word in error_msg for word in ["auth", "authentication", "permission", "unauthorized"]
-    ):
+    elif any(word in error_msg for word in ["auth", "authentication", "permission", "unauthorized"]):
         return ErrorCategory.AUTHENTICATION
     else:
         return ErrorCategory.UNKNOWN

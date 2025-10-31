@@ -5,8 +5,9 @@ Integration tests para sheily_train
 Coverage: Entrenamiento, LoRA y procesamiento
 """
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 
 class TestTrainingSetup:
@@ -37,6 +38,7 @@ class TestLoRAConfiguration:
         """Verificar creación de config de adapter"""
         try:
             from sheily_train.core.training.lora_training import create_adapter_config
+
             # Verificar que la función existe
             assert callable(create_adapter_config)
         except ImportError:
@@ -66,6 +68,7 @@ class TestTrainingValidator:
         """Verificar validación de configuración"""
         try:
             from sheily_train.core.training.training_router import validate_training_config
+
             # Verificar que función existe
             assert callable(validate_training_config)
         except ImportError:
@@ -93,6 +96,7 @@ class TestTrainingPipeline:
         """Verificar inicialización del router"""
         try:
             from sheily_train.core.training.training_router import TrainingRouter
+
             assert TrainingRouter is not None
         except ImportError:
             pass

@@ -117,9 +117,7 @@ class BranchManager:
         elif isinstance(data, list):
             # Lista directa de ramas
             for i, branch_info in enumerate(data):
-                branch = self._create_branch_from_dict(
-                    branch_info.get("name", f"branch_{i}"), branch_info
-                )
+                branch = self._create_branch_from_dict(branch_info.get("name", f"branch_{i}"), branch_info)
                 if branch:
                     self.branches[branch.id] = branch
                     loaded_count += 1
@@ -159,9 +157,7 @@ class BranchManager:
 
         return loaded_count
 
-    def _create_branch_from_dict(
-        self, name: str, info: Dict[str, Any]
-    ) -> Optional[BranchDefinition]:
+    def _create_branch_from_dict(self, name: str, info: Dict[str, Any]) -> Optional[BranchDefinition]:
         """Crear definición de rama desde diccionario"""
         if not name or not isinstance(info, dict):
             return None
@@ -224,11 +220,7 @@ class BranchManager:
         """Encontrar ramas por palabra clave"""
         keyword_lower = keyword.lower()
         matching_branch_ids = self.keyword_index.get(keyword_lower, set())
-        return [
-            self.branches[branch_id]
-            for branch_id in matching_branch_ids
-            if branch_id in self.branches
-        ]
+        return [self.branches[branch_id] for branch_id in matching_branch_ids if branch_id in self.branches]
 
     def find_branches_by_domain(self, domain: str) -> List[BranchDefinition]:
         """Encontrar ramas por dominio"""
@@ -256,9 +248,7 @@ class BranchManager:
                 return branch
         return None
 
-    def route_query_to_branch(
-        self, query: str, context: Optional[str] = None
-    ) -> List[Tuple[BranchDefinition, float]]:
+    def route_query_to_branch(self, query: str, context: Optional[str] = None) -> List[Tuple[BranchDefinition, float]]:
         """Enrutar consulta a ramas apropiadas con scoring"""
         query_lower = query.lower()
         context_lower = context.lower() if context else ""
@@ -380,14 +370,11 @@ class BranchManager:
             "branches_with_issues": len(validation_report["issues"]),
             "branches_with_warnings": len(validation_report["warnings"]),
             "complexity_distribution": Counter(b.complexity_level for b in self.branches.values()),
-            "avg_keywords_per_branch": sum(len(b.keywords) for b in self.branches.values())
-            / len(self.branches)
+            "avg_keywords_per_branch": sum(len(b.keywords) for b in self.branches.values()) / len(self.branches)
             if self.branches
             else 0,
             "total_keywords": len(self.keyword_index),
-            "domains_covered": len(
-                set(domain for b in self.branches.values() for domain in b.related_domains)
-            ),
+            "domains_covered": len(set(domain for b in self.branches.values() for domain in b.related_domains)),
         }
 
         return validation_report
@@ -439,9 +426,7 @@ class BranchManager:
             "complexity_distribution": dict(complexity_distribution),
             "domains_covered": sorted(all_domains),
             "missing_common_domains": sorted(missing_domains),
-            "coverage_percentage": len(covered_domains & common_domains)
-            / len(common_domains)
-            * 100,
+            "coverage_percentage": len(covered_domains & common_domains) / len(common_domains) * 100,
             "branches_per_complexity": dict(complexity_distribution),
             "avg_domains_per_branch": len(all_domains) / len(self.branches) if self.branches else 0,
         }
@@ -525,8 +510,7 @@ class BranchManager:
             "complexity_distribution": dict(Counter(b.complexity_level for b in active_branches)),
             "total_keywords": sum(len(b.keywords) for b in active_branches),
             "total_domains": len(set(d for b in active_branches for d in b.related_domains)),
-            "avg_keywords_per_branch": sum(len(b.keywords) for b in active_branches)
-            / len(active_branches)
+            "avg_keywords_per_branch": sum(len(b.keywords) for b in active_branches) / len(active_branches)
             if active_branches
             else 0,
             "last_updated": datetime.now().isoformat(),

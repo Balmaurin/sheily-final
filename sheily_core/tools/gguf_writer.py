@@ -173,11 +173,7 @@ class GGUFWriter:
         ]
 
     def open_output_file(self, path: Path | None = None) -> None:
-        if (
-            self.state is WriterState.EMPTY
-            and self.fout is not None
-            and (path is None or path == self.path)
-        ):
+        if self.state is WriterState.EMPTY and self.fout is not None and (path is None or path == self.path):
             # allow calling this multiple times as long as the path is the same
             return
 
@@ -221,9 +217,7 @@ class GGUFWriter:
         for i, kv_data in enumerate(self.kv_data):
             kv_data[Keys.Split.LLM_KV_SPLIT_NO] = GGUFValue(i, GGUFValueType.UINT16)
             kv_data[Keys.Split.LLM_KV_SPLIT_COUNT] = GGUFValue(total_splits, GGUFValueType.UINT16)
-            kv_data[Keys.Split.LLM_KV_SPLIT_TENSORS_COUNT] = GGUFValue(
-                total_tensors, GGUFValueType.INT32
-            )
+            kv_data[Keys.Split.LLM_KV_SPLIT_TENSORS_COUNT] = GGUFValue(total_tensors, GGUFValueType.INT32)
 
     def write_header_to_file(self, path: Path | None = None) -> None:
         if len(self.tensors) == 1 and (self.split_max_tensors != 0 or self.split_max_size != 0):
@@ -258,9 +252,7 @@ class GGUFWriter:
 
             for key, val in kv_data.items():
                 kv_bytes += self._pack_val(key, GGUFValueType.STRING, add_vtype=False)
-                kv_bytes += self._pack_val(
-                    val.value, val.type, add_vtype=True, sub_type=val.sub_type
-                )
+                kv_bytes += self._pack_val(val.value, val.type, add_vtype=True, sub_type=val.sub_type)
 
             fout.write(kv_bytes)
 
@@ -290,13 +282,9 @@ class GGUFWriter:
             fout.flush()
         self.state = WriterState.TI_DATA
 
-    def add_key_value(
-        self, key: str, val: Any, vtype: GGUFValueType, sub_type: GGUFValueType | None = None
-    ) -> None:
+    def add_key_value(self, key: str, val: Any, vtype: GGUFValueType, sub_type: GGUFValueType | None = None) -> None:
         if any(key in kv_data for kv_data in self.kv_data):
-            logger.warning(
-                f"Duplicated key name {key!r}, overwriting it with new value {val!r} of type {vtype.name}"
-            )
+            logger.warning(f"Duplicated key name {key!r}, overwriting it with new value {val!r} of type {vtype.name}")
 
         self.kv_data[0][key] = GGUFValue(value=val, type=vtype, sub_type=sub_type)
 
@@ -377,9 +365,7 @@ class GGUFWriter:
             elif tensor_dtype == np.int64:
                 dtype = GGMLQuantizationType.I64
             else:
-                raise ValueError(
-                    "Only F16, F32, F64, I8, I16, I32, I64 tensors are supported for now"
-                )
+                raise ValueError("Only F16, F32, F64, I8, I16, I32, I64 tensors are supported for now")
         else:
             dtype = raw_dtype
             if tensor_dtype == np.uint8:
@@ -391,8 +377,7 @@ class GGUFWriter:
                 self.split_max_tensors != 0 and len(self.tensors[-1]) >= self.split_max_tensors
             ) or (  # split when over size limit
                 self.split_max_size != 0
-                and sum(ti.nbytes for ti in self.tensors[-1].values()) + tensor_nbytes
-                > self.split_max_size
+                and sum(ti.nbytes for ti in self.tensors[-1].values()) + tensor_nbytes > self.split_max_size
             ):
                 self.tensors.append({})
 
@@ -429,9 +414,7 @@ class GGUFWriter:
 
     def write_tensor_data(self, tensor: np.ndarray[Any, Any]) -> None:
         if self.state is not WriterState.TI_DATA and self.state is not WriterState.WEIGHTS:
-            raise ValueError(
-                f"Expected output file to contain tensor info or weights, got {self.state}"
-            )
+            raise ValueError(f"Expected output file to contain tensor info or weights, got {self.state}")
         assert self.fout is not None
 
         if self.endianess == GGUFEndian.BIG:
@@ -475,9 +458,7 @@ class GGUFWriter:
                 total_bytes = sum(ti.nbytes for t in self.tensors for ti in t.values())
 
                 if len(self.fout) > 1:
-                    shard_bar = tqdm(
-                        desc=f"Shard (0/{len(self.fout)})", total=None, unit="byte", unit_scale=True
-                    )
+                    shard_bar = tqdm(desc=f"Shard (0/{len(self.fout)})", total=None, unit="byte", unit_scale=True)
                 bar = tqdm(desc="Writing", total=total_bytes, unit="byte", unit_scale=True)
 
             for i, (fout, tensors) in enumerate(zip(self.fout, self.tensors)):
@@ -957,9 +938,7 @@ class GGUFWriter:
     def add_token_list(self, tokens: Sequence[str] | Sequence[bytes] | Sequence[bytearray]) -> None:
         self.add_array(Keys.Tokenizer.LIST, tokens)
 
-    def add_token_merges(
-        self, merges: Sequence[str] | Sequence[bytes] | Sequence[bytearray]
-    ) -> None:
+    def add_token_merges(self, merges: Sequence[str] | Sequence[bytes] | Sequence[bytearray]) -> None:
         self.add_array(Keys.Tokenizer.MERGES, merges)
 
     def add_token_types(self, types: Sequence[TokenType] | Sequence[int]) -> None:

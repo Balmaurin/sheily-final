@@ -72,9 +72,7 @@ class ModuleValidator:
         self.logger = logger or logging.getLogger(__name__)
         self.recovery_strategies: Dict[str, Callable] = {}
 
-    def register_recovery_strategy(
-        self, error_type: str, strategy: Callable[[Any, Dict[str, Any]], Any]
-    ):
+    def register_recovery_strategy(self, error_type: str, strategy: Callable[[Any, Dict[str, Any]], Any]):
         """
         Registrar una estrategia de recuperación para un tipo de error
 
@@ -115,9 +113,7 @@ class ModuleValidator:
 
         return health_status
 
-    def validate_module_performance(
-        self, module: Any, test_data: Optional[List[Any]] = None
-    ) -> ModuleHealthStatus:
+    def validate_module_performance(self, module: Any, test_data: Optional[List[Any]] = None) -> ModuleHealthStatus:
         """
         Validar el rendimiento de un módulo
 
@@ -164,9 +160,7 @@ class ModuleValidator:
 
         return health_status
 
-    def validate_module_dependencies(
-        self, module: Any, available_modules: Dict[str, Any]
-    ) -> ModuleHealthStatus:
+    def validate_module_dependencies(self, module: Any, available_modules: Dict[str, Any]) -> ModuleHealthStatus:
         """
         Validar dependencias de un módulo
 
@@ -222,9 +216,7 @@ class ModuleValidator:
             for error_type, strategy in self.recovery_strategies.items():
                 if error_type in error:
                     try:
-                        recovered_module = strategy(
-                            module, {"error": error, "health_status": health_status}
-                        )
+                        recovered_module = strategy(module, {"error": error, "health_status": health_status})
 
                         if recovered_module:
                             self.logger.info(f"Módulo recuperado: {module.__class__.__name__}")
@@ -263,9 +255,7 @@ class ModuleValidator:
         return {
             "module_name": module.__class__.__name__,
             "is_healthy": (
-                structure_health.is_healthy
-                and performance_health.is_healthy
-                and dependencies_health.is_healthy
+                structure_health.is_healthy and performance_health.is_healthy and dependencies_health.is_healthy
             ),
             "structure_validation": {
                 "is_healthy": structure_health.is_healthy,
@@ -319,9 +309,7 @@ def main():
     example_module = ExampleModule()
 
     # Validar módulo
-    module_report = validator.generate_module_report(
-        example_module, test_data=[{"input": "prueba"}]
-    )
+    module_report = validator.generate_module_report(example_module, test_data=[{"input": "prueba"}])
 
     print("Informe del módulo:")
     import json

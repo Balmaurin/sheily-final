@@ -80,10 +80,7 @@ class ModuleScanner:
         Verificar si un archivo es un módulo Python válido
         """
         is_valid = (
-            path.endswith(".py")
-            and not path.startswith("__")
-            and not path.startswith(".")
-            and "test_" not in path
+            path.endswith(".py") and not path.startswith("__") and not path.startswith(".") and "test_" not in path
         )
         logger.debug(f"Validando módulo {path}: {is_valid}")
         return is_valid
@@ -186,15 +183,11 @@ class ModuleScanner:
 
             # Extraer clases y funciones
             classes = [
-                name
-                for name, obj in inspect.getmembers(module, inspect.isclass)
-                if obj.__module__ == module_name
+                name for name, obj in inspect.getmembers(module, inspect.isclass) if obj.__module__ == module_name
             ]
 
             functions = [
-                name
-                for name, obj in inspect.getmembers(module, inspect.isfunction)
-                if obj.__module__ == module_name
+                name for name, obj in inspect.getmembers(module, inspect.isfunction) if obj.__module__ == module_name
             ]
 
             logger.debug(f"Clases en {module_name}: {classes}")
@@ -293,9 +286,7 @@ class ModuleScanner:
 
                             # Registrar errores de sintaxis
                             if module_metadata.syntax_errors:
-                                detailed_report["syntax_errors"].extend(
-                                    module_metadata.syntax_errors
-                                )
+                                detailed_report["syntax_errors"].extend(module_metadata.syntax_errors)
 
                             # Registrar errores de importación
                             if module_metadata.import_error:
@@ -309,9 +300,7 @@ class ModuleScanner:
 
                             # Registrar dependencias faltantes
                             if module_metadata.missing_dependencies:
-                                detailed_report["missing_dependencies"].extend(
-                                    module_metadata.missing_dependencies
-                                )
+                                detailed_report["missing_dependencies"].extend(module_metadata.missing_dependencies)
 
                         except Exception as e:
                             logger.error(f"Error procesando {full_path}: {e}")
@@ -385,9 +374,7 @@ class ModuleScanner:
 
         return [metadata for metadata in catalog.values() if metadata.type == module_type]
 
-    def generate_module_report(
-        self, catalog: Optional[Dict[str, ModuleMetadata]] = None
-    ) -> Dict[str, Any]:
+    def generate_module_report(self, catalog: Optional[Dict[str, ModuleMetadata]] = None) -> Dict[str, Any]:
         """
         Generar informe detallado de módulos
         """

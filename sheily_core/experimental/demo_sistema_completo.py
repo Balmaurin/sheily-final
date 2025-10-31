@@ -117,9 +117,7 @@ def demo_memoria_con_recuperacion():
 
             # Realizar búsqueda para verificar
             print("Realizando búsqueda de verificación...")
-            search_result = safe_engine.safe_search_memory(
-                query="sistema de manejo de errores funcionales", top_k=3
-            )
+            search_result = safe_engine.safe_search_memory(query="sistema de manejo de errores funcionales", top_k=3)
 
             if search_result.is_ok():
                 results = search_result.unwrap()
@@ -349,10 +347,7 @@ def demo_composicion_segura():
 
         # Pipeline con error
         pipeline_error = (
-            SafePipeline("Texto con error incluido")
-            .pipe(validar_entrada)
-            .pipe(procesar_texto)
-            .pipe(formatear_salida)
+            SafePipeline("Texto con error incluido").pipe(validar_entrada).pipe(procesar_texto).pipe(formatear_salida)
         )
 
         resultado_error = pipeline_error.execute()
@@ -469,9 +464,7 @@ def ejecutar_demostracion_completa():
 
         print("📊 MÉTRICAS FINALES:")
         print(f"   • Operaciones procesadas: {final_metrics['total_operations']}")
-        tasa_exito = final_metrics["successful_operations"] / max(
-            1, final_metrics["total_operations"]
-        )
+        tasa_exito = final_metrics["successful_operations"] / max(1, final_metrics["total_operations"])
         print(f"   • Tasa de éxito: {tasa_exito:.1%}")
         print(f"   • Tiempo promedio: {final_metrics['avg_response_time']:.3f}s")
         print(f"   • Errores registrados: {len(error_monitor.error_history)}")

@@ -47,9 +47,7 @@ class SheilyRewardsIntegration:
         contextual_score = self.contextual_evaluator.contextual_precision(query, response)
 
         # 2. Calcular puntuación de calidad general
-        quality_score = (
-            contextual_score * 0.7 + 0.3  # Precisión contextual  # Componente base de calidad
-        )
+        quality_score = contextual_score * 0.7 + 0.3  # Precisión contextual  # Componente base de calidad
 
         # 3. Preparar datos de sesión
         session_data = {
@@ -92,15 +90,12 @@ class SheilyRewardsIntegration:
             dict: Métricas de rendimiento del dominio
         """
         # Obtener sesiones útiles para el dominio
-        useful_sessions = self.session_tracker.get_useful_sessions(
-            min_quality_score=0.7, domain=domain
-        )
+        useful_sessions = self.session_tracker.get_useful_sessions(min_quality_score=0.7, domain=domain)
 
         # Calcular métricas
         total_sheilys = self.reward_system.get_total_sheilys(domain)
         avg_quality = (
-            sum(session.get("quality_score", 0) for session in useful_sessions)
-            / len(useful_sessions)
+            sum(session.get("quality_score", 0) for session in useful_sessions) / len(useful_sessions)
             if useful_sessions
             else 0
         )
@@ -149,8 +144,7 @@ def main():
 
     # Obtener rendimiento por dominio
     domain_performances = [
-        rewards_integration.get_domain_performance(interaction["domain"])
-        for interaction in interactions
+        rewards_integration.get_domain_performance(interaction["domain"]) for interaction in interactions
     ]
 
     print("Rendimiento por Dominio:")

@@ -29,9 +29,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import psutil
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -156,10 +154,7 @@ class MetricsCollector:
         # Calculate code complexity (simplified)
         try:
             py_files = list(self.project_path.glob("**/*.py"))
-            total_lines = sum(
-                len(f.read_text(errors="ignore").split("\n"))
-                for f in py_files[:50]  # Sample first 50
-            )
+            total_lines = sum(len(f.read_text(errors="ignore").split("\n")) for f in py_files[:50])  # Sample first 50
             metrics.complexity_score = min(10.0, (total_lines / 1000))
         except Exception as e:
             logger.error(f"Error calculating complexity: {e}")
@@ -214,9 +209,7 @@ class AnomalyDetector:
         variance = sum((x - avg) ** 2 for x in values) / len(values)
         return variance**0.5
 
-    def detect_anomalies(
-        self, metrics: deque, current: SystemMetrics
-    ) -> List[Tuple[str, float, float]]:
+    def detect_anomalies(self, metrics: deque, current: SystemMetrics) -> List[Tuple[str, float, float]]:
         """Detect anomalies in current metrics.
 
         Args:
@@ -494,9 +487,7 @@ class MonitoringService:
             "running": self.running,
             "metrics_collected": len(self.collector.metrics_history),
             "alerts_active": len(self.alerts.get_active_alerts()),
-            "latest_metrics": asdict(self.collector.metrics_history[-1])
-            if self.collector.metrics_history
-            else None,
+            "latest_metrics": asdict(self.collector.metrics_history[-1]) if self.collector.metrics_history else None,
         }
 
 

@@ -36,11 +36,7 @@ class QualityGateValidator:
         self.config_dir = Path(__file__).resolve().parent.parent / "config"
         self.thresholds_file = (
             thresholds_file
-            or Path(__file__).resolve().parent.parent.parent
-            / "config"
-            / "test"
-            / "config"
-            / "quality_thresholds.yaml"
+            or Path(__file__).resolve().parent.parent.parent / "config" / "test" / "config" / "quality_thresholds.yaml"
         )
         self.thresholds = self._load_thresholds()
         self.violations: List[Dict] = []
@@ -85,9 +81,7 @@ class QualityGateValidator:
 
         # Calcular resultado final
         all_passed = len(self.violations) == 0
-        total_validations = (
-            len(category_results) + (1 if general_results else 0) + (1 if rag_results else 0)
-        )
+        total_validations = len(category_results) + (1 if general_results else 0) + (1 if rag_results else 0)
 
         # Generar reporte de calidad
         quality_report = {
@@ -311,20 +305,14 @@ class QualityGateValidator:
         medium_violations = [v for v in self.violations if v.get("severity") == "medium"]
 
         if critical_violations:
-            recommendations.append(
-                "🚨 CRÍTICO: Hay violaciones críticas que deben resolverse inmediatamente"
-            )
+            recommendations.append("🚨 CRÍTICO: Hay violaciones críticas que deben resolverse inmediatamente")
             for v in critical_violations:
-                recommendations.append(
-                    f"   • {v['category']}.{v['metric']}: {v['actual']} < {v['threshold']}"
-                )
+                recommendations.append(f"   • {v['category']}.{v['metric']}: {v['actual']} < {v['threshold']}")
 
         if high_violations:
             recommendations.append("⚠️  ALTO: Violaciones importantes que requieren atención")
             for v in high_violations:
-                recommendations.append(
-                    f"   • {v['category']}.{v['metric']}: {v['actual']} vs {v['threshold']}"
-                )
+                recommendations.append(f"   • {v['category']}.{v['metric']}: {v['actual']} vs {v['threshold']}")
 
         if medium_violations:
             recommendations.append("📋 MEDIO: Mejoras recomendadas para optimizar calidad")
@@ -355,9 +343,7 @@ class QualityGateValidator:
             for v in self.violations[:5]:  # Mostrar solo las primeras 5
                 severity_emoji = {"critical": "🚨", "high": "⚠️", "medium": "📋", "low": "ℹ️"}
                 emoji = severity_emoji.get(v.get("severity", "medium"), "📋")
-                print(
-                    f"   {emoji} {v['category']}.{v['metric']}: {v['actual']} vs {v['threshold']}"
-                )
+                print(f"   {emoji} {v['category']}.{v['metric']}: {v['actual']} vs {v['threshold']}")
 
             if len(self.violations) > 5:
                 print(f"   ... y {len(self.violations) - 5} violaciones más")

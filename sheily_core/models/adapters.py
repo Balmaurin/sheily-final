@@ -200,9 +200,7 @@ def save_adapter_config_to_file(config: AdapterConfig, config_path: Path) -> Res
         return Err(f"Failed to save adapter config: {e}")
 
 
-def compose_adapter_configs(
-    base_config: AdapterConfig, overlay_config: AdapterConfig
-) -> AdapterConfig:
+def compose_adapter_configs(base_config: AdapterConfig, overlay_config: AdapterConfig) -> AdapterConfig:
     """Compose two adapter configurations - Pure function"""
     # Merge target modules
     merged_modules = list(set(base_config.target_modules + overlay_config.target_modules))
@@ -290,16 +288,12 @@ def calculate_adapter_memory_size(config: AdapterConfig) -> int:
     return total_memory
 
 
-def filter_adapters_by_language(
-    adapters: List[AdapterConfig], language: str
-) -> List[AdapterConfig]:
+def filter_adapters_by_language(adapters: List[AdapterConfig], language: str) -> List[AdapterConfig]:
     """Filter adapters by language - Pure function"""
     return [adapter for adapter in adapters if adapter.metadata.get("language") == language]
 
 
-def sort_adapters_by_performance(
-    adapters: List[AdapterConfig], states: Dict[str, AdapterState]
-) -> List[AdapterConfig]:
+def sort_adapters_by_performance(adapters: List[AdapterConfig], states: Dict[str, AdapterState]) -> List[AdapterConfig]:
     """Sort adapters by performance metrics - Pure function"""
 
     def get_avg_performance(adapter_id: str) -> float:

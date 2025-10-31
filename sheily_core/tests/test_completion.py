@@ -205,9 +205,7 @@ def test_completion_stream_with_openai_library_stops():
         if choice.finish_reason is None:
             assert choice.text is not None
             output_text += choice.text
-    assert match_regex(
-        "Sure, here's one for[\\s\\S]*", output_text
-    ), f"Unexpected output: {output_text}"
+    assert match_regex("Sure, here's one for[\\s\\S]*", output_text), f"Unexpected output: {output_text}"
 
 
 @pytest.mark.parametrize("n_slots", [1, 2])
@@ -639,9 +637,7 @@ def test_n_probs_post_sampling():
         assert any(abs(prob["prob"] - 1.0) < 0.001 for prob in tok["top_probs"])
 
 
-@pytest.mark.parametrize(
-    "tokenize,openai_style", [(False, False), (False, True), (True, False), (True, True)]
-)
+@pytest.mark.parametrize("tokenize,openai_style", [(False, False), (False, True), (True, False), (True, True)])
 def test_logit_bias(tokenize, openai_style):
     global server
     server.start()

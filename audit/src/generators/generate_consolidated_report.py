@@ -190,9 +190,7 @@ def main():
     for branch in cross_analysis["functional_with_good_data"]:
         print(f"  ✅ {branch}")
 
-    print(
-        f"\n🔧 RAMAS QUE NECESITAN RETRENAMIENTO URGENTE ({len(cross_analysis['priority_retraining'])}):"
-    )
+    print(f"\n🔧 RAMAS QUE NECESITAN RETRENAMIENTO URGENTE ({len(cross_analysis['priority_retraining'])}):")
     for branch in cross_analysis["priority_retraining"][:5]:  # Mostrar primeras 5
         print(f"  🔄 {branch}")
     if len(cross_analysis["priority_retraining"]) > 5:

@@ -184,9 +184,7 @@ class SpecializationEngine:
 
             # 2. Adaptación contextual
             if self.enable_contextual_adaptation:
-                contextual_result = await self._apply_contextual_adaptation(
-                    enhanced_response, query, spec_context
-                )
+                contextual_result = await self._apply_contextual_adaptation(enhanced_response, query, spec_context)
                 if contextual_result["enhanced"]:
                     enhanced_response = contextual_result["response"]
                     applied_specializations.append(SpecializationType.CONTEXTUAL_ADAPTATION)
@@ -194,9 +192,7 @@ class SpecializationEngine:
 
             # 3. Aprendizaje histórico
             if self.enable_historical_learning:
-                historical_result = await self._apply_historical_learning(
-                    enhanced_response, spec_context
-                )
+                historical_result = await self._apply_historical_learning(enhanced_response, spec_context)
                 if historical_result["enhanced"]:
                     enhanced_response = historical_result["response"]
                     applied_specializations.append(SpecializationType.HISTORICAL_LEARNING)
@@ -204,9 +200,7 @@ class SpecializationEngine:
 
             # 4. Profundidad técnica
             if self.enable_technical_depth:
-                technical_result = await self._apply_technical_depth(
-                    enhanced_response, query, spec_context
-                )
+                technical_result = await self._apply_technical_depth(enhanced_response, query, spec_context)
                 if technical_result["enhanced"]:
                     enhanced_response = technical_result["response"]
                     applied_specializations.append(SpecializationType.TECHNICAL_DEPTH)
@@ -293,9 +287,7 @@ class SpecializationEngine:
             technical_requirements=technical_requirements,
         )
 
-    async def _apply_domain_expertise(
-        self, response: str, context: SpecializationContext
-    ) -> Dict[str, Any]:
+    async def _apply_domain_expertise(self, response: str, context: SpecializationContext) -> Dict[str, Any]:
         """
         Aplicar conocimiento especializado del dominio
         """
@@ -324,9 +316,7 @@ class SpecializationEngine:
         for concept in related_concepts:
             if any(word in query_concepts for word in concept["keywords"]):
                 if concept["name"] not in response:
-                    enhanced_response += (
-                        f"\n\n[Concepto relacionado: {concept['name']} - {concept['description']}]"
-                    )
+                    enhanced_response += f"\n\n[Concepto relacionado: {concept['name']} - {concept['description']}]"
                     enhancement_applied = True
                     confidence_boost += 0.1
 
@@ -399,9 +389,7 @@ class SpecializationEngine:
             "confidence_boost": min(confidence_boost, 0.25),
         }
 
-    async def _apply_historical_learning(
-        self, response: str, context: SpecializationContext
-    ) -> Dict[str, Any]:
+    async def _apply_historical_learning(self, response: str, context: SpecializationContext) -> Dict[str, Any]:
         """
         Aplicar aprendizaje basado en interacciones históricas
         """
@@ -423,9 +411,7 @@ class SpecializationEngine:
                 # Agregar contexto basado en interacciones previas
                 historical_insight = self._generate_historical_insight(topic, context.domain)
                 if historical_insight:
-                    enhanced_response += (
-                        f"\n\n📚 Basado en consultas anteriores: {historical_insight}"
-                    )
+                    enhanced_response += f"\n\n📚 Basado en consultas anteriores: {historical_insight}"
                     enhancement_applied = True
                     confidence_boost += 0.12
 
@@ -433,9 +419,7 @@ class SpecializationEngine:
         for preference_key, preference_value in context.domain_preferences.items():
             if preference_key == "detail_level" and preference_value == "high":
                 if len(response) < 200:  # Respuesta corta, el usuario prefiere detalle
-                    detailed_addition = await self._generate_additional_details(
-                        response, context.domain
-                    )
+                    detailed_addition = await self._generate_additional_details(response, context.domain)
                     if detailed_addition:
                         enhanced_response += f"\n\n{detailed_addition}"
                         enhancement_applied = True
@@ -455,9 +439,7 @@ class SpecializationEngine:
             "confidence_boost": min(confidence_boost, 0.2),
         }
 
-    async def _apply_technical_depth(
-        self, response: str, query: str, context: SpecializationContext
-    ) -> Dict[str, Any]:
+    async def _apply_technical_depth(self, response: str, query: str, context: SpecializationContext) -> Dict[str, Any]:
         """
         Agregar profundidad técnica según requerimientos
         """
@@ -466,9 +448,7 @@ class SpecializationEngine:
         confidence_boost = 0.0
 
         # Verificar si se necesitan detalles de implementación
-        if any(
-            req in context.technical_requirements for req in ["implementation", "code", "algorithm"]
-        ):
+        if any(req in context.technical_requirements for req in ["implementation", "code", "algorithm"]):
             # Agregar detalles de implementación
             impl_details = await self._generate_implementation_details(query, context.domain)
             if impl_details:
@@ -478,9 +458,7 @@ class SpecializationEngine:
 
         # Verificar si se necesitan fundamentos teóricos
         if "theory" in context.technical_requirements or "fundamentos" in query.lower():
-            theoretical_foundation = await self._generate_theoretical_foundation(
-                query, context.domain
-            )
+            theoretical_foundation = await self._generate_theoretical_foundation(query, context.domain)
             if theoretical_foundation:
                 enhanced_response += f"\n\n📖 Fundamentos teóricos:\n{theoretical_foundation}"
                 enhancement_applied = True
@@ -488,9 +466,7 @@ class SpecializationEngine:
 
         # Verificar si se necesitan consideraciones de performance
         if "performance" in context.technical_requirements or "rendimiento" in query.lower():
-            performance_notes = await self._generate_performance_considerations(
-                query, context.domain
-            )
+            performance_notes = await self._generate_performance_considerations(query, context.domain)
             if performance_notes:
                 enhanced_response += f"\n\n⚡ Consideraciones de rendimiento:\n{performance_notes}"
                 enhancement_applied = True
@@ -560,9 +536,7 @@ class SpecializationEngine:
 
         advanced_count = sum(1 for indicator in advanced_indicators if indicator in query_lower)
         basic_count = sum(1 for indicator in basic_indicators if indicator in query_lower)
-        intermediate_count = sum(
-            1 for indicator in intermediate_indicators if indicator in query_lower
-        )
+        intermediate_count = sum(1 for indicator in intermediate_indicators if indicator in query_lower)
 
         if advanced_count >= 2:
             return SpecializationLevel.EXPERT
@@ -582,10 +556,7 @@ class SpecializationEngine:
 
         if any(word in query_lower for word in ["cómo", "how", "pasos", "steps"]):
             return "how_to"
-        elif any(
-            word in query_lower
-            for word in ["vs", "versus", "diferencia", "difference", "comparar", "compare"]
-        ):
+        elif any(word in query_lower for word in ["vs", "versus", "diferencia", "difference", "comparar", "compare"]):
             return "comparison"
         elif any(word in query_lower for word in ["qué es", "what is", "definir", "define"]):
             return "definition"
@@ -735,11 +706,7 @@ class SpecializationEngine:
                     topic_counts[word] += 1
 
         # Convertir a lista de temas con frecuencia
-        recurring_topics = [
-            {"name": topic, "frequency": count}
-            for topic, count in topic_counts.items()
-            if count >= 2
-        ]
+        recurring_topics = [{"name": topic, "frequency": count} for topic, count in topic_counts.items() if count >= 2]
 
         return sorted(recurring_topics, key=lambda x: x["frequency"], reverse=True)[:3]
 
@@ -755,9 +722,7 @@ class SpecializationEngine:
 
         return insights.get(domain, f"Has mostrado interés recurrente en {topic_name}.")
 
-    async def _extract_domain_preferences(
-        self, interactions: List[Dict], domain: str
-    ) -> Dict[str, str]:
+    async def _extract_domain_preferences(self, interactions: List[Dict], domain: str) -> Dict[str, str]:
         """Extraer preferencias del usuario para el dominio"""
         preferences = {}
 
@@ -814,7 +779,9 @@ class SpecializationEngine:
         if domain == "programación":
             return "En Python: `if __name__ == '__main__':` es un patrón común para ejecutar código solo cuando el script se ejecuta directamente."
         elif domain == "matemáticas":
-            return "Por ejemplo, la derivada de f(x) = x² es f'(x) = 2x, lo que significa que la pendiente en x=3 sería 6."
+            return (
+                "Por ejemplo, la derivada de f(x) = x² es f'(x) = 2x, lo que significa que la pendiente en x=3 sería 6."
+            )
         return None
 
     async def _generate_implementation_details(self, query: str, domain: str) -> Optional[str]:
@@ -856,15 +823,11 @@ class SpecializationEngine:
 
         return min(final_confidence, 1.0)
 
-    async def _assess_technical_level(
-        self, response: str, context: SpecializationContext
-    ) -> SpecializationLevel:
+    async def _assess_technical_level(self, response: str, context: SpecializationContext) -> SpecializationLevel:
         """Evaluar el nivel técnico de la respuesta"""
         # Contar indicadores técnicos
         technical_indicators = len(
-            re.findall(
-                r"\b(?:implementación|algoritmo|arquitectura|optimización)\b", response.lower()
-            )
+            re.findall(r"\b(?:implementación|algoritmo|arquitectura|optimización)\b", response.lower())
         )
 
         if technical_indicators >= 5:
@@ -886,9 +849,7 @@ class SpecializationEngine:
             return 0.7  # Valor por defecto
 
         # Calcular proporción de keywords del dominio presentes
-        keywords_found = sum(
-            1 for keyword in domain_keywords.keys() if keyword.lower() in response.lower()
-        )
+        keywords_found = sum(1 for keyword in domain_keywords.keys() if keyword.lower() in response.lower())
 
         if not domain_keywords:
             return 0.7
@@ -912,9 +873,7 @@ class SpecializationEngine:
 
         self.specialization_cache[cache_key] = result
 
-    async def _update_specialization_stats(
-        self, result: SpecializationResult, processing_time: float
-    ):
+    async def _update_specialization_stats(self, result: SpecializationResult, processing_time: float):
         """Actualizar estadísticas de especialización"""
         self.stats["total_specializations"] += 1
 
@@ -935,18 +894,14 @@ class SpecializationEngine:
         else:
             current_avg = self.stats["average_confidence_improvement"]
             total = self.stats["total_specializations"]
-            self.stats["average_confidence_improvement"] = (
-                current_avg * (total - 1) + confidence_improvement
-            ) / total
+            self.stats["average_confidence_improvement"] = (current_avg * (total - 1) + confidence_improvement) / total
 
     def get_stats(self) -> Dict:
         """Obtener estadísticas del motor de especialización"""
         stats = self.stats.copy()
 
         if self.stats["processing_times"]:
-            stats["average_processing_time"] = sum(self.stats["processing_times"]) / len(
-                self.stats["processing_times"]
-            )
+            stats["average_processing_time"] = sum(self.stats["processing_times"]) / len(self.stats["processing_times"])
         else:
             stats["average_processing_time"] = 0.0
 

@@ -173,9 +173,7 @@ out(
 """
 )
 
-out(
-    "const std::vector<std::pair<uint32_t, uint16_t>> unicode_ranges_flags = {  // start, flags // last=next_start-1"
-)
+out("const std::vector<std::pair<uint32_t, uint16_t>> unicode_ranges_flags = {  // start, flags // last=next_start-1")
 for codepoint, flags in ranges_flags:
     out("{0x%06X, 0x%04X}," % (codepoint, flags))
 out("};\n")

@@ -201,9 +201,7 @@ def validate_language_separation(
     return Ok(True)
 
 
-def filter_documents_by_criteria(
-    documents: List[Dict[str, Any]], criteria: Dict[str, Any]
-) -> List[Dict[str, Any]]:
+def filter_documents_by_criteria(documents: List[Dict[str, Any]], criteria: Dict[str, Any]) -> List[Dict[str, Any]]:
     """Filter documents by criteria - Pure function"""
     filtered_docs = documents
 
@@ -404,27 +402,19 @@ def create_language_specific_loader(
         return loader
 
 
-def create_document_preprocessor() -> (
-    Callable[[List[Dict[str, Any]], DataPreparationConfig], List[Dict[str, Any]]]
-):
+def create_document_preprocessor() -> Callable[[List[Dict[str, Any]], DataPreparationConfig], List[Dict[str, Any]]]:
     """Create document preprocessor - Factory function"""
 
-    def preprocessor(
-        documents: List[Dict[str, Any]], config: DataPreparationConfig
-    ) -> List[Dict[str, Any]]:
+    def preprocessor(documents: List[Dict[str, Any]], config: DataPreparationConfig) -> List[Dict[str, Any]]:
         return [preprocess_document(doc, config) for doc in documents]
 
     return preprocessor
 
 
-def create_dataset_filter() -> (
-    Callable[[List[Dict[str, Any]], Dict[str, Any]], List[Dict[str, Any]]]
-):
+def create_dataset_filter() -> Callable[[List[Dict[str, Any]], Dict[str, Any]], List[Dict[str, Any]]]:
     """Create dataset filter - Factory function"""
 
-    def filter_func(
-        documents: List[Dict[str, Any]], criteria: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+    def filter_func(documents: List[Dict[str, Any]], criteria: Dict[str, Any]) -> List[Dict[str, Any]]:
         return filter_documents_by_criteria(documents, criteria)
 
     return filter_func
@@ -480,14 +470,10 @@ def create_data_preparation_pipeline(
 # ============================================================================
 
 
-def create_data_preparation_context(
-    corpus_root: Path, language_separation: bool = True
-) -> DataPreparationContext:
+def create_data_preparation_context(corpus_root: Path, language_separation: bool = True) -> DataPreparationContext:
     """Create data preparation context - Pure function"""
     # Create corpus integration
-    corpus_integration = create_corpus_integration(
-        corpus_root=corpus_root, language_separation=language_separation
-    )
+    corpus_integration = create_corpus_integration(corpus_root=corpus_root, language_separation=language_separation)
 
     # Create default config
     default_config = create_data_preparation_config(
@@ -504,9 +490,7 @@ def create_data_preparation_context(
     )
 
 
-def register_prepared_dataset(
-    context: DataPreparationContext, dataset: PreparedDataset
-) -> DataPreparationContext:
+def register_prepared_dataset(context: DataPreparationContext, dataset: PreparedDataset) -> DataPreparationContext:
     """Register prepared dataset in context - Pure function"""
     new_datasets = {**context.prepared_datasets, dataset.dataset_id: dataset}
 
@@ -529,9 +513,7 @@ def prepare_training_corpus_functional(
     """Prepare training data using functional approach - Legacy compatibility"""
     try:
         # Create corpus integration
-        corpus_integration = create_corpus_integration(
-            corpus_root=Path(corpus_root), language_separation=True
-        )
+        corpus_integration = create_corpus_integration(corpus_root=Path(corpus_root), language_separation=True)
 
         # Create preparation config
         config = create_data_preparation_config(

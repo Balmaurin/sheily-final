@@ -37,10 +37,7 @@ class TestLoRATrainingConfig(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures"""
-        from sheily_core.llm_engine.lora_training import (
-            create_lora_training_config,
-            validate_lora_training_config,
-        )
+        from sheily_core.llm_engine.lora_training import create_lora_training_config, validate_lora_training_config
 
         self.create_lora_training_config = create_lora_training_config
         self.validate_lora_training_config = validate_lora_training_config
@@ -110,10 +107,7 @@ class TestLoRAAdapterState(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures"""
-        from sheily_core.llm_engine.lora_training import (
-            create_lora_adapter_state,
-            update_lora_adapter_state,
-        )
+        from sheily_core.llm_engine.lora_training import create_lora_adapter_state, update_lora_adapter_state
 
         self.create_lora_adapter_state = create_lora_adapter_state
         self.update_lora_adapter_state = update_lora_adapter_state
@@ -182,10 +176,7 @@ class TestLoRATrainingExecution(unittest.TestCase):
 
     def test_branch_lora_training_execution(self):
         """Test individual branch LoRA training"""
-        from sheily_core.llm_engine.lora_training import (
-            create_lora_adapter_state,
-            create_lora_training_config,
-        )
+        from sheily_core.llm_engine.lora_training import create_lora_adapter_state, create_lora_training_config
 
         # Create test configuration
         config = create_lora_training_config(
@@ -335,10 +326,7 @@ class TestDockerIntegration(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures"""
-        from sheily_core.llm_engine.lora_training import (
-            create_docker_compose_config,
-            create_docker_training_config,
-        )
+        from sheily_core.llm_engine.lora_training import create_docker_compose_config, create_docker_training_config
 
         self.create_docker_training_config = create_docker_training_config
         self.create_docker_compose_config = create_docker_compose_config
@@ -410,10 +398,7 @@ class TestLoRATrainingPerformance(unittest.TestCase):
 
     def test_adapter_state_update_performance(self):
         """Test adapter state update performance"""
-        from sheily_core.llm_engine.lora_training import (
-            create_lora_adapter_state,
-            update_lora_adapter_state,
-        )
+        from sheily_core.llm_engine.lora_training import create_lora_adapter_state, update_lora_adapter_state
 
         # Create initial state
         initial_state = create_lora_adapter_state(

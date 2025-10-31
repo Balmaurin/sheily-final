@@ -24,13 +24,7 @@ try:
     from solana.spl.associated_token_account import get_associated_token_address
     from solana.spl.token.client import Token
     from solana.spl.token.constants import TOKEN_PROGRAM_ID
-    from solana.spl.token.instructions import (
-        burn,
-        create_account,
-        create_mint,
-        get_account_info,
-        mint_to,
-    )
+    from solana.spl.token.instructions import burn, create_account, create_mint, get_account_info, mint_to
     from solana.spl.token.instructions import transfer as token_transfer
     from solana.system_program import TransferParams, transfer
     from solana.transaction import Transaction
@@ -45,13 +39,7 @@ except ImportError:
         from solanasdk.spl.associated_token_account import get_associated_token_address
         from solanasdk.spl.token.client import Token
         from solanasdk.spl.token.constants import TOKEN_PROGRAM_ID
-        from solanasdk.spl.token.instructions import (
-            burn,
-            create_account,
-            create_mint,
-            get_account_info,
-            mint_to,
-        )
+        from solanasdk.spl.token.instructions import burn, create_account, create_mint, get_account_info, mint_to
         from solanasdk.spl.token.instructions import transfer as token_transfer
         from solanasdk.system_program import TransferParams, transfer
         from solanasdk.transaction import Transaction
@@ -231,9 +219,7 @@ class SheilySPLReal:
             user_keypair = Keypair()
 
             # Crear cuenta de token asociada
-            token_account = get_associated_token_address(
-                self.mint_public_key, user_keypair.public_key
-            )
+            token_account = get_associated_token_address(self.mint_public_key, user_keypair.public_key)
 
             # Crear la transacción para crear la cuenta
             transaction = Transaction()
@@ -258,9 +244,7 @@ class SheilySPLReal:
             logger.error(f"Error creando cuenta de token: {e}")
             raise
 
-    def mint_real_tokens(
-        self, user_id: str, amount: int, reason: str = "reward"
-    ) -> RealSPLTransaction:
+    def mint_real_tokens(self, user_id: str, amount: int, reason: str = "reward") -> RealSPLTransaction:
         """Mintear tokens SPL reales para usuario"""
         try:
             # Verificar que el usuario tenga cuenta de token
@@ -319,13 +303,9 @@ class SheilySPLReal:
                         if isinstance(tx_info, dict) and "result" in tx_info:
                             tx_data = tx_info["result"]
                             transaction.block_height = tx_data.get("slot")
-                            transaction.fee = (
-                                tx_data.get("meta", {}).get("fee", 0) / 1e9
-                            )  # Convertir lamports a SOL
+                            transaction.fee = tx_data.get("meta", {}).get("fee", 0) / 1e9  # Convertir lamports a SOL
                             transaction.slot = tx_data.get("slot")
-                            transaction.confirmation_status = tx_data.get("meta", {}).get(
-                                "confirmationStatus"
-                            )
+                            transaction.confirmation_status = tx_data.get("meta", {}).get("confirmationStatus")
 
                         logger.info(f"✅ Tokens minteados exitosamente en blockchain: {signature}")
 
@@ -382,16 +362,10 @@ class SheilySPLReal:
                 status="pending",
             )
 
-            if (
-                self.client
-                and from_account.associated_token_account
-                and to_account.associated_token_account
-            ):
+            if self.client and from_account.associated_token_account and to_account.associated_token_account:
                 try:
                     # Transferencia real en blockchain
-                    logger.info(
-                        f"🔄 Transferiendo {amount} tokens reales de {from_user} a {to_user}"
-                    )
+                    logger.info(f"🔄 Transferiendo {amount} tokens reales de {from_user} a {to_user}")
 
                     # Crear transacción de transferencia
                     transfer_tx = Transaction()
@@ -401,9 +375,7 @@ class SheilySPLReal:
                         program_id=TOKEN_PROGRAM_ID,
                         source=PublicKey(from_account.associated_token_account),
                         dest=PublicKey(to_account.associated_token_account),
-                        owner=PublicKey(
-                            f"user_{from_user}"
-                        ),  # En implementación real, usar clave real
+                        owner=PublicKey(f"user_{from_user}"),  # En implementación real, usar clave real
                         amount=amount,
                     )
 
@@ -432,9 +404,7 @@ class SheilySPLReal:
                             transaction.block_height = tx_data.get("slot")
                             transaction.fee = tx_data.get("meta", {}).get("fee", 0) / 1e9
                             transaction.slot = tx_data.get("slot")
-                            transaction.confirmation_status = tx_data.get("meta", {}).get(
-                                "confirmationStatus"
-                            )
+                            transaction.confirmation_status = tx_data.get("meta", {}).get("confirmationStatus")
 
                         logger.info(f"✅ Transferencia real exitosa: {signature}")
 
@@ -478,9 +448,7 @@ class SheilySPLReal:
                 if self.client and token_account.associated_token_account:
                     try:
                         # Consultar balance real desde blockchain
-                        account_info = self.client.get_account_info(
-                            PublicKey(token_account.associated_token_account)
-                        )
+                        account_info = self.client.get_account_info(PublicKey(token_account.associated_token_account))
                         if isinstance(account_info, dict) and "result" in account_info:
                             account_data = account_info["result"]["value"]
                             if account_data:
@@ -577,9 +545,7 @@ class SheilySPLReal:
             logger.error(f"Error obteniendo estadísticas reales: {e}")
             return {}
 
-    def burn_real_tokens(
-        self, user_id: str, amount: int, reason: str = "burn"
-    ) -> RealSPLTransaction:
+    def burn_real_tokens(self, user_id: str, amount: int, reason: str = "burn") -> RealSPLTransaction:
         """Quemar tokens SPL reales"""
         try:
             if user_id not in self.token_accounts:
@@ -588,9 +554,7 @@ class SheilySPLReal:
             token_account = self.token_accounts[user_id]
 
             if token_account.balance < amount:
-                raise ValueError(
-                    f"Balance insuficiente para quemar: {token_account.balance} < {amount}"
-                )
+                raise ValueError(f"Balance insuficiente para quemar: {token_account.balance} < {amount}")
 
             # Crear transacción de quema
             transaction_id = str(uuid4())
@@ -618,9 +582,7 @@ class SheilySPLReal:
                         program_id=TOKEN_PROGRAM_ID,
                         mint=self.mint_public_key,
                         source=PublicKey(token_account.associated_token_account),
-                        owner=PublicKey(
-                            f"user_{user_id}"
-                        ),  # En implementación real, usar clave real
+                        owner=PublicKey(f"user_{user_id}"),  # En implementación real, usar clave real
                         amount=amount,
                     )
 
@@ -646,9 +608,7 @@ class SheilySPLReal:
                             transaction.block_height = tx_data.get("slot")
                             transaction.fee = tx_data.get("meta", {}).get("fee", 0) / 1e9
                             transaction.slot = tx_data.get("slot")
-                            transaction.confirmation_status = tx_data.get("meta", {}).get(
-                                "confirmationStatus"
-                            )
+                            transaction.confirmation_status = tx_data.get("meta", {}).get("confirmationStatus")
 
                         logger.info(f"✅ Tokens quemados exitosamente en blockchain: {signature}")
 

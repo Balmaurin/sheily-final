@@ -152,9 +152,7 @@ class SheilyRewardSystem:
         }
 
         # Generar ID único
-        reward_id = hashlib.sha256(
-            json.dumps(reward_data, sort_keys=True).encode("utf-8")
-        ).hexdigest()
+        reward_id = hashlib.sha256(json.dumps(reward_data, sort_keys=True).encode("utf-8")).hexdigest()
         reward_data["reward_id"] = reward_id
 
         # Guardar en vault

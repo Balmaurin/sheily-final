@@ -5,13 +5,13 @@ Extended Test Suite for Sheily RAG Modules
 Tests for RAG retrieval, indexing, and context generation
 """
 
-import pytest
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 import json
 import tempfile
 from datetime import datetime
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
 
+import pytest
 
 # ============================================================================
 # Test Fixtures
@@ -138,7 +138,7 @@ class TestRAGIndexing:
         index_file = temp_rag_dir / "index.json"
         index_data = {"documents": sample_documents, "indexed_at": datetime.now().isoformat()}
         index_file.write_text(json.dumps(index_data))
-        
+
         loaded = json.loads(index_file.read_text())
         assert len(loaded["documents"]) == len(sample_documents)
 
@@ -147,13 +147,13 @@ class TestRAGIndexing:
         index_file = temp_rag_dir / "index.json"
         index = {"documents": [], "version": 1}
         index_file.write_text(json.dumps(index))
-        
+
         # Add document
         loaded = json.loads(index_file.read_text())
         loaded["documents"].append({"id": "new", "content": "new doc"})
         loaded["version"] += 1
         index_file.write_text(json.dumps(loaded))
-        
+
         assert loaded["version"] == 2
         assert len(loaded["documents"]) == 1
 
@@ -165,7 +165,7 @@ class TestRAGIndexing:
             if branch not in branch_index:
                 branch_index[branch] = []
             branch_index[branch].append(doc)
-        
+
         assert "programming" in branch_index
         assert len(branch_index["programming"]) == 2
 
@@ -178,7 +178,7 @@ class TestRAGIndexing:
         }
         index_file = temp_rag_dir / "index.json"
         index_file.write_text(json.dumps(index_data, indent=2))
-        
+
         loaded = json.loads(index_file.read_text())
         assert loaded["version"] == 1
         assert len(loaded["documents"]) == 4
@@ -196,7 +196,7 @@ class TestRAGRetrieval:
         """Test simple keyword-based retrieval"""
         query = "python"
         results = [doc for doc in sample_documents if query.lower() in doc["content"].lower()]
-        
+
         assert len(results) > 0
         assert any("python" in doc["content"].lower() for doc in results)
 
@@ -204,7 +204,7 @@ class TestRAGRetrieval:
         """Test branch-aware retrieval"""
         target_branch = "programming"
         results = [doc for doc in sample_documents if doc["branch"] == target_branch]
-        
+
         assert all(doc["branch"] == target_branch for doc in results)
         assert len(results) == 2
 
@@ -212,19 +212,17 @@ class TestRAGRetrieval:
         """Test top-k retrieval limiting"""
         k = 2
         results = sample_documents[:k]
-        
+
         assert len(results) == k
 
     def test_similarity_threshold(self, sample_documents):
         """Test similarity threshold filtering"""
         threshold = 0.5
         # Simulate similarity scores
-        scored_results = [
-            {"doc": doc, "score": 0.9} for doc in sample_documents[:2]
-        ] + [
+        scored_results = [{"doc": doc, "score": 0.9} for doc in sample_documents[:2]] + [
             {"doc": doc, "score": 0.3} for doc in sample_documents[2:]
         ]
-        
+
         filtered = [r for r in scored_results if r["score"] >= threshold]
         assert len(filtered) == 2
 
@@ -232,17 +230,16 @@ class TestRAGRetrieval:
         """Test handling empty queries"""
         query = ""
         results = [doc for doc in sample_documents if query.lower() in doc["content"].lower()]
-        
+
         assert len(results) == len(sample_documents)
 
     def test_multi_word_query(self, sample_documents):
         """Test multi-word query retrieval"""
         query = "machine learning"
         results = [
-            doc for doc in sample_documents
-            if all(word in doc["content"].lower() for word in query.lower().split())
+            doc for doc in sample_documents if all(word in doc["content"].lower() for word in query.lower().split())
         ]
-        
+
         assert len(results) > 0
 
 
@@ -257,13 +254,13 @@ class TestRAGRanking:
     def test_relevance_ranking(self, sample_documents):
         """Test relevance-based ranking"""
         query = "python programming"
-        
+
         # Simulate relevance scores
         scored = []
         for doc in sample_documents:
             score = sum(1 for word in query.split() if word in doc["content"].lower())
             scored.append((doc, score))
-        
+
         ranked = sorted(scored, key=lambda x: x[1], reverse=True)
         assert ranked[0][1] >= ranked[-1][1]
 
@@ -271,7 +268,7 @@ class TestRAGRanking:
         """Test diversity in ranking results"""
         ranked_results = sample_documents[:3]
         branches = [doc["branch"] for doc in ranked_results]
-        
+
         # Ensure some diversity in branches
         assert len(set(branches)) > 1
 
@@ -307,7 +304,7 @@ class TestContextGeneration:
         """Test assembling context from documents"""
         selected_docs = sample_documents[:2]
         context = "\n---\n".join(doc["content"] for doc in selected_docs)
-        
+
         assert len(context) > 0
         assert all(doc["content"] in context for doc in selected_docs)
 
@@ -315,10 +312,10 @@ class TestContextGeneration:
         """Test context length truncation"""
         max_length = 500
         context = "\n".join(doc["content"] for doc in sample_documents)
-        
+
         if len(context) > max_length:
             context = context[:max_length] + "..."
-        
+
         assert len(context) <= max_length + 3
 
     def test_context_formatting(self, sample_documents):
@@ -327,7 +324,7 @@ class TestContextGeneration:
         for doc in sample_documents[:2]:
             part = f"[{doc['title']}]\n{doc['content']}"
             context_parts.append(part)
-        
+
         formatted_context = "\n\n".join(context_parts)
         assert "[" in formatted_context
         assert "]" in formatted_context
@@ -338,7 +335,7 @@ class TestContextGeneration:
             "content": "Retrieved information",
             "sources": [doc["id"] for doc in sample_documents[:2]],
         }
-        
+
         assert len(context["sources"]) > 0
         assert all(isinstance(s, str) for s in context["sources"])
 
@@ -355,7 +352,7 @@ class TestQueryProcessing:
         """Test query cleaning"""
         dirty_query = "  what   is   PYTHON?  "
         cleaned = dirty_query.strip().lower().replace("?", "")
-        
+
         assert cleaned == "what   is   python"
 
     def test_query_expansion(self):
@@ -365,7 +362,7 @@ class TestQueryProcessing:
             "machine learning": ["ML", "artificial intelligence", "AI"],
             "python": ["python3", "py"],
         }
-        
+
         expanded_queries = [query] + synonyms.get(query, [])
         assert len(expanded_queries) > 1
 
@@ -373,7 +370,7 @@ class TestQueryProcessing:
         """Test stopword removal"""
         query = "what is the best machine learning framework"
         stopwords = {"what", "is", "the"}
-        
+
         tokens = [word for word in query.split() if word not in stopwords]
         assert "what" not in tokens
         assert "machine" in tokens
@@ -385,7 +382,7 @@ class TestQueryProcessing:
             "best python framework": "recommendation",
             "python error handling": "technical",
         }
-        
+
         for query, intent in queries.items():
             assert intent in ["learning", "recommendation", "technical"]
 
@@ -401,33 +398,30 @@ class TestRAGIntegration:
     def test_full_rag_pipeline(self, sample_documents, sample_queries):
         """Test full RAG pipeline"""
         query_text = sample_queries[0]["query"]
-        
+
         # Index documents
         assert len(sample_documents) > 0
-        
+
         # Retrieve relevant documents
         results = [doc for doc in sample_documents if doc["branch"] == "programming"]
-        
+
         # Generate context
         context = "\n".join(doc["content"] for doc in results)
-        
+
         assert len(context) > 0
 
     def test_multi_branch_retrieval(self, sample_documents):
         """Test retrieval across multiple branches"""
         results = sample_documents
         branches = set(doc["branch"] for doc in results)
-        
+
         assert len(branches) > 1
 
     def test_empty_results_handling(self, sample_documents):
         """Test handling of empty retrieval results"""
         query = "nonexistent_topic_xyz"
-        results = [
-            doc for doc in sample_documents
-            if query.lower() in doc["content"].lower()
-        ]
-        
+        results = [doc for doc in sample_documents if query.lower() in doc["content"].lower()]
+
         assert len(results) == 0
 
     def test_rag_with_caching(self, temp_rag_dir):
@@ -438,7 +432,7 @@ class TestRAGIntegration:
             "machine learning": ["doc2", "doc4"],
         }
         cache_file.write_text(json.dumps(cache))
-        
+
         loaded_cache = json.loads(cache_file.read_text())
         assert loaded_cache["python"] == ["doc1", "doc2"]
 
@@ -454,30 +448,27 @@ class TestRAGPerformance:
     def test_retrieval_speed(self, sample_documents):
         """Test retrieval speed"""
         import time
-        
+
         start = time.time()
         results = [doc for doc in sample_documents if "python" in doc["content"].lower()]
         elapsed = time.time() - start
-        
+
         assert elapsed < 0.1  # Should be very fast
 
     def test_large_corpus_handling(self):
         """Test handling of large document corpus"""
-        large_corpus = [
-            {"id": f"doc{i}", "content": f"content {i}", "branch": "general"}
-            for i in range(1000)
-        ]
-        
+        large_corpus = [{"id": f"doc{i}", "content": f"content {i}", "branch": "general"} for i in range(1000)]
+
         assert len(large_corpus) == 1000
 
     def test_context_generation_efficiency(self, sample_documents):
         """Test context generation efficiency"""
         import time
-        
+
         start = time.time()
         context = "\n".join(doc["content"] for doc in sample_documents)
         elapsed = time.time() - start
-        
+
         assert elapsed < 0.01
 
 
@@ -492,20 +483,20 @@ class TestRAGErrorHandling:
     def test_missing_document_field(self):
         """Test handling missing document fields"""
         doc = {"id": "1", "content": "test"}  # Missing title
-        
+
         assert "title" not in doc
 
     def test_invalid_document_id(self):
         """Test handling invalid document IDs"""
         doc = {"id": None, "content": "test"}
-        
+
         assert doc["id"] is None
 
     def test_corrupted_index_recovery(self, temp_rag_dir):
         """Test recovery from corrupted index"""
         index_file = temp_rag_dir / "index.json"
         index_file.write_text("{invalid json")
-        
+
         try:
             json.loads(index_file.read_text())
             assert False, "Should raise JSONDecodeError"
@@ -515,7 +506,7 @@ class TestRAGErrorHandling:
     def test_empty_corpus_handling(self):
         """Test handling empty corpus"""
         corpus = []
-        
+
         assert len(corpus) == 0
 
 

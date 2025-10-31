@@ -25,11 +25,4 @@ ADAPTER_PATH = UNIVERSAL_ROOT / "adapters" / "universal_lora"
 RAG_PATH = UNIVERSAL_ROOT / "rag"
 SCRIPTS_PATH = UNIVERSAL_ROOT / "scripts"
 
-__all__ = [
-    "UNIVERSAL_ROOT",
-    "CORPUS_PATH",
-    "INCOMING_PATH",
-    "ADAPTER_PATH",
-    "RAG_PATH",
-    "SCRIPTS_PATH"
-]
+__all__ = ["UNIVERSAL_ROOT", "CORPUS_PATH", "INCOMING_PATH", "ADAPTER_PATH", "RAG_PATH", "SCRIPTS_PATH"]

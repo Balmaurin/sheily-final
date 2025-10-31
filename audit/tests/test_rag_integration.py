@@ -5,8 +5,9 @@ Integration tests para sheily_rag.generate
 Coverage: Generación RAG y búsqueda de documentos
 """
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 
 class TestRAGBasics:
@@ -16,6 +17,7 @@ class TestRAGBasics:
         """Verificar que módulo RAG se importa"""
         try:
             from sheily_rag import generate
+
             assert generate is not None
         except ImportError:
             # Si no existe, es válido en este contexto de test
@@ -52,6 +54,7 @@ class TestRAGRanking:
         """Verificar inicialización del ranker"""
         try:
             from sheily_rag.rag_ranker import RankerBase
+
             # Verificar que la clase existe
             assert RankerBase is not None
         except ImportError:
@@ -73,8 +76,9 @@ class TestRAGIntegration:
         # Test básico: pipeline existe y es callable
         try:
             from sheily_rag import generate
+
             # Verificar que generación es callable
-            assert callable(generate) or hasattr(generate, '__call__')
+            assert callable(generate) or hasattr(generate, "__call__")
         except Exception:
             # Si no existe, es ok en test
             pass

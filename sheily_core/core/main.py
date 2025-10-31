@@ -32,7 +32,7 @@ def activate_secure():
     """
     Activate security systems - REAL Implementation
     ===============================================
-    
+
     Activa todos los sistemas de seguridad:
     - Rate limiting
     - CORS validation
@@ -41,24 +41,27 @@ def activate_secure():
     - JWT validation
     """
     import logging
+
     logger = logging.getLogger(__name__)
-    
+
     try:
         # 1. Validar SECRET_KEY
         import os
-        secret_key = os.getenv('SECRET_KEY')
-        if not secret_key or secret_key == 'change_this_in_production':
+
+        secret_key = os.getenv("SECRET_KEY")
+        if not secret_key or secret_key == "change_this_in_production":
             logger.error(
                 "🔴 SECURITY CRITICAL: SECRET_KEY not configured or using default value. "
                 "Configure SECRET_KEY in .env immediately!"
             )
             raise ValueError("SECRET_KEY must be configured for security")
-        
+
         logger.info("✅ SECRET_KEY validated")
-        
+
         # 2. Inicializar JWT Manager
         try:
-            from sheily_core.security.jwt_auth import get_jwt_manager, JWT_AVAILABLE
+            from sheily_core.security.jwt_auth import JWT_AVAILABLE, get_jwt_manager
+
             if JWT_AVAILABLE:
                 jwt_manager = get_jwt_manager()
                 logger.info("✅ JWT Authentication system activated")
@@ -66,49 +69,48 @@ def activate_secure():
                 logger.warning("⚠️  PyJWT not available - JWT auth disabled")
         except Exception as e:
             logger.warning(f"⚠️  JWT init warning: {e}")
-        
+
         # 3. Validar configuración CORS
         try:
             from sheily_core.config import get_config
+
             config = get_config()
             if config.cors_origins == ["*"]:
-                logger.warning(
-                    "⚠️  CORS configured with wildcard (*) - not recommended for production"
-                )
+                logger.warning("⚠️  CORS configured with wildcard (*) - not recommended for production")
             else:
                 logger.info(f"✅ CORS configured with {len(config.cors_origins)} specific origins")
         except Exception as e:
             logger.warning(f"⚠️  CORS validation warning: {e}")
-        
+
         # 4. Inicializar rate limiting (preparar estructuras)
         global _rate_limit_cache
         _rate_limit_cache = {}
         logger.info("✅ Rate limiting structures initialized")
-        
+
         # 5. Activar logging de seguridad
-        security_logger = logging.getLogger('sheily.security')
+        security_logger = logging.getLogger("sheily.security")
         if not security_logger.handlers:
             handler = logging.StreamHandler()
-            handler.setFormatter(
-                logging.Formatter('[%(asctime)s] SECURITY: %(message)s')
-            )
+            handler.setFormatter(logging.Formatter("[%(asctime)s] SECURITY: %(message)s"))
             security_logger.addHandler(handler)
             security_logger.setLevel(logging.INFO)
         logger.info("✅ Security logging activated")
-        
+
         # 6. Validar subprocess utils están disponibles
         try:
             from sheily_core.utils.subprocess_utils import safe_subprocess_run
+
             logger.info("✅ Subprocess validation system available")
         except Exception as e:
             logger.warning(f"⚠️  Subprocess utils warning: {e}")
-        
+
         logger.info("🔒 Security systems activated successfully")
         return True
-        
+
     except Exception as e:
         logger.error(f"🔴 CRITICAL: Failed to activate security: {e}")
         raise
+
 
 # Cache global para rate limiting
 _rate_limit_cache = {}
@@ -157,9 +159,7 @@ def create_chat_engine(config_path: str = None):
                         )()
                     else:
                         # LLM failed, use smart fallback
-                        return create_fallback_response(
-                            query, "llm_error", result.get("error", "Unknown LLM error")
-                        )
+                        return create_fallback_response(query, "llm_error", result.get("error", "Unknown LLM error"))
 
                 except Exception as e:
                     logger.warning(f"LLM engine error, using fallback: {e}")
@@ -224,9 +224,7 @@ def create_fallback_response(query: str, engine_type: str = "fallback", error: s
         response = f"Entiendo que preguntas sobre programación. Python es un excelente lenguaje para comenzar. ¿Hay algo específico sobre '{query}' que te gustaría saber?"
         branch = "programación"
         confidence = 0.7
-    elif any(
-        word in query_lower for word in ["ia", "inteligencia artificial", "machine learning", "ai"]
-    ):
+    elif any(word in query_lower for word in ["ia", "inteligencia artificial", "machine learning", "ai"]):
         response = f"La inteligencia artificial es fascinante. Respecto a '{query}', puedo ayudarte con conceptos básicos y aplicaciones prácticas."
         branch = "inteligencia_artificial"
         confidence = 0.8
@@ -689,9 +687,7 @@ Examples:
 
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
 
-    parser.add_argument(
-        "--version", action="version", version="Sheily AI System 2.0.0 - Functional Edition"
-    )
+    parser.add_argument("--version", action="version", version="Sheily AI System 2.0.0 - Functional Edition")
 
     return parser
 

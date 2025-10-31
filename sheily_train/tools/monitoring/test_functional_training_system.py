@@ -289,9 +289,7 @@ class TestGGUFIntegration(unittest.TestCase):
     def test_gguf_model_loading_functional(self):
         """Test functional GGUF model loading"""
         # Test with non-existent file (should fail gracefully)
-        result = self.load_gguf_model_functional(
-            model_path="non_existent_model.gguf", context_length=4096
-        )
+        result = self.load_gguf_model_functional(model_path="non_existent_model.gguf", context_length=4096)
 
         self.assertTrue(result.is_err())
         self.assertIn("not found", str(result.unwrap_err()).lower())
@@ -300,9 +298,7 @@ class TestGGUFIntegration(unittest.TestCase):
         """Test GGUF memory requirements calculation"""
         from sheily_core.llm_engine.gguf_integration import calculate_gguf_memory_requirements
 
-        config = self.create_gguf_model_config(
-            model_path="test.gguf", model_size=1024 * 1024 * 1024  # 1GB
-        )
+        config = self.create_gguf_model_config(model_path="test.gguf", model_size=1024 * 1024 * 1024)  # 1GB
 
         memory_reqs = calculate_gguf_memory_requirements(config)
 
@@ -352,9 +348,7 @@ class TestDataPreparation(unittest.TestCase):
             {"content": "Test document 2", "language": "EN", "domain": "test"},
         ]
 
-        dataset = self.create_prepared_dataset(
-            language="EN", branch_name="test_branch", documents=mock_documents
-        )
+        dataset = self.create_prepared_dataset(language="EN", branch_name="test_branch", documents=mock_documents)
 
         self.assertEqual(dataset.language, "EN")
         self.assertEqual(dataset.branch_name, "test_branch")
@@ -564,9 +558,7 @@ class TestTrainingRouter(unittest.TestCase):
             self.create_training_route("general", "programming", "EN", 7),
         ]
 
-        request = self.create_training_route_request(
-            query="programming question", language="EN", branch_name="general"
-        )
+        request = self.create_training_route_request(query="programming question", language="EN", branch_name="general")
 
         best_route = self.select_best_training_route(request, routes)
 
@@ -665,15 +657,10 @@ class TestIntegrationBetweenComponents(unittest.TestCase):
     def test_gguf_adapter_integration(self):
         """Test integration between GGUF models and adapters"""
         from sheily_core.adapters import create_adapter_config
-        from sheily_core.llm_engine.gguf_integration import (
-            create_gguf_adapter_composition,
-            create_gguf_model_state,
-        )
+        from sheily_core.llm_engine.gguf_integration import create_gguf_adapter_composition, create_gguf_model_state
 
         # Create GGUF model state
-        model_state = create_gguf_model_state(
-            model_id="test_gguf", loaded=True, adapter_attached=False
-        )
+        model_state = create_gguf_model_state(model_id="test_gguf", loaded=True, adapter_attached=False)
 
         # Create adapter config
         adapter_config = {
@@ -698,14 +685,10 @@ class TestIntegrationBetweenComponents(unittest.TestCase):
         """Test full training pipeline integration"""
         from sheily_core.llm_engine.data_preparation import create_data_preparation_config
         from sheily_core.llm_engine.training import create_training_config
-        from sheily_core.llm_engine.training_orchestrator import (
-            create_training_orchestration_config,
-        )
+        from sheily_core.llm_engine.training_orchestrator import create_training_orchestration_config
 
         # Create data preparation config
-        data_config = create_data_preparation_config(
-            language="EN", corpus_type="domain_specific", max_documents=100
-        )
+        data_config = create_data_preparation_config(language="EN", corpus_type="domain_specific", max_documents=100)
 
         # Create training config
         training_config = create_training_config(

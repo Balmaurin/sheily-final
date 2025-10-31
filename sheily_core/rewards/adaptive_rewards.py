@@ -91,9 +91,7 @@ class AdaptiveRewardsOptimizer:
         """
         # Actualizar métricas globales
         self.performance_history["global_metrics"]["total_interactions"] += 1
-        self.performance_history["global_metrics"]["total_sheilys"] += interaction_data.get(
-            "sheilys_earned", 0
-        )
+        self.performance_history["global_metrics"]["total_sheilys"] += interaction_data.get("sheilys_earned", 0)
 
         # Inicializar rendimiento de dominio si no existe
         if domain not in self.performance_history["domain_performance"]:
@@ -108,9 +106,7 @@ class AdaptiveRewardsOptimizer:
         domain_history["interactions"].append(interaction_data)
 
         # Calcular promedio de Sheilys
-        sheilys_list = [
-            interaction.get("sheilys_earned", 0) for interaction in domain_history["interactions"]
-        ]
+        sheilys_list = [interaction.get("sheilys_earned", 0) for interaction in domain_history["interactions"]]
         domain_history["average_sheilys"] = np.mean(sheilys_list)
 
         # Actualizar tendencia de rendimiento
@@ -129,9 +125,7 @@ class AdaptiveRewardsOptimizer:
         # Ajustar factores basado en rendimiento de dominios
         for domain, domain_data in self.performance_history["domain_performance"].items():
             # Calcular varianza de Sheilys
-            sheilys_variance = (
-                np.var(domain_data["performance_trend"]) if domain_data["performance_trend"] else 0
-            )
+            sheilys_variance = np.var(domain_data["performance_trend"]) if domain_data["performance_trend"] else 0
             average_sheilys = domain_data["average_sheilys"]
 
             # Estrategias de ajuste

@@ -102,9 +102,7 @@ class NeuroFusionIntegratedDemo:
         logger.info("\n🔄 Demostrando interacción entre sistemas...")
 
         # Simular flujo de procesamiento
-        demo_query = (
-            "¿Cómo funciona la inteligencia artificial en el procesamiento de lenguaje natural?"
-        )
+        demo_query = "¿Cómo funciona la inteligencia artificial en el procesamiento de lenguaje natural?"
 
         logger.info(f"   📝 Consulta de ejemplo: {demo_query}")
 

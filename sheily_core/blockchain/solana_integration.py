@@ -65,17 +65,17 @@ class SolanaIntegration:
             try:
                 from solana.rpc.api import Client
                 from solana.rpc.commitment import Confirmed
-                
+
                 # Conexión REAL a Solana
                 self.client = Client(self.config.rpc_url)
-                
+
                 # Verificar conexión con health check
                 health = self.client.get_health()
-                
+
                 self.logger.info(f"✅ Conectado a Solana {self.config.network} - Health: {health}")
                 self.connected = True
                 self.is_enabled = True
-                
+
             except ImportError:
                 # Sin librería, no habilitado
                 self.logger.warning(
@@ -123,18 +123,18 @@ class SolanaIntegration:
             # Implementación REAL con librería Solana
             try:
                 from solana.keypair import Keypair
-                
+
                 # Crear keypair REAL
                 keypair = Keypair()
                 wallet_address = str(keypair.public_key)
-                
+
                 # Obtener balance REAL del wallet
                 balance_response = self.client.get_balance(keypair.public_key)
-                balance_lamports = balance_response.get('result', {}).get('value', 0)
+                balance_lamports = balance_response.get("result", {}).get("value", 0)
                 balance_sol = balance_lamports / 1_000_000_000  # Convertir a SOL
-                
+
                 self.logger.info(f"✅ Wallet creado: {wallet_address}")
-                
+
                 return {
                     "success": True,
                     "user_id": user_id,
@@ -143,9 +143,9 @@ class SolanaIntegration:
                     "balance_lamports": balance_lamports,
                     "network": self.config.network,
                     "created_at": datetime.now().isoformat(),
-                    "real": True  # Marca que es real, no simulado
+                    "real": True,  # Marca que es real, no simulado
                 }
-                
+
             except ImportError:
                 return {
                     "success": False,
@@ -231,9 +231,7 @@ class SolanaIntegration:
 
             tx_hash = f"tx_{uuid.uuid4().hex}"
 
-            self.logger.info(
-                f"Simulando transferencia: {amount} {token_type} de {from_wallet} a {to_wallet}"
-            )
+            self.logger.info(f"Simulando transferencia: {amount} {token_type} de {from_wallet} a {to_wallet}")
 
             return TransactionResult(
                 success=True,
@@ -246,9 +244,7 @@ class SolanaIntegration:
             self.logger.error(f"Error en transferencia: {e}")
             return TransactionResult(success=False, error=str(e), timestamp=datetime.now())
 
-    def mint_tokens(
-        self, wallet_address: str, amount: int, token_type: str = "SHEILY"
-    ) -> TransactionResult:
+    def mint_tokens(self, wallet_address: str, amount: int, token_type: str = "SHEILY") -> TransactionResult:
         """
         Mintear tokens SHEILY
 

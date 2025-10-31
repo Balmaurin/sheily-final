@@ -297,9 +297,7 @@ def main():
         training_time = time.time() - start_time
 
         # Registrar resultado
-        log_training_session(
-            branch, success, training_time, f"models/lora_adapters/retraining/{branch}"
-        )
+        log_training_session(branch, success, training_time, f"models/lora_adapters/retraining/{branch}")
 
         if success:
             results["successful"].append(branch)

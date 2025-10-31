@@ -700,25 +700,13 @@ if __name__ == '__main__':
 
 # ---------------------- SCRIPT PRINCIPAL ----------------------
 def main():
-    ap = argparse.ArgumentParser(
-        description="Reconstruir Sheily-main -> Sheily-Final (estructura completa)"
-    )
-    ap.add_argument(
-        "--project-root", default="./Sheily-main", help="Ruta al proyecto original descomprimido"
-    )
-    ap.add_argument(
-        "--apply", action="store_true", help="Aplicar los movimientos (si no, solo plan)"
-    )
+    ap = argparse.ArgumentParser(description="Reconstruir Sheily-main -> Sheily-Final (estructura completa)")
+    ap.add_argument("--project-root", default="./Sheily-main", help="Ruta al proyecto original descomprimido")
+    ap.add_argument("--apply", action="store_true", help="Aplicar los movimientos (si no, solo plan)")
     ap.add_argument("--move", action="store_true", help="Usar mover en vez de copiar (recomendado)")
-    ap.add_argument(
-        "--plan", default="out/FULL_PLAN.md", help="Ruta relativa del informe a crear en destino"
-    )
-    ap.add_argument(
-        "--branches-file", default="BRANCHES.txt", help="Archivo con lista de ramas (una por línea)"
-    )
-    ap.add_argument(
-        "--unlocated-dir", default="archivos_no_ubicados", help="Carpeta destino para desconocidos"
-    )
+    ap.add_argument("--plan", default="out/FULL_PLAN.md", help="Ruta relativa del informe a crear en destino")
+    ap.add_argument("--branches-file", default="BRANCHES.txt", help="Archivo con lista de ramas (una por línea)")
+    ap.add_argument("--unlocated-dir", default="archivos_no_ubicados", help="Carpeta destino para desconocidos")
     ap.add_argument("--verbose", action="store_true", help="Salida verbosa")
     args = ap.parse_args()
 
@@ -884,9 +872,7 @@ def main():
     write_file(dst_root / "run_sheily.sh", RUN_SH, mode=0o755)
     write_file(dst_root / "run_sheily.ps1", RUN_PS1, mode=0o755)
     write_file(dst_root / "sheily_train" / "install_lora_env.sh", INSTALL_SH, mode=0o755)
-    write_file(
-        dst_root / "sheily_train" / "install_lora_env_offline.sh", INSTALL_OFFLINE_SH, mode=0o755
-    )
+    write_file(dst_root / "sheily_train" / "install_lora_env_offline.sh", INSTALL_OFFLINE_SH, mode=0o755)
     write_file(dst_root / "sheily_train" / "install_lora_env.ps1", INSTALL_PS1, mode=0o755)
     write_file(dst_root / "Dockerfile", DOCKERFILE)
     write_file(dst_root / "docker-compose.yml", DOCKER_COMPOSE)

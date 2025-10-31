@@ -181,26 +181,13 @@ class UnifiedSystemCore:
 
         # Componentes de IA reales
         logger.info("🤖 Inicializando componentes de IA reales...")
-        from .unified_consciousness_memory_system import (
-            ConsciousnessConfig,
-            UnifiedConsciousnessMemorySystem,
-        )
-        from .unified_generation_response_system import (
-            GenerationConfig,
-            UnifiedGenerationResponseSystem,
-        )
-        from .unified_learning_quality_system import (
-            LearningConfig,
-            QualityConfig,
-            UnifiedLearningQualitySystem,
-        )
+        from .unified_consciousness_memory_system import ConsciousnessConfig, UnifiedConsciousnessMemorySystem
+        from .unified_generation_response_system import GenerationConfig, UnifiedGenerationResponseSystem
+        from .unified_learning_quality_system import LearningConfig, QualityConfig, UnifiedLearningQualitySystem
 
         # Embeddings: use consolidated architecture if available
         try:
-            from .consolidated_system_architecture import (
-                UnifiedEmbeddingSystem,
-                UnifiedSystemConfig,
-            )
+            from .consolidated_system_architecture import UnifiedEmbeddingSystem, UnifiedSystemConfig
 
             self.components["embeddings"] = UnifiedEmbeddingSystem(UnifiedSystemConfig())
         except ImportError:
@@ -238,9 +225,7 @@ class UnifiedSystemCore:
             "Blockchain and token systems must be implemented with real logic. No unresolved imports or placeholders allowed."
         )
 
-    async def process_query(
-        self, query: str, context: Optional[Dict[str, Any]] = None
-    ) -> QueryResult:
+    async def process_query(self, query: str, context: Optional[Dict[str, Any]] = None) -> QueryResult:
         """Procesar una consulta del usuario conectando con LLM Llama 3.2 Q8_0"""
         start_time = time.time()
 
@@ -453,9 +438,7 @@ class UnifiedSystemCore:
             logger.error(f"❌ Error conectando con LLM: {e}")
             return f"Lo siento, hay un problema de conexión con el sistema de IA. Tu consulta sobre {domain} no pudo ser procesada en este momento."
 
-    async def _generate_response(
-        self, query: str, domain: str, context: Optional[Dict[str, Any]]
-    ) -> str:
+    async def _generate_response(self, query: str, domain: str, context: Optional[Dict[str, Any]]) -> str:
         """Generar respuesta usando el sistema apropiado"""
         try:
             # Usar LLM Llama 3.2 Q8_0 directamente para respuestas reales
@@ -464,9 +447,7 @@ class UnifiedSystemCore:
             logger.error(f"❌ Error generando respuesta: {e}")
             return f"Lo siento, no pude generar una respuesta para tu consulta sobre {domain}."
 
-    async def _evaluate_response_quality(
-        self, query: str, response: str, context: Optional[Dict[str, Any]]
-    ) -> float:
+    async def _evaluate_response_quality(self, query: str, response: str, context: Optional[Dict[str, Any]]) -> float:
         """Evaluar calidad de la respuesta"""
         try:
             if "evaluator" in self.components:
@@ -487,9 +468,7 @@ class UnifiedSystemCore:
 
     def _add_to_history(self, query: str, response: str):
         """Añadir interacción al historial"""
-        self.conversation_history.append(
-            {"query": query, "response": response, "timestamp": time.time()}
-        )
+        self.conversation_history.append({"query": query, "response": response, "timestamp": time.time()})
 
         # Mantener solo las últimas interacciones
         if len(self.conversation_history) > self.max_history:
@@ -519,65 +498,67 @@ class UnifiedSystemCore:
         """Validar configuración del sistema - IMPLEMENTACIÓN REAL"""
         if not isinstance(config, dict):
             return False
-        
+
         # Validaciones básicas requeridas
-        required_fields = ['model_name', 'device']
+        required_fields = ["model_name", "device"]
         for field in required_fields:
             if field not in config:
                 return False
-        
+
         # Validar tipos
-        if not isinstance(config.get('model_name'), str):
+        if not isinstance(config.get("model_name"), str):
             return False
-        
-        if config.get('device') not in ['cpu', 'cuda', 'auto']:
+
+        if config.get("device") not in ["cpu", "cuda", "auto"]:
             return False
-        
+
         # Validar rangos numéricos si existen
-        if 'max_length' in config:
-            if not isinstance(config['max_length'], int) or config['max_length'] <= 0:
+        if "max_length" in config:
+            if not isinstance(config["max_length"], int) or config["max_length"] <= 0:
                 return False
-        
-        if 'batch_size' in config:
-            if not isinstance(config['batch_size'], int) or config['batch_size'] <= 0:
+
+        if "batch_size" in config:
+            if not isinstance(config["batch_size"], int) or config["batch_size"] <= 0:
                 return False
-        
+
         return True
 
     async def get_system_metrics(self) -> Dict[str, Any]:
         """Obtener métricas del sistema - IMPLEMENTACIÓN REAL"""
-        import psutil
         import time
-        
+
+        import psutil
+
         metrics = {
-            'timestamp': time.time(),
-            'system': {
-                'cpu_percent': psutil.cpu_percent(interval=0.1),
-                'memory_percent': psutil.virtual_memory().percent,
-                'memory_available_mb': psutil.virtual_memory().available / (1024 * 1024),
+            "timestamp": time.time(),
+            "system": {
+                "cpu_percent": psutil.cpu_percent(interval=0.1),
+                "memory_percent": psutil.virtual_memory().percent,
+                "memory_available_mb": psutil.virtual_memory().available / (1024 * 1024),
             },
-            'status': {
-                'initialized': self.initialized,
-                'active_operations': 0,  # Can be extended by subclasses
-            }
+            "status": {
+                "initialized": self.initialized,
+                "active_operations": 0,  # Can be extended by subclasses
+            },
         }
-        
+
         # Agregar métricas GPU si CUDA disponible
         try:
             import torch
+
             if torch.cuda.is_available():
-                metrics['gpu'] = {
-                    'available': True,
-                    'device_count': torch.cuda.device_count(),
-                    'current_device': torch.cuda.current_device(),
-                    'memory_allocated_mb': torch.cuda.memory_allocated() / (1024 * 1024),
-                    'memory_reserved_mb': torch.cuda.memory_reserved() / (1024 * 1024),
+                metrics["gpu"] = {
+                    "available": True,
+                    "device_count": torch.cuda.device_count(),
+                    "current_device": torch.cuda.current_device(),
+                    "memory_allocated_mb": torch.cuda.memory_allocated() / (1024 * 1024),
+                    "memory_reserved_mb": torch.cuda.memory_reserved() / (1024 * 1024),
                 }
             else:
-                metrics['gpu'] = {'available': False}
+                metrics["gpu"] = {"available": False}
         except ImportError:
-            metrics['gpu'] = {'available': False, 'error': 'PyTorch not installed'}
-        
+            metrics["gpu"] = {"available": False, "error": "PyTorch not installed"}
+
         return metrics
 
     async def get_system_status(self) -> Dict[str, Any]:

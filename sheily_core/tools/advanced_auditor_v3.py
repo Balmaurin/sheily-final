@@ -287,9 +287,7 @@ class AdvancedAuditor:
 
         return validations
 
-    def _validate_single_component(
-        self, component_name: str, config: Dict[str, str]
-    ) -> ComponentValidation:
+    def _validate_single_component(self, component_name: str, config: Dict[str, str]) -> ComponentValidation:
         """Validar componente individual funcionalmente"""
         file_path = config["file"]
         class_name = config["class"]
@@ -335,9 +333,7 @@ class AdvancedAuditor:
                     basic_functionality = self._test_integration_functionality(file_path)
                 else:
                     # Test genérico: verificar que la función existe
-                    basic_functionality = self._test_generic_functionality(
-                        file_path, class_name, function_name
-                    )
+                    basic_functionality = self._test_generic_functionality(file_path, class_name, function_name)
 
                 execution_time = time.time() - exec_start
 
@@ -459,15 +455,12 @@ class AdvancedAuditor:
             control_structures = 0
             for line in lines:
                 if any(
-                    keyword in line.lower()
-                    for keyword in ["if ", "for ", "while ", "try:", "except", "def ", "class "]
+                    keyword in line.lower() for keyword in ["if ", "for ", "while ", "try:", "except", "def ", "class "]
                 ):
                     control_structures += 1
 
             # Calcular ratio de comentarios
-            comment_ratio = len([l for l in lines if l.strip().startswith("#")]) / max(
-                len(lines), 1
-            )
+            comment_ratio = len([l for l in lines if l.strip().startswith("#")]) / max(len(lines), 1)
 
             # Calcular longitud promedio de línea
             avg_line_length = sum(len(line) for line in lines) / max(len(lines), 1)
@@ -475,9 +468,7 @@ class AdvancedAuditor:
             # Combinar métricas (normalizar a 0-1)
             complexity = min(
                 1.0,
-                (control_structures / 100) * 0.4
-                + (1 - comment_ratio) * 0.3
-                + (avg_line_length / 100) * 0.3,
+                (control_structures / 100) * 0.4 + (1 - comment_ratio) * 0.3 + (avg_line_length / 100) * 0.3,
             )
 
             return complexity
@@ -545,9 +536,7 @@ class AdvancedAuditor:
         except Exception:
             return False
 
-    def _test_generic_functionality(
-        self, file_path: str, class_name: str, function_name: str
-    ) -> bool:
+    def _test_generic_functionality(self, file_path: str, class_name: str, function_name: str) -> bool:
         """Test genérico de funcionalidad"""
         try:
             # Importar módulo
@@ -596,9 +585,7 @@ class AdvancedAuditor:
             content = Path(file_path).read_text()
 
             # Conflicto: múltiples imports del mismo módulo con alias diferentes
-            import_lines = [
-                line for line in content.split("\n") if line.strip().startswith("import ")
-            ]
+            import_lines = [line for line in content.split("\n") if line.strip().startswith("import ")]
 
             # Conflicto: funciones duplicadas en el mismo módulo
             if "def " in content:
@@ -695,24 +682,16 @@ class AdvancedAuditor:
         }
 
         total_components = len(self.report.component_validations)
-        successful_imports = sum(
-            1 for v in self.report.component_validations.values() if v.can_import
-        )
-        successful_executions = sum(
-            1 for v in self.report.component_validations.values() if v.basic_functionality
-        )
+        successful_imports = sum(1 for v in self.report.component_validations.values() if v.can_import)
+        successful_executions = sum(1 for v in self.report.component_validations.values() if v.basic_functionality)
 
         if total_components > 0:
             insights["import_success_rate"] = successful_imports / total_components
             insights["execution_success_rate"] = successful_executions / total_components
 
             # Calcular promedios de tiempo
-            total_import_time = sum(
-                v.import_time for v in self.report.component_validations.values()
-            )
-            total_execution_time = sum(
-                v.execution_time for v in self.report.component_validations.values()
-            )
+            total_import_time = sum(v.import_time for v in self.report.component_validations.values())
+            total_execution_time = sum(v.execution_time for v in self.report.component_validations.values())
 
             insights["avg_import_time"] = total_import_time / total_components
             insights["avg_execution_time"] = total_execution_time / total_components
@@ -746,9 +725,7 @@ class AdvancedAuditor:
         for validation in self.report.component_validations.values():
             if validation.conflicts_detected:
                 for conflict in validation.conflicts_detected:
-                    security_warnings.append(
-                        f"Conflicto en {validation.component_name}: {conflict}"
-                    )
+                    security_warnings.append(f"Conflicto en {validation.component_name}: {conflict}")
 
         return {"optimizations": optimizations, "security": security_warnings}
 
@@ -782,14 +759,10 @@ class AdvancedAuditor:
                         "cross_dependencies": validation.cross_dependencies,
                         "conflicts": validation.conflicts_detected,
                         "metrics": {
-                            "total_lines": validation.metrics.total_lines
-                            if validation.metrics
-                            else 0,
+                            "total_lines": validation.metrics.total_lines if validation.metrics else 0,
                             "functions": validation.metrics.functions if validation.metrics else 0,
                             "classes": validation.metrics.classes if validation.metrics else 0,
-                            "complexity": validation.metrics.complexity_score
-                            if validation.metrics
-                            else 0.0,
+                            "complexity": validation.metrics.complexity_score if validation.metrics else 0.0,
                             "warnings": validation.metrics.warnings if validation.metrics else [],
                         }
                         if validation.metrics
@@ -819,13 +792,9 @@ class AdvancedAuditor:
 def main():
     """Función principal con argumentos avanzados"""
     parser = argparse.ArgumentParser(description="Auditor Avanzado del Sistema Neurológico V3")
-    parser.add_argument(
-        "--quick", action="store_true", help="Modo rápido (excluye directorios pesados)"
-    )
+    parser.add_argument("--quick", action="store_true", help="Modo rápido (excluye directorios pesados)")
     parser.add_argument("--full", action="store_true", help="Modo completo (incluye todo)")
-    parser.add_argument(
-        "--verbose", "-v", action="store_true", help="Modo verbose con logs detallados"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Modo verbose con logs detallados")
     parser.add_argument("--json-out", help="Exportar resultados a archivo JSON")
     parser.add_argument("--exclude-custom", nargs="*", help="Directorios adicionales a excluir")
 

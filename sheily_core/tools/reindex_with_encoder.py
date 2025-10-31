@@ -99,9 +99,7 @@ def main():
 
     ap = argparse.ArgumentParser(description="Reindexar con embeddings básicos (zero-dependency)")
     ap.add_argument("--run_dir", required=True, help="branches/<rama>/<fecha>")
-    ap.add_argument(
-        "--encoder_path", default="basic_hash", help="Tipo de encoder (basic_hash, tfidf)"
-    )
+    ap.add_argument("--encoder_path", default="basic_hash", help="Tipo de encoder (basic_hash, tfidf)")
     ap.add_argument("--dimensions", type=int, default=384, help="Dimensiones del vector")
     args = ap.parse_args()
 

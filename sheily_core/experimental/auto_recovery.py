@@ -304,9 +304,7 @@ class AutoRecoveryEngine:
                 active_connections=0,
             )
 
-    def _predict_component_failure(
-        self, component: str, metrics: SystemMetrics
-    ) -> Optional[Dict[str, Any]]:
+    def _predict_component_failure(self, component: str, metrics: SystemMetrics) -> Optional[Dict[str, Any]]:
         """Predecir posible fallo de componente"""
         # Implementación simplificada de predicción
         # En un sistema real, esto usaría modelos ML
@@ -356,9 +354,7 @@ class AutoRecoveryEngine:
 
     def _trigger_preventive_recovery(self, component: str, prediction: Dict[str, Any]):
         """Trigger recuperación preventiva"""
-        self.logger.info(
-            f"Triggering preventive recovery for {component}", extra={"prediction": prediction}
-        )
+        self.logger.info(f"Triggering preventive recovery for {component}", extra={"prediction": prediction})
 
         self._recover_component(
             component,
@@ -379,15 +375,11 @@ class AutoRecoveryEngine:
 
             try:
                 # Crear intento de recuperación
-                attempt = RecoveryAttempt(
-                    error=error, strategy_used="auto", start_time=datetime.now()
-                )
+                attempt = RecoveryAttempt(error=error, strategy_used="auto", start_time=datetime.now())
 
                 # Buscar estrategias aplicables
                 applicable_strategies = [
-                    strategy
-                    for strategy in self.recovery_strategies.values()
-                    if strategy.can_recover(error)
+                    strategy for strategy in self.recovery_strategies.values() if strategy.can_recover(error)
                 ]
 
                 if not applicable_strategies:
@@ -402,9 +394,7 @@ class AutoRecoveryEngine:
                 for strategy in applicable_strategies:
                     try:
                         self.status = RecoveryStatus.RECOVERING
-                        self.logger.info(
-                            f"Attempting recovery using strategy: {strategy.__class__.__name__}"
-                        )
+                        self.logger.info(f"Attempting recovery using strategy: {strategy.__class__.__name__}")
 
                         recovery_result = strategy.recover(error)
 
@@ -415,22 +405,16 @@ class AutoRecoveryEngine:
                             attempt.metadata["recovery_value"] = recovery_result.unwrap()
                             self.recovery_history.append(attempt)
 
-                            self.logger.info(
-                                f"Successfully recovered using {strategy.__class__.__name__}"
-                            )
+                            self.logger.info(f"Successfully recovered using {strategy.__class__.__name__}")
                             self.status = RecoveryStatus.SUCCESS
 
                             # Actualizar métricas de error
-                            error_monitor.record_error(
-                                error, (attempt.end_time - attempt.start_time).total_seconds()
-                            )
+                            error_monitor.record_error(error, (attempt.end_time - attempt.start_time).total_seconds())
 
                             return recovery_result
 
                     except Exception as e:
-                        self.logger.error(
-                            f"Recovery strategy {strategy.__class__.__name__} failed: {e}"
-                        )
+                        self.logger.error(f"Recovery strategy {strategy.__class__.__name__} failed: {e}")
                         continue
 
                 # Si ninguna estrategia funcionó
@@ -552,9 +536,7 @@ class BackupManager:
             )
             return Err(error)
 
-    def restore_backup(
-        self, component: str, backup_file: Optional[Path] = None
-    ) -> Result[Any, SheilyError]:
+    def restore_backup(self, component: str, backup_file: Optional[Path] = None) -> Result[Any, SheilyError]:
         """Restaurar backup de componente"""
         try:
             if backup_file is None:

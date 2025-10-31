@@ -298,18 +298,10 @@ class UnifiedSecurityAuthSystem:
 
         # Índices
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_user_sessions ON user_sessions(user_id)")
-        cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_session_expires ON user_sessions(expires_at)"
-        )
-        cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_security_events ON security_events(user_id, timestamp)"
-        )
-        cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_audit_logs ON audit_logs(user_id, timestamp)"
-        )
-        cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_recovery_token ON account_recovery(recovery_token)"
-        )
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_session_expires ON user_sessions(expires_at)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_security_events ON security_events(user_id, timestamp)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_audit_logs ON audit_logs(user_id, timestamp)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_recovery_token ON account_recovery(recovery_token)")
 
         self.conn.commit()
         cursor.close()
@@ -528,7 +520,7 @@ class UnifiedSecurityAuthSystem:
             cursor = self.conn.cursor()
             cursor.execute(
                 """
-                INSERT OR REPLACE INTO two_factor_auth 
+                INSERT OR REPLACE INTO two_factor_auth
                 (user_id, secret_key, backup_codes, is_enabled, created_at)
                 VALUES (?, ?, ?, ?, ?)
             """,
@@ -589,7 +581,7 @@ class UnifiedSecurityAuthSystem:
                 cursor = self.conn.cursor()
                 cursor.execute(
                     """
-                    UPDATE two_factor_auth 
+                    UPDATE two_factor_auth
                     SET backup_codes = ?, last_used = ?
                     WHERE user_id = ?
                 """,
@@ -630,7 +622,7 @@ class UnifiedSecurityAuthSystem:
             cursor = self.conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO digital_signatures 
+                INSERT INTO digital_signatures
                 (signature_id, user_id, data_hash, signature, public_key, created_at)
                 VALUES (?, ?, ?, ?, ?, ?)
             """,
@@ -659,9 +651,7 @@ class UnifiedSecurityAuthSystem:
             logger.error(f"Error firmando datos: {e}")
             return {"success": False, "error": str(e)}
 
-    async def verify_signature(
-        self, data: str, signature: str, public_key_pem: str
-    ) -> Dict[str, Any]:
+    async def verify_signature(self, data: str, signature: str, public_key_pem: str) -> Dict[str, Any]:
         """Verificar firma digital"""
         try:
             # Generar hash de datos
@@ -710,7 +700,7 @@ class UnifiedSecurityAuthSystem:
             cursor = self.conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO account_recovery 
+                INSERT INTO account_recovery
                 (recovery_id, user_id, recovery_token, expires_at, created_at)
                 VALUES (?, ?, ?, ?, ?)
             """,
@@ -752,8 +742,8 @@ class UnifiedSecurityAuthSystem:
             cursor = self.conn.cursor()
             cursor.execute(
                 """
-                SELECT user_id, expires_at, used 
-                FROM account_recovery 
+                SELECT user_id, expires_at, used
+                FROM account_recovery
                 WHERE recovery_token = ?
             """,
                 (recovery_token,),
@@ -777,7 +767,7 @@ class UnifiedSecurityAuthSystem:
 
             cursor.execute(
                 """
-                UPDATE users 
+                UPDATE users
                 SET password_hash = ?, salt = ?
                 WHERE id = ?
             """,
@@ -787,8 +777,8 @@ class UnifiedSecurityAuthSystem:
             # Marcar token como usado
             cursor.execute(
                 """
-                UPDATE account_recovery 
-                SET used = TRUE 
+                UPDATE account_recovery
+                SET used = TRUE
                 WHERE recovery_token = ?
             """,
                 (recovery_token,),
@@ -798,9 +788,7 @@ class UnifiedSecurityAuthSystem:
             cursor.close()
 
             # Registrar evento de auditoría
-            await self._log_audit_event(
-                user_id, "password_reset", "users", True, {"method": "recovery_token"}
-            )
+            await self._log_audit_event(user_id, "password_reset", "users", True, {"method": "recovery_token"})
 
             return {"success": True, "message": "Contraseña restablecida exitosamente"}
 
@@ -813,9 +801,7 @@ class UnifiedSecurityAuthSystem:
         issues = []
 
         if len(password) < self.password_policy["min_length"]:
-            issues.append(
-                f"La contraseña debe tener al menos {self.password_policy['min_length']} caracteres"
-            )
+            issues.append(f"La contraseña debe tener al menos {self.password_policy['min_length']} caracteres")
 
         if self.password_policy["require_uppercase"] and not any(c.isupper() for c in password):
             issues.append("La contraseña debe contener al menos una letra mayúscula")
@@ -823,9 +809,7 @@ class UnifiedSecurityAuthSystem:
         if self.password_policy["require_numbers"] and not any(c.isdigit() for c in password):
             issues.append("La contraseña debe contener al menos un número")
 
-        if self.password_policy["require_special"] and not any(
-            c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password
-        ):
+        if self.password_policy["require_special"] and not any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password):
             issues.append("La contraseña debe contener al menos un carácter especial")
 
         return {"valid": len(issues) == 0, "issues": issues}
@@ -876,7 +860,7 @@ class UnifiedSecurityAuthSystem:
         cursor = self.conn.cursor()
         cursor.execute(
             """
-            INSERT INTO user_sessions 
+            INSERT INTO user_sessions
             (session_id, user_id, auth_method, security_level, created_at, expires_at, ip_address, user_agent, last_activity)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
@@ -910,9 +894,9 @@ class UnifiedSecurityAuthSystem:
         cursor = self.conn.cursor()
         cursor.execute(
             """
-            SELECT user_id, auth_method, security_level, created_at, expires_at, 
+            SELECT user_id, auth_method, security_level, created_at, expires_at,
                    ip_address, user_agent, is_active, last_activity
-            FROM user_sessions 
+            FROM user_sessions
             WHERE session_id = ?
         """,
             (session_id,),
@@ -956,8 +940,8 @@ class UnifiedSecurityAuthSystem:
         cursor = self.conn.cursor()
         cursor.execute(
             """
-            UPDATE user_sessions 
-            SET last_activity = ? 
+            UPDATE user_sessions
+            SET last_activity = ?
             WHERE session_id = ?
         """,
             (datetime.now().isoformat(), session_id),
@@ -971,7 +955,7 @@ class UnifiedSecurityAuthSystem:
         cursor.execute(
             """
             SELECT id, username, email, password_hash, salt, security_level, is_active
-            FROM users 
+            FROM users
             WHERE username = ?
         """,
             (username,),
@@ -997,7 +981,7 @@ class UnifiedSecurityAuthSystem:
         cursor.execute(
             """
             SELECT id, username, email, password_hash, salt, security_level, is_active
-            FROM users 
+            FROM users
             WHERE email = ?
         """,
             (email,),
@@ -1063,14 +1047,10 @@ class UnifiedSecurityAuthSystem:
         self.user_attempts[ip_address]["last_attempt"] = datetime.now()
 
         # Verificar si hay demasiados intentos en poco tiempo
-        time_since_first = (
-            datetime.now() - self.user_attempts[ip_address]["first_attempt"]
-        ).total_seconds()
+        time_since_first = (datetime.now() - self.user_attempts[ip_address]["first_attempt"]).total_seconds()
 
         # Bloquear IP si hay demasiados intentos o si son muy rápidos
-        should_block = self.user_attempts[ip_address][
-            "count"
-        ] >= self.config.max_login_attempts or (
+        should_block = self.user_attempts[ip_address]["count"] >= self.config.max_login_attempts or (
             self.user_attempts[ip_address]["count"] >= 3 and time_since_first < 60
         )  # 3 intentos en 1 minuto
 
@@ -1119,7 +1099,7 @@ class UnifiedSecurityAuthSystem:
         cursor = self.conn.cursor()
         cursor.execute(
             """
-            INSERT INTO security_events 
+            INSERT INTO security_events
             (event_id, user_id, event_type, threat_level, description, ip_address, user_agent, timestamp)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
@@ -1170,7 +1150,7 @@ class UnifiedSecurityAuthSystem:
         cursor = self.conn.cursor()
         cursor.execute(
             """
-            INSERT INTO audit_logs 
+            INSERT INTO audit_logs
             (log_id, user_id, action, resource, timestamp, ip_address, user_agent, success, details)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,

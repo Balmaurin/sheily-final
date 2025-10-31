@@ -79,9 +79,7 @@ def comprehensive_training(branches: list, corpus_dir: Path, output_dir: Path):
             # Validación avanzada
             val = validate_adapter_comprehensive(adapter_path)
 
-            res.update(
-                {"basic_validation": {"valid": valid, "issues": issues}, "advanced_validation": val}
-            )
+            res.update({"basic_validation": {"valid": valid, "issues": issues}, "advanced_validation": val})
 
             # Análisis de pesos
             weights_path = adapter_path / "adapter_model.safetensors"

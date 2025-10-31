@@ -27,7 +27,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from sheily_core.data.document_processor import DocumentProcessor, process_all_branches_corpus
-from sheily_core.data.embeddings import ProductionEmbeddingManager, EmbeddingConfig
+from sheily_core.data.embeddings import EmbeddingConfig, ProductionEmbeddingManager
 
 
 # Modelos Pydantic para requests/responses
@@ -67,6 +67,7 @@ class RAGService:
         # Middlewares de rendimiento
         try:
             from fastapi.middleware.gzip import GZipMiddleware
+
             # Comprimir respuestas grandes para mejorar rendimiento de red
             self.app.add_middleware(GZipMiddleware, minimum_size=1000)
         except Exception:
@@ -134,14 +135,10 @@ class RAGService:
                     embeddings=np.array(embeddings),
                     ids=[chunk["id"] for chunk in chunks],
                     metadatas=[chunk["metadata"] for chunk in chunks],
-                    contents=contents
+                    contents=contents,
                 )
 
-                return {
-                    "status": "success",
-                    "chunks_processed": len(chunks),
-                    "total_indexed": len(self.index_ids)
-                }
+                return {"status": "success", "chunks_processed": len(chunks), "total_indexed": len(self.index_ids)}
 
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Error procesando corpus: {str(e)}")
@@ -165,6 +162,7 @@ class RAGService:
 
                 # Crear IDs únicos
                 import time
+
                 timestamp = int(time.time())
                 ids = [f"manual_{timestamp}_{i}" for i in range(len(chunks))]
 
@@ -177,18 +175,9 @@ class RAGService:
                     metadatas.append(metadata)
 
                 # Agregar al índice FAISS
-                self._add_to_faiss_index(
-                    embeddings=np.array(embeddings),
-                    ids=ids,
-                    metadatas=metadatas,
-                    contents=chunks
-                )
+                self._add_to_faiss_index(embeddings=np.array(embeddings), ids=ids, metadatas=metadatas, contents=chunks)
 
-                return {
-                    "status": "success",
-                    "chunks_added": len(chunks),
-                    "total_indexed": len(self.index_ids)
-                }
+                return {"status": "success", "chunks_added": len(chunks), "total_indexed": len(self.index_ids)}
 
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Error agregando documento: {str(e)}")
@@ -211,12 +200,14 @@ class RAGService:
                 search_results = []
                 for score, idx in zip(scores[0], indices[0]):
                     if idx < len(self.index_ids):  # Validar índice
-                        search_results.append(SearchResult(
-                            id=self.index_ids[idx],
-                            content=self.index_contents[idx],
-                            metadata=self.index_metadatas[idx],
-                            score=float(score)  # FAISS devuelve similitud coseno normalizada
-                        ))
+                        search_results.append(
+                            SearchResult(
+                                id=self.index_ids[idx],
+                                content=self.index_contents[idx],
+                                metadata=self.index_metadatas[idx],
+                                score=float(score),  # FAISS devuelve similitud coseno normalizada
+                            )
+                        )
 
                 return search_results
 
@@ -231,7 +222,7 @@ class RAGService:
                 "embedding_model": self.embedding_manager.config.model_name if self.embedding_manager else None,
                 "vector_store": "FAISS",
                 "total_indexed": len(self.index_ids) if self.index_ids else 0,
-                "index_dimension": self.index.d if self.index else None
+                "index_dimension": self.index.d if self.index else None,
             }
 
 
@@ -248,11 +239,9 @@ async def main():
 
         # Ejecutar servidor
         import uvicorn
+
         config = uvicorn.Config(
-            rag_service.app,
-            host="0.0.0.0",
-            port=8000,  # Unificado para Docker/Compose/Healthcheck
-            log_level="info"
+            rag_service.app, host="0.0.0.0", port=8000, log_level="info"  # Unificado para Docker/Compose/Healthcheck
         )
         server = uvicorn.Server(config)
 
@@ -262,6 +251,7 @@ async def main():
     except Exception as e:
         print(f"❌ Error fatal en RAG Service: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 

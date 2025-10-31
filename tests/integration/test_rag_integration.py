@@ -3,14 +3,15 @@
 Tests para el sistema RAG completo
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, patch
-import sys
 import os
+import sys
+from unittest.mock import Mock, patch
+
+import pytest
 
 # Añadir el directorio raíz al path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from sheily_core.data.document_processor import DocumentProcessor
 from sheily_core.data.embeddings import ProductionEmbeddingManager
@@ -26,19 +27,19 @@ class TestRAGSystem:
         return [
             {
                 "content": "La antropología es el estudio científico de los seres humanos y sus culturas.",
-                "metadata": {"source": "test", "domain": "antropologia"}
+                "metadata": {"source": "test", "domain": "antropologia"},
             },
             {
                 "content": "El machine learning es una rama de la inteligencia artificial.",
-                "metadata": {"source": "test", "domain": "programacion"}
-            }
+                "metadata": {"source": "test", "domain": "programacion"},
+            },
         ]
 
     def test_document_processor_creation(self):
         """Test creación del procesador de documentos"""
         processor = DocumentProcessor()
         assert processor is not None
-        assert hasattr(processor, 'text_splitter')
+        assert hasattr(processor, "text_splitter")
         assert processor.chunk_size == 512
         assert processor.chunk_overlap == 100
 
@@ -46,7 +47,10 @@ class TestRAGSystem:
         """Test división de documentos en chunks"""
         processor = DocumentProcessor(chunk_size=100, chunk_overlap=20)
 
-        long_text = "Este es un texto largo que debería ser dividido en múltiples chunks para poder ser procesado eficientemente por el sistema de embeddings. " * 10
+        long_text = (
+            "Este es un texto largo que debería ser dividido en múltiples chunks para poder ser procesado eficientemente por el sistema de embeddings. "
+            * 10
+        )
 
         chunks = processor.text_splitter.split_text(long_text)
 
@@ -65,16 +69,16 @@ class TestRAGSystem:
 
         manager = ProductionEmbeddingManager(config)
         assert manager is not None
-        assert hasattr(manager, 'model')
+        assert hasattr(manager, "model")
         assert manager.config == config
 
     def test_rag_service_creation(self):
         """Test creación del servicio RAG"""
         service = RAGService()
         assert service is not None
-        assert hasattr(service, 'app')
-        assert hasattr(service, 'embedding_manager')
-        assert hasattr(service, 'document_processor')
+        assert hasattr(service, "app")
+        assert hasattr(service, "embedding_manager")
+        assert hasattr(service, "document_processor")
         assert service.index is None  # No inicializado aún
 
     @pytest.mark.asyncio
@@ -83,7 +87,7 @@ class TestRAGSystem:
         service = RAGService()
 
         # Mock del embedding manager
-        with patch.object(service, 'embedding_manager') as mock_manager:
+        with patch.object(service, "embedding_manager") as mock_manager:
             mock_manager.initialize = asyncio.coroutine(lambda: None)()
 
             await service.initialize()
@@ -102,11 +106,7 @@ class TestRAGSystem:
         for doc in sample_documents:
             doc_chunks = processor.text_splitter.split_text(doc["content"])
             for chunk in doc_chunks:
-                chunks.append({
-                    "id": f"test_{len(chunks)}",
-                    "content": chunk,
-                    "metadata": doc["metadata"]
-                })
+                chunks.append({"id": f"test_{len(chunks)}", "content": chunk, "metadata": doc["metadata"]})
 
         assert len(chunks) >= len(sample_documents)  # Al menos un chunk por documento
 
@@ -125,6 +125,7 @@ class TestSecurity:
     def test_no_shell_execution(self):
         """Verificar que no se usa shell=True en subprocess"""
         import subprocess
+
         # Este test pasaría si no hay usos inseguros en el código
         # En un test real, se escanearía el código fuente
         assert True  # Placeholder
@@ -155,8 +156,9 @@ class TestPerformance:
 
     def test_memory_usage_basic(self):
         """Test básico de uso de memoria"""
-        import psutil
         import os
+
+        import psutil
 
         process = psutil.Process(os.getpid())
         memory_before = process.memory_info().rss

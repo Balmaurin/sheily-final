@@ -47,7 +47,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 # Importar cliente del nuevo RAG Service
-from .rag_client import initialize_rag_service, get_rag_context, retrieve_relevant_memories
+from .rag_client import get_rag_context, initialize_rag_service, retrieve_relevant_memories
 
 # Seleccionar proveedor de LLM en función de la configuración
 LLM_PROVIDER = os.environ.get("SHEILY_LLM_PROVIDER", "ollama").lower()
@@ -113,7 +113,7 @@ async def health() -> Dict[str, Any]:
             "mcp": mcp_enabled,
             "ollama": LLM_PROVIDER == "ollama",
             "llama_cpp": LLM_PROVIDER == "llama_cpp",
-        }
+        },
     }
 
 
@@ -136,9 +136,9 @@ async def chat_endpoint(req: ChatRequest) -> Dict[str, Any]:
             # Determinar rama académica basada en los chunks más relevantes
             if relevant_chunks:
                 # Usar la rama del chunk con mayor score
-                top_chunk = max(relevant_chunks, key=lambda x: x['score'])
-                selected_branch = top_chunk['metadata'].get('domain', 'general')
-                rag_confidence = top_chunk['score']
+                top_chunk = max(relevant_chunks, key=lambda x: x["score"])
+                selected_branch = top_chunk["metadata"].get("domain", "general")
+                rag_confidence = top_chunk["score"]
                 context_sources = len(relevant_chunks)
             else:
                 selected_branch = "general"
@@ -156,8 +156,7 @@ async def chat_endpoint(req: ChatRequest) -> Dict[str, Any]:
         # RAG solicitado pero no disponible
         raise HTTPException(
             status_code=503,
-            detail="RAG solicitado pero el servicio no está disponible. "
-                   "Ejecuta: python start_rag_service.py"
+            detail="RAG solicitado pero el servicio no está disponible. " "Ejecuta: python start_rag_service.py",
         )
     else:
         # RAG deshabilitado
@@ -218,9 +217,7 @@ async def chat_endpoint(req: ChatRequest) -> Dict[str, Any]:
     return result
 
 
-async def process_with_mcp(
-    message: str, requested_servers: Optional[List[str]] = None
-) -> Dict[str, Any]:
+async def process_with_mcp(message: str, requested_servers: Optional[List[str]] = None) -> Dict[str, Any]:
     """Procesar mensaje utilizando servidores MCP disponibles."""
     try:
         # Importar dinámicamente los servidores MCP disponibles

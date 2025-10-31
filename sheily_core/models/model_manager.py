@@ -233,9 +233,7 @@ class ModelManager:
                 logger.error(f"Error cargando modelo {model_name}: {e}")
                 return False
 
-    async def _load_model_by_type(
-        self, model_name: str, model_path: str, model_type: str
-    ) -> Optional[Any]:
+    async def _load_model_by_type(self, model_name: str, model_path: str, model_type: str) -> Optional[Any]:
         """
         Cargar modelo según su tipo
 

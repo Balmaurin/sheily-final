@@ -19,14 +19,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-from app.chat_engine import (
-    BranchDetector,
-    ChatEngine,
-    ChatResponse,
-    ContextManager,
-    LogContext,
-    ModelInterface,
-)
+from app.chat_engine import BranchDetector, ChatEngine, ChatResponse, ContextManager, LogContext, ModelInterface
 
 
 class TestBranchDetector:

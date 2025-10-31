@@ -245,14 +245,10 @@ class UnifiedGenerationResponseSystem:
         )
 
         # Índices
-        cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_generation_type ON generations(generation_type)"
-        )
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_generation_type ON generations(generation_type)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_quality_score ON generations(quality_score)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_created_at ON generations(created_at)")
-        cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_validation_level ON validations(validation_level)"
-        )
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_validation_level ON validations(validation_level)")
 
         self.conn.commit()
         cursor.close()
@@ -328,9 +324,7 @@ class UnifiedGenerationResponseSystem:
             final_content = processed_content
             refinements = []
             if self.config.enable_refinement and not validation_result.is_valid:
-                final_content, refinements = await self._refine_generation(
-                    processed_content, validation_result
-                )
+                final_content, refinements = await self._refine_generation(processed_content, validation_result)
 
             # Calcular métricas
             quality_score = self._calculate_quality_score(final_content, validation_result)
@@ -381,9 +375,7 @@ class UnifiedGenerationResponseSystem:
             logger.error(f"Error en generación de texto: {e}")
             return f"Texto generado para: {prompt[:50]}..."
 
-    async def _generate_classification(
-        self, prompt: str, context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def _generate_classification(self, prompt: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Generar clasificación usando modelo especializado"""
         try:
             # Usar modelo de clasificación real si está disponible
@@ -391,9 +383,7 @@ class UnifiedGenerationResponseSystem:
             if classifier:
                 # Clasificación con probabilidades
                 result = classifier.predict(prompt)
-                return json.dumps(
-                    {"category": result.category, "probabilities": result.probabilities}
-                )
+                return json.dumps({"category": result.category, "probabilities": result.probabilities})
             else:
                 # Respuesta simulada cuando no hay modelo
                 categories = ["positivo", "negativo", "neutral"]
@@ -410,9 +400,7 @@ class UnifiedGenerationResponseSystem:
             logger.error(f"Error en clasificación: {e}")
             return json.dumps({"category": "unknown", "error": str(e)})
 
-    async def _generate_regression(
-        self, prompt: str, context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def _generate_regression(self, prompt: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Generar regresión usando modelo especializado"""
         try:
             # Usar modelo de regresión real si está disponible
@@ -449,18 +437,14 @@ class UnifiedGenerationResponseSystem:
         language = context.get("language", "python") if context else "python"
         return f"# Código {language}\ndef example():\n    return '{prompt[:20]}...'"
 
-    async def _generate_creative(
-        self, prompt: str, context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def _generate_creative(self, prompt: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Generar contenido creativo"""
         creative_elements = ["💡", "🎨", "✨", "🌟"]
         element = creative_elements[int(time.time()) % len(creative_elements)]
 
         return f"{element} Idea creativa: {prompt[:40]}... {element}"
 
-    async def _generate_technical(
-        self, prompt: str, context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def _generate_technical(self, prompt: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Generar contenido técnico"""
         technical_terms = ["algoritmo", "optimización", "eficiencia", "rendimiento"]
         term = technical_terms[int(time.time()) % len(technical_terms)]
@@ -471,9 +455,7 @@ class UnifiedGenerationResponseSystem:
         """Respuesta directa"""
         return content
 
-    async def _adaptive_response(
-        self, content: str, context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def _adaptive_response(self, content: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Respuesta adaptativa"""
         # Adaptar basado en contexto
         if context and context.get("user_level") == "expert":
@@ -483,27 +465,21 @@ class UnifiedGenerationResponseSystem:
 
         return content
 
-    async def _contextual_response(
-        self, content: str, context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def _contextual_response(self, content: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Respuesta contextual"""
         if context and context.get("domain"):
             content += f" [Dominio: {context['domain']}]"
 
         return content
 
-    async def _creative_response(
-        self, content: str, context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def _creative_response(self, content: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Respuesta creativa"""
         creative_prefixes = ["💭", "🎯", "🚀", "💡"]
         prefix = creative_prefixes[int(time.time()) % len(creative_prefixes)]
 
         return f"{prefix} {content}"
 
-    async def _analytical_response(
-        self, content: str, context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def _analytical_response(self, content: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Respuesta analítica"""
         return f"📊 Análisis: {content} [Detalles técnicos incluidos]"
 
@@ -532,9 +508,7 @@ class UnifiedGenerationResponseSystem:
 
         return prompt
 
-    async def _integrate_context(
-        self, prompt: str, context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def _integrate_context(self, prompt: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Integrar contexto"""
         if context and context.get("background"):
             prompt = f"Contexto: {context['background']}\n\n{prompt}"
@@ -550,9 +524,7 @@ class UnifiedGenerationResponseSystem:
 
         return prompt
 
-    async def _adjust_complexity(
-        self, prompt: str, context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def _adjust_complexity(self, prompt: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Ajustar complejidad"""
         if context and context.get("simple"):
             prompt += " [Explicación simple]"
@@ -561,9 +533,7 @@ class UnifiedGenerationResponseSystem:
 
         return prompt
 
-    async def _validate_generation(
-        self, content: str, request: GenerationRequest
-    ) -> ValidationResult:
+    async def _validate_generation(self, content: str, request: GenerationRequest) -> ValidationResult:
         """Validar generación"""
         validator = self.validation_levels[self.config.validation_level]
         return await validator(content, request)
@@ -595,9 +565,7 @@ class UnifiedGenerationResponseSystem:
             validation_level=ValidationLevel.BASIC,
         )
 
-    async def _semantic_validation(
-        self, content: str, request: GenerationRequest
-    ) -> ValidationResult:
+    async def _semantic_validation(self, content: str, request: GenerationRequest) -> ValidationResult:
         """Validación semántica"""
         basic_result = await self._basic_validation(content, request)
 
@@ -644,9 +612,7 @@ class UnifiedGenerationResponseSystem:
             validation_level=ValidationLevel.SEMANTIC,
         )
 
-    async def _logical_validation(
-        self, content: str, request: GenerationRequest
-    ) -> ValidationResult:
+    async def _logical_validation(self, content: str, request: GenerationRequest) -> ValidationResult:
         """Validación lógica"""
         semantic_result = await self._semantic_validation(content, request)
 
@@ -679,9 +645,7 @@ class UnifiedGenerationResponseSystem:
             validation_level=ValidationLevel.LOGICAL,
         )
 
-    async def _comprehensive_validation(
-        self, content: str, request: GenerationRequest
-    ) -> ValidationResult:
+    async def _comprehensive_validation(self, content: str, request: GenerationRequest) -> ValidationResult:
         """Validación comprehensiva"""
         logical_result = await self._logical_validation(content, request)
 
@@ -716,9 +680,7 @@ class UnifiedGenerationResponseSystem:
             validation_level=ValidationLevel.COMPREHENSIVE,
         )
 
-    async def _refine_generation(
-        self, content: str, validation_result: ValidationResult
-    ) -> Tuple[str, List[str]]:
+    async def _refine_generation(self, content: str, validation_result: ValidationResult) -> Tuple[str, List[str]]:
         """Refinar generación"""
         refined_content = content
         refinements = []
@@ -765,7 +727,7 @@ class UnifiedGenerationResponseSystem:
 
             cursor.execute(
                 """
-                INSERT INTO generations 
+                INSERT INTO generations
                 (id, prompt, content, generation_type, response_mode, quality_score, confidence,
                  processing_time, created_at, metadata, validation_results)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -832,12 +794,8 @@ class UnifiedGenerationResponseSystem:
                 },
                 "refinements": {"total": total_refinements},
                 "performance": {
-                    "generation_types": list(
-                        set(gen.generation_type.value for gen in self.generation_history)
-                    ),
-                    "response_modes": list(
-                        set(gen.response_mode.value for gen in self.generation_history)
-                    ),
+                    "generation_types": list(set(gen.generation_type.value for gen in self.generation_history)),
+                    "response_modes": list(set(gen.response_mode.value for gen in self.generation_history)),
                 },
             }
 

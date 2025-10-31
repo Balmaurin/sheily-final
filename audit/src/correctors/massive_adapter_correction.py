@@ -29,18 +29,14 @@ class MassiveAdapterCorrector:
     def load_audit_configuration(self):
         """Cargar configuración desde auditoría previa"""
         try:
-            with open(
-                "audit_2024/reports/pre_training_audit_report.json", "r", encoding="utf-8"
-            ) as f:
+            with open("audit_2024/reports/pre_training_audit_report.json", "r", encoding="utf-8") as f:
                 audit_data = json.load(f)
 
             self.defined_branches = audit_data["defined_branches"]
             self.corrupted_branches = list(audit_data["corrupted_details"].keys())
             self.priorities = audit_data["priorities"]
 
-            print(
-                f"📋 Configuración cargada: {len(self.corrupted_branches)} ramas corruptas identificadas"
-            )
+            print(f"📋 Configuración cargada: {len(self.corrupted_branches)} ramas corruptas identificadas")
 
         except FileNotFoundError:
             print("❌ Error: Ejecutar auditoría previa primero")
@@ -86,9 +82,7 @@ class MassiveAdapterCorrector:
 
                 if success:
                     # Validar resultado
-                    validation_success, validation_details = self.validate_trained_adapter(
-                        output_dir
-                    )
+                    validation_success, validation_details = self.validate_trained_adapter(output_dir)
                     if validation_success:
                         self.log_correction(
                             "ÉXITO COMPLETO",
@@ -137,9 +131,7 @@ class MassiveAdapterCorrector:
                 error_details = {"error": str(e), "traceback": traceback.format_exc()}
 
                 if attempt < max_retries:
-                    self.log_correction(
-                        "REINTENTO POR EXCEPCIÓN", {"branch": branch_name, "error": str(e)}
-                    )
+                    self.log_correction("REINTENTO POR EXCEPCIÓN", {"branch": branch_name, "error": str(e)})
                     time.sleep(5)
                     continue
                 else:
@@ -240,9 +232,7 @@ class MassiveAdapterCorrector:
                 return False, error_details
 
         except subprocess.TimeoutExpired:
-            self.log_correction(
-                "TIMEOUT EN ENTRENAMIENTO", {"branch": branch_name, "timeout_seconds": 1800}
-            )
+            self.log_correction("TIMEOUT EN ENTRENAMIENTO", {"branch": branch_name, "timeout_seconds": 1800})
             return False, {"error": "Timeout en entrenamiento"}
 
         except Exception as e:
@@ -359,17 +349,13 @@ class MassiveAdapterCorrector:
         print(f"📈 Tasa de éxito general: {success_rate:.1f}%")
 
         if results["group_1_success"] > 0:
-            group_1_rate = (
-                results["group_1_success"] / len(self.priorities["group_1_excellent_data"]) * 100
-            )
+            group_1_rate = results["group_1_success"] / len(self.priorities["group_1_excellent_data"]) * 100
             print(
                 f"🏆 Grupo 1 (datos excelentes): {results['group_1_success']}/{len(self.priorities['group_1_excellent_data'])} ({group_1_rate:.1f}%)"
             )
 
         if results["group_3_success"] > 0:
-            group_3_rate = (
-                results["group_3_success"] / len(self.priorities["group_3_poor_data"]) * 100
-            )
+            group_3_rate = results["group_3_success"] / len(self.priorities["group_3_poor_data"]) * 100
             print(
                 f"⚠️ Grupo 3 (datos pobres): {results['group_3_success']}/{len(self.priorities['group_3_poor_data'])} ({group_3_rate:.1f}%)"
             )
@@ -392,9 +378,7 @@ class MassiveAdapterCorrector:
                 "success_rate": success_rate,
                 "group_1_success": results["group_1_success"],
                 "group_3_success": results["group_3_success"],
-                "average_success_time": sum(successful_times) / len(successful_times)
-                if successful_times
-                else 0,
+                "average_success_time": sum(successful_times) / len(successful_times) if successful_times else 0,
             },
             "sessions": results["sessions"],
             "configuration": {

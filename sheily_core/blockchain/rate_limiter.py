@@ -256,10 +256,7 @@ class RateLimiter:
 
                 # Limitar tamaño del historial
                 max_history = (
-                    self.rules.get(
-                        rule_id, RateLimitRule("", "", RateLimitConfig(100, 3600))
-                    ).config.max_requests
-                    * 2
+                    self.rules.get(rule_id, RateLimitRule("", "", RateLimitConfig(100, 3600))).config.max_requests * 2
                 )
                 requests = self.user_requests[user_id][rule_id]
                 while len(requests) > max_history:
@@ -321,9 +318,7 @@ class RateLimiter:
                 violations_by_rule[violation.rule_id] += 1
 
             # Usuarios en cooldown
-            users_in_cooldown = sum(
-                1 for user_cooldowns in self.cooldown_users.values() if user_cooldowns
-            )
+            users_in_cooldown = sum(1 for user_cooldowns in self.cooldown_users.values() if user_cooldowns)
 
             return {
                 "total_users": total_users,

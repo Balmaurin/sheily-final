@@ -19,9 +19,7 @@ class PostTrainingValidator:
         self.base_path = Path(".")
         self.session_id = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.log_file = Path(f"audit_2024/logs/post_training_validation_{self.session_id}.jsonl")
-        self.report_file = Path(
-            f"audit_2024/reports/post_training_validation_{self.session_id}.json"
-        )
+        self.report_file = Path(f"audit_2024/reports/post_training_validation_{self.session_id}.json")
 
     def log_validation(self, action, details=None):
         """Registrar acción de validación"""
@@ -67,9 +65,7 @@ class PostTrainingValidator:
                 return integrity_results
 
             if not model_file.exists():
-                integrity_results["recommendations"].append(
-                    "Falta archivo adapter_model.safetensors"
-                )
+                integrity_results["recommendations"].append("Falta archivo adapter_model.safetensors")
                 return integrity_results
 
             # 2. Validar tamaño de archivos
@@ -82,9 +78,7 @@ class PostTrainingValidator:
                 integrity_results["overall_score"] += 25
             else:
                 integrity_results["technical_checks"]["size_adequate"] = False
-                integrity_results["recommendations"].append(
-                    f"Modelo muy pequeño: {model_size/1024:.1f}KB"
-                )
+                integrity_results["recommendations"].append(f"Modelo muy pequeño: {model_size/1024:.1f}KB")
 
             # 3. Validar configuración JSON
             try:
@@ -102,9 +96,7 @@ class PostTrainingValidator:
                         integrity_results["technical_checks"][f"config_{field}_present"] = True
                     else:
                         integrity_results["technical_checks"][f"config_{field}_present"] = False
-                        integrity_results["recommendations"].append(
-                            f"Campo crítico faltante en config: {field}"
-                        )
+                        integrity_results["recommendations"].append(f"Campo crítico faltante en config: {field}")
 
             except json.JSONDecodeError as e:
                 integrity_results["technical_checks"]["config_valid"] = False
@@ -162,9 +154,7 @@ class PostTrainingValidator:
                     functional_results["score"] += 10
                 else:
                     functional_results["details"]["peft_type_valid"] = False
-                    functional_results["recommendations"].append(
-                        f"Tipo PEFT no estándar: {peft_type}"
-                    )
+                    functional_results["recommendations"].append(f"Tipo PEFT no estándar: {peft_type}")
 
             # Verificar parámetros de entrenamiento
             if "r" in config and isinstance(config["r"], int) and config["r"] > 0:
@@ -172,9 +162,7 @@ class PostTrainingValidator:
                 functional_results["score"] += 5
             else:
                 functional_results["details"]["rank_parameter_valid"] = False
-                functional_results["recommendations"].append(
-                    "Parámetro de rango inválido o faltante"
-                )
+                functional_results["recommendations"].append("Parámetro de rango inválido o faltante")
 
         except Exception as e:
             functional_results["details"]["error"] = str(e)
@@ -210,9 +198,7 @@ class PostTrainingValidator:
                 integration_results["score"] += 10
             else:
                 integration_results["details"]["proper_location"] = False
-                integration_results["recommendations"].append(
-                    "Adaptador no está en ubicación estándar"
-                )
+                integration_results["recommendations"].append("Adaptador no está en ubicación estándar")
 
         except Exception as e:
             integration_results["details"]["error"] = str(e)
@@ -245,9 +231,7 @@ class PostTrainingValidator:
                 print(f"  {status} {branch_name}: {score}/{integrity_result['max_score']} puntos")
 
                 if integrity_result["recommendations"]:
-                    for rec in integrity_result["recommendations"][
-                        :2
-                    ]:  # Mostrar max 2 recomendaciones
+                    for rec in integrity_result["recommendations"][:2]:  # Mostrar max 2 recomendaciones
                         print(f"    💡 {rec}")
 
         return validation_results
@@ -271,9 +255,7 @@ class PostTrainingValidator:
                 "total_adapters": total_adapters,
                 "valid_adapters": valid_adapters,
                 "invalid_adapters": invalid_adapters,
-                "validation_success_rate": valid_adapters / total_adapters * 100
-                if total_adapters > 0
-                else 0,
+                "validation_success_rate": valid_adapters / total_adapters * 100 if total_adapters > 0 else 0,
                 "average_score": avg_score,
                 "validation_threshold": 70,
             },
@@ -309,9 +291,7 @@ class PostTrainingValidator:
             print(f"✅ Adaptadores válidos: {summary['valid_adapters']}")
             print(f"❌ Adaptadores inválidos: {summary['invalid_adapters']}")
             print(f"📈 Tasa de éxito: {summary['validation_success_rate']:.1f}%")
-            print(
-                f"🎯 Puntuación promedio: {summary['average_score']:.1f}/{summary['validation_threshold']}"
-            )
+            print(f"🎯 Puntuación promedio: {summary['average_score']:.1f}/{summary['validation_threshold']}")
 
             print(f"\n📋 Reporte completo guardado: {self.report_file}")
 

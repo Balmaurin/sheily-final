@@ -47,9 +47,7 @@ __all__ = [
 
 __version__ = "2.0.0"
 __author__ = "Sheily AI Team"
-__description__ = (
-    "Sistema completo de gestión de modelos de IA con especialización académica avanzada"
-)
+__description__ = "Sistema completo de gestión de modelos de IA con especialización académica avanzada"
 
 # ==============================================================================
 # IMPORTS CONDICIONALES PARA MEJOR COMPATIBILIDAD

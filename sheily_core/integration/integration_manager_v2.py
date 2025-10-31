@@ -68,9 +68,7 @@ except ImportError:
     COMPONENTS_AVAILABLE["continuous_learning"] = False
 
 try:
-    from sheily_core.unified_systems.unified_consciousness_memory_system import (
-        UnifiedConsciousnessMemorySystem,
-    )
+    from sheily_core.unified_systems.unified_consciousness_memory_system import UnifiedConsciousnessMemorySystem
 
     COMPONENTS_AVAILABLE["emotional_intelligence"] = True
 except ImportError:
@@ -238,9 +236,7 @@ class SheilyIntegrationManager:
                 self.logger.warning(f"Human memory system initialization failed: {e}")
 
         # Initialize continuous learning (replaces continuous_learning_mcp_server)
-        if self.config.enable_continuous_learning and COMPONENTS_AVAILABLE.get(
-            "continuous_learning"
-        ):
+        if self.config.enable_continuous_learning and COMPONENTS_AVAILABLE.get("continuous_learning"):
             try:
                 self.continuous_learning_system = ContinuousLearningSystem()
                 self.logger.info("Continuous learning system initialized")
@@ -248,9 +244,7 @@ class SheilyIntegrationManager:
                 self.logger.warning(f"Continuous learning system initialization failed: {e}")
 
         # Initialize emotional intelligence (replaces emotional_intelligence_mcp_server)
-        if self.config.enable_emotional_intelligence and COMPONENTS_AVAILABLE.get(
-            "emotional_intelligence"
-        ):
+        if self.config.enable_emotional_intelligence and COMPONENTS_AVAILABLE.get("emotional_intelligence"):
             try:
                 self.emotional_intelligence_system = UnifiedConsciousnessMemorySystem()
                 self.logger.info("Emotional intelligence system initialized")
@@ -473,9 +467,7 @@ class SheilyIntegrationManager:
     def get_system_status(self) -> Dict[str, Any]:
         """Obtener estado completo del sistema"""
         uptime = time.time() - self.metrics["start_time"]
-        avg_processing_time = self.metrics["total_processing_time"] / max(
-            self.metrics["requests_processed"], 1
-        )
+        avg_processing_time = self.metrics["total_processing_time"] / max(self.metrics["requests_processed"], 1)
 
         return {
             "integration_manager": {
@@ -553,9 +545,7 @@ class SheilyIntegrationManager:
         except Exception as e:
             return {"error": str(e), "success": False}
 
-    def process_learning_interaction(
-        self, content: str, interaction_type: str = "chat"
-    ) -> Dict[str, Any]:
+    def process_learning_interaction(self, content: str, interaction_type: str = "chat") -> Dict[str, Any]:
         """Procesar interacción de aprendizaje (reemplaza continuous_learning_mcp_server)"""
         if not self.continuous_learning_system:
             return {"error": "Continuous learning system not available", "success": False}
@@ -587,9 +577,7 @@ class SheilyIntegrationManager:
         try:
             # Analyze emotions using unified consciousness system
             emotional_analysis = self.emotional_intelligence_system._analyze_emotions_advanced(text)
-            emotional_valence = self.emotional_intelligence_system._calculate_emotional_valence(
-                text
-            )
+            emotional_valence = self.emotional_intelligence_system._calculate_emotional_valence(text)
 
             # Update metrics
             self.metrics["component_usage"]["emotional_intelligence"] += 1

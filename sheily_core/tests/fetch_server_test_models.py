@@ -39,20 +39,14 @@ def collect_hf_model_test_parameters(test_file) -> Generator[HuggingFaceModel, N
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
             for dec in node.decorator_list:
-                if (
-                    isinstance(dec, ast.Call)
-                    and isinstance(dec.func, ast.Attribute)
-                    and dec.func.attr == "parametrize"
-                ):
+                if isinstance(dec, ast.Call) and isinstance(dec.func, ast.Attribute) and dec.func.attr == "parametrize":
                     param_names = ast.literal_eval(dec.args[0]).split(",")
                     if "hf_repo" not in param_names:
                         continue
 
                     raw_param_values = dec.args[1]
                     if not isinstance(raw_param_values, ast.List):
-                        logging.warning(
-                            f"Skipping non-list parametrize entry at {test_file}:{node.lineno}"
-                        )
+                        logging.warning(f"Skipping non-list parametrize entry at {test_file}:{node.lineno}")
                         continue
 
                     hf_repo_idx = param_names.index("hf_repo")
@@ -60,15 +54,11 @@ def collect_hf_model_test_parameters(test_file) -> Generator[HuggingFaceModel, N
 
                     for t in raw_param_values.elts:
                         if not isinstance(t, ast.Tuple):
-                            logging.warning(
-                                f"Skipping non-tuple parametrize entry at {test_file}:{node.lineno}"
-                            )
+                            logging.warning(f"Skipping non-tuple parametrize entry at {test_file}:{node.lineno}")
                             continue
                         yield HuggingFaceModel(
                             hf_repo=ast.literal_eval(t.elts[hf_repo_idx]),
-                            hf_file=ast.literal_eval(t.elts[hf_file_idx])
-                            if hf_file_idx is not None
-                            else None,
+                            hf_file=ast.literal_eval(t.elts[hf_file_idx]) if hf_file_idx is not None else None,
                         )
 
 
@@ -104,9 +94,7 @@ if __name__ == "__main__":
         if "<" in m.hf_repo or (m.hf_file is not None and "<" in m.hf_file):
             continue
         if m.hf_file is not None and "-of-" in m.hf_file:
-            logging.warning(
-                f"Skipping model at {m.hf_repo} / {m.hf_file} because it is a split file"
-            )
+            logging.warning(f"Skipping model at {m.hf_repo} / {m.hf_file} because it is a split file")
             continue
         logging.info(f"Using llama-cli to ensure model {m.hf_repo}/{m.hf_file} was fetched")
         cmd = [
@@ -127,7 +115,5 @@ if __name__ == "__main__":
         try:
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError:
-            logging.error(
-                f'Failed to fetch model at {m.hf_repo} / {m.hf_file} with command:\n  {" ".join(cmd)}'
-            )
+            logging.error(f'Failed to fetch model at {m.hf_repo} / {m.hf_file} with command:\n  {" ".join(cmd)}')
             exit(1)

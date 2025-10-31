@@ -621,8 +621,7 @@ class EnterpriseTestSuite:
         # Ejecutar tests de manera paralela para optimización empresarial
         with ThreadPoolExecutor(max_workers=self.enterprise_config["parallel_workers"]) as executor:
             future_to_category = {
-                executor.submit(category_func): category_name
-                for category_name, category_func in test_categories
+                executor.submit(category_func): category_name for category_name, category_func in test_categories
             }
 
             for future in as_completed(future_to_category):
@@ -658,9 +657,7 @@ class EnterpriseTestSuite:
 
         # Métricas de rendimiento
         if self.results:
-            self.metrics.average_test_duration = sum(r.duration for r in self.results) / len(
-                self.results
-            )
+            self.metrics.average_test_duration = sum(r.duration for r in self.results) / len(self.results)
             self.metrics.peak_cpu_usage = max((r.cpu_usage for r in self.results), default=0)
             self.metrics.peak_memory_usage = max((r.memory_usage for r in self.results), default=0)
 
@@ -775,12 +772,8 @@ class EnterpriseTestSuite:
 
         return {
             "category_performance": category_analysis,
-            "execution_time_trend": "optimized"
-            if self.metrics.average_test_duration < 30
-            else "needs_optimization",
-            "resource_usage_trend": "efficient"
-            if self.metrics.peak_memory_usage < 1000
-            else "resource_intensive",
+            "execution_time_trend": "optimized" if self.metrics.average_test_duration < 30 else "needs_optimization",
+            "resource_usage_trend": "efficient" if self.metrics.peak_memory_usage < 1000 else "resource_intensive",
         }
 
     def _generate_enterprise_recommendations(self) -> List[str]:
@@ -788,29 +781,19 @@ class EnterpriseTestSuite:
         recommendations = []
 
         if self.metrics.critical_tests_failed > 0:
-            recommendations.append(
-                "🔴 CRÍTICO: Revisar y corregir tests críticos fallidos inmediatamente"
-            )
+            recommendations.append("🔴 CRÍTICO: Revisar y corregir tests críticos fallidos inmediatamente")
 
         if self.metrics.high_priority_tests_failed > 0:
-            recommendations.append(
-                "🟡 ALTA PRIORIDAD: Atender tests de alta prioridad en el siguiente sprint"
-            )
+            recommendations.append("🟡 ALTA PRIORIDAD: Atender tests de alta prioridad en el siguiente sprint")
 
         if self.metrics.enterprise_quality_score < 90:
-            recommendations.append(
-                "🟠 MEJORA: Implementar mejoras de calidad para alcanzar estándares empresariales"
-            )
+            recommendations.append("🟠 MEJORA: Implementar mejoras de calidad para alcanzar estándares empresariales")
 
         if self.metrics.peak_memory_usage > self.enterprise_config["memory_limit_mb"]:
-            recommendations.append(
-                "🔵 OPTIMIZACIÓN: Optimizar uso de memoria en tests de rendimiento"
-            )
+            recommendations.append("🔵 OPTIMIZACIÓN: Optimizar uso de memoria en tests de rendimiento")
 
         if self.metrics.average_test_duration > 60:
-            recommendations.append(
-                "⚡ VELOCIDAD: Paralelizar tests lentos para mejorar tiempos de ejecución"
-            )
+            recommendations.append("⚡ VELOCIDAD: Paralelizar tests lentos para mejorar tiempos de ejecución")
 
         return recommendations
 
@@ -893,15 +876,9 @@ class EnterpriseTestSuite:
     def _analyze_performance_benchmarks(self) -> Dict[str, Any]:
         """Analizar benchmarks de rendimiento"""
         benchmarks = {
-            "execution_time_benchmark": "EXCELLENT"
-            if self.metrics.average_test_duration < 30
-            else "NEEDS_IMPROVEMENT",
-            "memory_usage_benchmark": "EXCELLENT"
-            if self.metrics.peak_memory_usage < 1000
-            else "NEEDS_IMPROVEMENT",
-            "cpu_usage_benchmark": "EXCELLENT"
-            if self.metrics.peak_cpu_usage < 70
-            else "NEEDS_IMPROVEMENT",
+            "execution_time_benchmark": "EXCELLENT" if self.metrics.average_test_duration < 30 else "NEEDS_IMPROVEMENT",
+            "memory_usage_benchmark": "EXCELLENT" if self.metrics.peak_memory_usage < 1000 else "NEEDS_IMPROVEMENT",
+            "cpu_usage_benchmark": "EXCELLENT" if self.metrics.peak_cpu_usage < 70 else "NEEDS_IMPROVEMENT",
             "parallel_efficiency_benchmark": "EXCELLENT"
             if self.metrics.parallel_execution_efficiency > 80
             else "NEEDS_IMPROVEMENT",
@@ -1021,9 +998,7 @@ class EnterpriseTestSuite:
             f.write("📊 RESUMEN EJECUTIVO EMPRESARIAL\n")
             f.write("-" * 40 + "\n")
             f.write(f"Fecha de Generación: {summary['test_timestamp']}\n")
-            f.write(
-                f"Puntuación de Calidad Empresarial: {summary['enterprise_quality_score']:.1f}/100\n"
-            )
+            f.write(f"Puntuación de Calidad Empresarial: {summary['enterprise_quality_score']:.1f}/100\n")
             f.write(f"Tasa de Éxito: {summary['success_rate']:.1f}%\n")
             f.write(f"Tests Ejecutados: {summary['total_tests']}\n")
             f.write(f"Tests Aprobados: {summary['tests_passed']}\n")
@@ -1039,9 +1014,7 @@ class EnterpriseTestSuite:
             else:
                 f.write("❌ RECHAZADO - El sistema requiere atención inmediata\n")
             f.write(f"Tests Críticos Fallidos: {summary['critical_tests_failed']}\n")
-            f.write(
-                f"Tests de Alta Prioridad Fallidos: {summary['high_priority_tests_failed']}\n\n"
-            )
+            f.write(f"Tests de Alta Prioridad Fallidos: {summary['high_priority_tests_failed']}\n\n")
 
             # Métricas de recursos
             f.write("⚡ MÉTRICAS DE RENDIMIENTO\n")
@@ -1100,9 +1073,7 @@ class EnterpriseTestSuite:
 
 def main():
     """Función principal del sistema de testing empresarial"""
-    parser = argparse.ArgumentParser(
-        description="Sistema de Testing Empresarial Optimizado - Sheily AI"
-    )
+    parser = argparse.ArgumentParser(description="Sistema de Testing Empresarial Optimizado - Sheily AI")
     parser.add_argument(
         "mode",
         choices=["unit", "integration", "security", "performance", "all"],
@@ -1149,9 +1120,7 @@ def main():
         print(f"   Tasa de Éxito: {summary['success_rate']:.1f}%")
         print(f"   Tests Ejecutados: {summary['total_tests']}")
         print(f"   Tiempo Total: {summary['total_execution_time']:.2f}s")
-        print(
-            f"   Quality Gate: {'✅ APROBADO' if summary['quality_gate_passed'] else '❌ RECHAZADO'}"
-        )
+        print(f"   Quality Gate: {'✅ APROBADO' if summary['quality_gate_passed'] else '❌ RECHAZADO'}")
 
         # Mostrar recomendaciones críticas
         if report["enterprise_analysis"]["recommendations"]:

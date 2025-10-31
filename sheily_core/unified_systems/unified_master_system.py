@@ -36,23 +36,14 @@ from .unified_system_core import SystemConfig, UnifiedSystemCore
 try:
     from .unified_embedding_semantic_system import EmbeddingConfig, UnifiedEmbeddingSemanticSystem
 except ImportError:
-    from .consolidated_system_architecture import (
-        UnifiedEmbeddingSystem as UnifiedEmbeddingSemanticSystem,
-    )
+    from .consolidated_system_architecture import UnifiedEmbeddingSystem as UnifiedEmbeddingSemanticSystem
 
     EmbeddingConfig = None  # O usar config de consolidated si existe
 from .consolidated_system_architecture import NeuroFusionUnifiedSystem, UnifiedSystemConfig
 from .unified_branch_tokenizer import UnifiedBranchTokenizer
-from .unified_consciousness_memory_system import (
-    ConsciousnessConfig,
-    UnifiedConsciousnessMemorySystem,
-)
+from .unified_consciousness_memory_system import ConsciousnessConfig, UnifiedConsciousnessMemorySystem
 from .unified_generation_response_system import GenerationConfig, UnifiedGenerationResponseSystem
-from .unified_learning_quality_system import (
-    LearningConfig,
-    QualityConfig,
-    UnifiedLearningQualitySystem,
-)
+from .unified_learning_quality_system import LearningConfig, QualityConfig, UnifiedLearningQualitySystem
 from .unified_learning_training_system import TrainingConfig, UnifiedLearningTrainingSystem
 from .unified_modules_manager import UnifiedModulesConfig, UnifiedModulesManager
 from .unified_security_auth_system import SecurityConfig, UnifiedSecurityAuthSystem
@@ -111,9 +102,7 @@ except ImportError:
     NeuralPlasticityManager = None
 
 # Configuración de logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -159,9 +148,7 @@ class MasterSystemConfig:
     enable_auth_advanced: bool = True  # WebAuthn, ABAC, RBAC, OAuth
     enable_blockchain_systems: bool = True  # SheilyTokenManager, TransactionMonitor
     enable_embeddings_advanced: bool = True  # SemanticSearchEngine, EmbeddingPerformanceMonitor
-    enable_core_systems: bool = (
-        True  # LogicPlausibilityEngine, FeatureFlagService, MCPEnhancedValidator
-    )
+    enable_core_systems: bool = True  # LogicPlausibilityEngine, FeatureFlagService, MCPEnhancedValidator
     enable_infrastructure: bool = True  # AdvancedServiceDiscovery, ChaosEngineer
     enable_learning_advanced: bool = True  # NeuralPlasticityManager
 
@@ -297,9 +284,7 @@ class UnifiedMasterSystem:
         )
 
         # Configuración de arquitectura consolidada
-        env = (
-            self.config.mode.value if hasattr(self.config.mode, "value") else str(self.config.mode)
-        )
+        env = self.config.mode.value if hasattr(self.config.mode, "value") else str(self.config.mode)
         self.component_configs["consolidated"] = UnifiedSystemConfig(
             system_name=self.config.system_name,
             version=self.config.version,
@@ -339,27 +324,19 @@ class UnifiedMasterSystem:
 
             # Añadir nuevos sistemas si están habilitados
             if self.config.enable_ai_systems:
-                initialization_order.extend(
-                    ["text_processor", "ml_model_manager", "local_llm_model"]
-                )
+                initialization_order.extend(["text_processor", "ml_model_manager", "local_llm_model"])
 
             if self.config.enable_service_systems:
-                initialization_order.extend(
-                    ["gpu_manager", "cache_manager", "optimized_model_manager"]
-                )
+                initialization_order.extend(["gpu_manager", "cache_manager", "optimized_model_manager"])
 
             if self.config.enable_auth_advanced:
-                initialization_order.extend(
-                    ["webauthn_service", "abac_service", "rbac_service", "oauth_service"]
-                )
+                initialization_order.extend(["webauthn_service", "abac_service", "rbac_service", "oauth_service"])
 
             if self.config.enable_blockchain_systems:
                 initialization_order.extend(["sheily_token_manager", "transaction_monitor"])
 
             if self.config.enable_embeddings_advanced:
-                initialization_order.extend(
-                    ["semantic_search_engine", "embedding_performance_monitor"]
-                )
+                initialization_order.extend(["semantic_search_engine", "embedding_performance_monitor"])
 
             if self.config.enable_core_systems:
                 initialization_order.extend(
@@ -560,16 +537,12 @@ class UnifiedMasterSystem:
             # Generar embedding de la consulta
             embedding_result = None
             if self.config.enable_embeddings:
-                embedding_result = await self.components["embeddings"].generate_embedding(
-                    query, domain=domain
-                )
+                embedding_result = await self.components["embeddings"].generate_embedding(query, domain=domain)
 
             # Procesar con sistema de conciencia
             consciousness_result = None
             if self.config.enable_consciousness:
-                consciousness_result = await self.components["consciousness"].process_input(
-                    query, context
-                )
+                consciousness_result = await self.components["consciousness"].process_input(query, context)
 
             # Generar respuesta
             generation_request = self.components["generation"].GenerationRequest(
@@ -579,9 +552,7 @@ class UnifiedMasterSystem:
                 response_mode="adaptive",
             )
 
-            generation_result = await self.components["generation"].generate_response(
-                generation_request
-            )
+            generation_result = await self.components["generation"].generate_response(generation_request)
 
             # Evaluar calidad
             quality_result = None
@@ -602,9 +573,7 @@ class UnifiedMasterSystem:
             # Procesar con sistema consolidado
             consolidated_result = None
             if self.config.enable_consolidated_architecture:
-                consolidated_result = await self.components["consolidated"].process_query(
-                    query, context, domain
-                )
+                consolidated_result = await self.components["consolidated"].process_query(query, context, domain)
 
             # Calcular métricas de rendimiento
             processing_time = (datetime.now() - start_time).total_seconds()
@@ -616,14 +585,10 @@ class UnifiedMasterSystem:
                 "domain": domain,
                 "quality_score": (quality_result.overall_score if quality_result else 0.0),
                 "consciousness_level": (
-                    consciousness_result.get("consciousness_level")
-                    if consciousness_result
-                    else "basic"
+                    consciousness_result.get("consciousness_level") if consciousness_result else "basic"
                 ),
                 "embedding_used": (embedding_result.model_used if embedding_result else None),
-                "consolidated_response": (
-                    consolidated_result.get("response") if consolidated_result else None
-                ),
+                "consolidated_response": (consolidated_result.get("response") if consolidated_result else None),
                 "processing_time": processing_time,
                 "timestamp": datetime.now().isoformat(),
                 "system_status": self.get_system_status(),
@@ -640,9 +605,7 @@ class UnifiedMasterSystem:
                 "timestamp": datetime.now().isoformat(),
             }
 
-    async def _authenticate_user(
-        self, user_id: str, context: Optional[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+    async def _authenticate_user(self, user_id: str, context: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """Autenticar usuario"""
 
         try:
@@ -671,8 +634,7 @@ class UnifiedMasterSystem:
 
         if quality_result:
             self.status.performance_metrics["avg_quality_score"] = (
-                self.status.performance_metrics.get("avg_quality_score", 0)
-                + quality_result.overall_score
+                self.status.performance_metrics.get("avg_quality_score", 0) + quality_result.overall_score
             ) / 2
 
     def get_system_status(self) -> Dict[str, Any]:
@@ -684,19 +646,13 @@ class UnifiedMasterSystem:
                 "version": self.status.version,
                 "mode": self.status.mode.value,
                 "initialized": self.status.initialized,
-                "startup_time": (
-                    self.status.startup_time.isoformat() if self.status.startup_time else None
-                ),
+                "startup_time": (self.status.startup_time.isoformat() if self.status.startup_time else None),
             },
             "components": self.status.components_status,
             "performance": self.status.performance_metrics,
             "errors": self.status.error_count,
             "warnings": self.status.warning_count,
-            "uptime": (
-                (datetime.now() - self.status.startup_time).total_seconds()
-                if self.status.startup_time
-                else 0
-            ),
+            "uptime": ((datetime.now() - self.status.startup_time).total_seconds() if self.status.startup_time else 0),
         }
 
     async def get_component_stats(self, component_name: str) -> Dict[str, Any]:
@@ -780,9 +736,7 @@ class UnifiedMasterSystem:
                 return service.generate_authentication_challenge(user_id)
         return {"error": "WebAuthnService no disponible"}
 
-    def check_abac_permission(
-        self, subject: str, resource: str, action: str, context: Dict[str, Any] = None
-    ) -> bool:
+    def check_abac_permission(self, subject: str, resource: str, action: str, context: Dict[str, Any] = None) -> bool:
         """Verificar permisos ABAC"""
         if "abac_service" in self.components:
             service = self.components["abac_service"]
@@ -828,9 +782,7 @@ class UnifiedMasterSystem:
         return {"error": "EmbeddingPerformanceMonitor no disponible"}
 
     # Sistemas core
-    def evaluate_logic_plausibility(
-        self, statement: str, context: Dict[str, Any] = None
-    ) -> Dict[str, Any]:
+    def evaluate_logic_plausibility(self, statement: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
         """Evaluar plausibilidad lógica de una declaración"""
         if "logic_plausibility_engine" in self.components:
             engine = self.components["logic_plausibility_engine"]
@@ -838,9 +790,7 @@ class UnifiedMasterSystem:
             return result.__dict__
         return {"error": "LogicPlausibilityEngine no disponible"}
 
-    def check_feature_flag(
-        self, flag_name: str, user_id: str = None, context: Dict[str, Any] = None
-    ) -> bool:
+    def check_feature_flag(self, flag_name: str, user_id: str = None, context: Dict[str, Any] = None) -> bool:
         """Verificar estado de feature flag"""
         if "feature_flag_service" in self.components:
             service = self.components["feature_flag_service"]
@@ -1143,9 +1093,7 @@ async def main():
         print(f"   Dominio: {test_case['domain']}")
 
         try:
-            result = await master_system.process_query(
-                query=test_case["query"], domain=test_case["domain"]
-            )
+            result = await master_system.process_query(query=test_case["query"], domain=test_case["domain"])
 
             if "error" not in result:
                 print(f"   ✅ Respuesta generada")
@@ -1161,9 +1109,7 @@ async def main():
     # Mostrar estado del sistema
     print(f"\n📈 Estado del Sistema Maestro:")
     status = master_system.get_system_status()
-    print(
-        f"   Componentes activos: {sum(1 for s in status['components'].values() if s == 'active')}"
-    )
+    print(f"   Componentes activos: {sum(1 for s in status['components'].values() if s == 'active')}")
     print(f"   Errores: {status['errors']}")
     print(f"   Tiempo activo: {status['uptime']:.1f}s")
 

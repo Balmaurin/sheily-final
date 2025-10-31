@@ -223,9 +223,7 @@ class RealLoraTrainer:
 
             # Tokenizar dataset
             def tokenize_function(examples):
-                return tokenizer(
-                    examples["text"], truncation=True, padding="max_length", max_length=512
-                )
+                return tokenizer(examples["text"], truncation=True, padding="max_length", max_length=512)
 
             tokenized_dataset = dataset.map(tokenize_function, batched=True)
 
@@ -294,9 +292,7 @@ class RealLoraTrainer:
                 "hardware_used": {
                     "device": str(self.device),
                     "gpu_available": torch.cuda.is_available(),
-                    "gpu_name": torch.cuda.get_device_name(0)
-                    if torch.cuda.is_available()
-                    else "N/A",
+                    "gpu_name": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "N/A",
                 },
                 "status": "trained",
                 "version": "2.0.0",

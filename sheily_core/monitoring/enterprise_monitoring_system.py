@@ -182,9 +182,7 @@ class EnterpriseMetricsCollector:
 
                 # Mantener solo las métricas del período de retención
                 cutoff_time = datetime.now() - timedelta(seconds=self.retention_period)
-                self.metrics_history = [
-                    m for m in self.metrics_history if m.timestamp > cutoff_time
-                ]
+                self.metrics_history = [m for m in self.metrics_history if m.timestamp > cutoff_time]
 
                 time.sleep(self.collection_interval)
 
@@ -228,18 +226,10 @@ class EnterpriseMetricsCollector:
         threat_level = self._assess_threat_level()
 
         # Calcular puntuaciones empresariales
-        system_health_score = self._calculate_system_health_score(
-            cpu_usage, memory.percent, disk.percent
-        )
-        business_kpi_score = self._calculate_business_kpi_score(
-            queries_processed, user_satisfaction_index
-        )
-        technical_performance_score = self._calculate_technical_performance_score(
-            response_time_ms, throughput_rps
-        )
-        security_compliance_score = self._calculate_security_compliance_score(
-            security_incidents, compliance_violations
-        )
+        system_health_score = self._calculate_system_health_score(cpu_usage, memory.percent, disk.percent)
+        business_kpi_score = self._calculate_business_kpi_score(queries_processed, user_satisfaction_index)
+        technical_performance_score = self._calculate_technical_performance_score(response_time_ms, throughput_rps)
+        security_compliance_score = self._calculate_security_compliance_score(security_incidents, compliance_violations)
         operational_efficiency_score = self._calculate_operational_efficiency_score(
             cpu_usage, memory.percent, error_rate_percent
         )
@@ -299,9 +289,7 @@ class EnterpriseMetricsCollector:
 
         return max(0.0, min(100.0, base_score))
 
-    def _calculate_technical_performance_score(
-        self, response_time: float, throughput: float
-    ) -> float:
+    def _calculate_technical_performance_score(self, response_time: float, throughput: float) -> float:
         """Calcular puntuación de rendimiento técnico"""
         score = 100.0
 
@@ -332,9 +320,7 @@ class EnterpriseMetricsCollector:
 
         return max(0.0, min(100.0, score))
 
-    def _calculate_operational_efficiency_score(
-        self, cpu: float, memory: float, error_rate: float
-    ) -> float:
+    def _calculate_operational_efficiency_score(self, cpu: float, memory: float, error_rate: float) -> float:
         """Calcular puntuación de eficiencia operativa"""
         score = 100.0
 
@@ -711,18 +697,13 @@ class EnterpriseMetricsCollector:
             return {}
 
         return {
-            "avg_system_health": sum(m.system_health_score for m in metrics_list)
-            / len(metrics_list),
+            "avg_system_health": sum(m.system_health_score for m in metrics_list) / len(metrics_list),
             "avg_business_kpi": sum(m.business_kpi_score for m in metrics_list) / len(metrics_list),
-            "avg_technical_performance": sum(m.technical_performance_score for m in metrics_list)
-            / len(metrics_list),
-            "avg_security_compliance": sum(m.security_compliance_score for m in metrics_list)
-            / len(metrics_list),
-            "avg_operational_efficiency": sum(m.operational_efficiency_score for m in metrics_list)
-            / len(metrics_list),
+            "avg_technical_performance": sum(m.technical_performance_score for m in metrics_list) / len(metrics_list),
+            "avg_security_compliance": sum(m.security_compliance_score for m in metrics_list) / len(metrics_list),
+            "avg_operational_efficiency": sum(m.operational_efficiency_score for m in metrics_list) / len(metrics_list),
             "avg_cpu_usage": sum(m.cpu_usage_percent for m in metrics_list) / len(metrics_list),
-            "avg_memory_usage": sum(m.memory_usage_percent for m in metrics_list)
-            / len(metrics_list),
+            "avg_memory_usage": sum(m.memory_usage_percent for m in metrics_list) / len(metrics_list),
             "avg_response_time": sum(m.response_time_ms for m in metrics_list) / len(metrics_list),
             "avg_error_rate": sum(m.error_rate_percent for m in metrics_list) / len(metrics_list),
             "avg_throughput": sum(m.throughput_rps for m in metrics_list) / len(metrics_list),
@@ -797,9 +778,7 @@ class EnterpriseMetricsCollector:
             "total_alerts_24h": sum(alerts_by_category.values()),
             "critical_alerts": alerts_by_category.get("CRITICAL_SECURITY_ACTIVE", 0)
             + alerts_by_category.get("CRITICAL_PERFORMANCE_ACTIVE", 0),
-            "active_alerts": sum(
-                count for key, count in alerts_by_category.items() if "ACTIVE" in key
-            ),
+            "active_alerts": sum(count for key, count in alerts_by_category.items() if "ACTIVE" in key),
         }
 
 

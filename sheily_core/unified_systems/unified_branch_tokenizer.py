@@ -229,9 +229,7 @@ class UnifiedBranchTokenizer:
             if branch == "global":
                 continue
 
-            branch_tokens = [
-                token for token in self.unified_vocab.keys() if token.startswith(f"{branch}::")
-            ]
+            branch_tokens = [token for token in self.unified_vocab.keys() if token.startswith(f"{branch}::")]
 
             stats["branches"][branch] = {
                 "vocab_size": len(branch_tokens),

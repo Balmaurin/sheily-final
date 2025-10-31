@@ -38,8 +38,6 @@ except Exception:
 
 try:
     from .llama_cpp_client import LlamaCppClient
-    from .llama_cpp_client import (
-        generate_completion as generate_with_llama_cpp,  # type: ignore[F401]
-    )
+    from .llama_cpp_client import generate_completion as generate_with_llama_cpp  # type: ignore[F401]
 except Exception:
     pass

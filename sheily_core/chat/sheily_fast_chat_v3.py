@@ -46,9 +46,7 @@ class FastChatConfig:
 
     def __init__(self):
         # Servidor GGUF
-        self.model_path = Path(
-            os.getenv("SHEILY_GGUF", "/home/yo/Escritorio/Sheily-Final/models/gguf/llama-3.2.gguf")
-        )
+        self.model_path = Path(os.getenv("SHEILY_GGUF", "/home/yo/Escritorio/Sheily-Final/models/gguf/llama-3.2.gguf"))
         self.llama_server = Path(
             os.getenv(
                 "LLAMA_SERVER_BIN",
@@ -92,9 +90,7 @@ class FastChatV3:
     def _check_server(self) -> bool:
         """Verificar si el servidor está activo (rápido)"""
         try:
-            response = requests.get(
-                f"http://{self.config.host}:{self.config.port}/health", timeout=2
-            )
+            response = requests.get(f"http://{self.config.host}:{self.config.port}/health", timeout=2)
             return response.status_code == 200
         except:
             return False
@@ -134,9 +130,7 @@ class FastChatV3:
             "600",
         ]
 
-        self.server_process = subprocess.Popen(
-            cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-        )
+        self.server_process = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         # Esperar inicio rápido (máximo 30 segundos)
         deadline = time.time() + 30

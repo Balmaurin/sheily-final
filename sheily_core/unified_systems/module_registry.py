@@ -129,9 +129,7 @@ class ModuleRegistry:
         """
         if module_name in self.modules:
             self.modules[module_name]["last_loaded"] = datetime.now().isoformat()
-            self.modules[module_name]["load_count"] = (
-                self.modules[module_name].get("load_count", 0) + 1
-            )
+            self.modules[module_name]["load_count"] = self.modules[module_name].get("load_count", 0) + 1
 
             self._log_event(
                 "module_loaded",
@@ -183,11 +181,7 @@ class ModuleRegistry:
         Returns:
             Lista de módulos del tipo especificado
         """
-        return [
-            module_info
-            for module_info in self.modules.values()
-            if module_info["type"] == module_type
-        ]
+        return [module_info for module_info in self.modules.values() if module_info["type"] == module_type]
 
     def generate_module_report(self) -> Dict[str, Any]:
         """
@@ -205,14 +199,10 @@ class ModuleRegistry:
 
         for module_info in self.modules.values():
             # Contar tipos de módulos
-            report["module_types"][module_info["type"]] = (
-                report["module_types"].get(module_info["type"], 0) + 1
-            )
+            report["module_types"][module_info["type"]] = report["module_types"].get(module_info["type"], 0) + 1
 
             # Contar estados de módulos
-            report["module_status"][module_info["status"]] = (
-                report["module_status"].get(module_info["status"], 0) + 1
-            )
+            report["module_status"][module_info["status"]] = report["module_status"].get(module_info["status"], 0) + 1
 
         return report
 

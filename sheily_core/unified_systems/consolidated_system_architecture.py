@@ -40,9 +40,7 @@ from sqlalchemy.orm import sessionmaker
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Configuración de logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 # Base de datos SQLAlchemy
@@ -405,9 +403,7 @@ class UnifiedEmbeddingSystem:
         Session = sessionmaker(bind=engine)
         return Session()
 
-    async def generate_embedding(
-        self, content: str, domain: str = "general", use_cache: bool = True
-    ) -> np.ndarray:
+    async def generate_embedding(self, content: str, domain: str = "general", use_cache: bool = True) -> np.ndarray:
         """Generar embedding unificado"""
 
         if not self.embedding_model:
@@ -443,9 +439,7 @@ class UnifiedEmbeddingSystem:
             logger.error(f"❌ Error generando embedding: {e}")
             raise
 
-    async def batch_generate_embeddings(
-        self, contents: List[str], domains: List[str] = None
-    ) -> List[np.ndarray]:
+    async def batch_generate_embeddings(self, contents: List[str], domains: List[str] = None) -> List[np.ndarray]:
         """Generar embeddings en lote"""
 
         if domains is None:
@@ -697,9 +691,7 @@ class UnifiedMonitoringSystem:
 
                 # Limpiar buffer antiguo
                 cutoff_time = datetime.utcnow() - timedelta(hours=24)
-                self.metrics_buffer = [
-                    m for m in self.metrics_buffer if m["timestamp"] > cutoff_time
-                ]
+                self.metrics_buffer = [m for m in self.metrics_buffer if m["timestamp"] > cutoff_time]
 
                 await asyncio.sleep(self.config.metrics_interval)
 
@@ -776,9 +768,7 @@ class NeuroFusionUnifiedSystem:
             self.logger.error(f"❌ Error inicializando sistema: {e}")
             raise
 
-    async def process_query(
-        self, query: str, context: Optional[str] = None, domain: str = "general"
-    ) -> Dict[str, Any]:
+    async def process_query(self, query: str, context: Optional[str] = None, domain: str = "general") -> Dict[str, Any]:
         """Procesar consulta completa con evaluación de calidad"""
 
         if not self.is_initialized:
@@ -791,9 +781,7 @@ class NeuroFusionUnifiedSystem:
             query_embedding = await self.embedding_system.generate_embedding(query, domain)
 
             # Buscar contenido similar
-            similar_content = await self.embedding_system.search_similar(
-                query_embedding, domain, top_k=3
-            )
+            similar_content = await self.embedding_system.search_similar(query_embedding, domain, top_k=3)
 
             # Generar respuesta (simulada por ahora)
             response = self._generate_response(query, similar_content, domain)
@@ -805,9 +793,7 @@ class NeuroFusionUnifiedSystem:
 
             # Registrar métricas
             processing_time = (datetime.utcnow() - start_time).total_seconds()
-            await self.monitoring_system.record_metric(
-                "query_processing_time", processing_time, "query_processor"
-            )
+            await self.monitoring_system.record_metric("query_processing_time", processing_time, "query_processor")
 
             await self.monitoring_system.record_metric(
                 "response_quality", evaluation["overall_score"], "quality_evaluator"
@@ -827,15 +813,11 @@ class NeuroFusionUnifiedSystem:
             self.logger.error(f"Error procesando consulta: {e}")
 
             # Registrar error
-            await self.monitoring_system.record_metric(
-                "query_errors", 1.0, "query_processor", {"error": str(e)}
-            )
+            await self.monitoring_system.record_metric("query_errors", 1.0, "query_processor", {"error": str(e)})
 
             raise
 
-    def _generate_response(
-        self, query: str, similar_content: List[Dict[str, Any]], domain: str
-    ) -> str:
+    def _generate_response(self, query: str, similar_content: List[Dict[str, Any]], domain: str) -> str:
         """Generar respuesta basada en contenido similar"""
 
         # Implementación simplificada
@@ -879,9 +861,7 @@ async def main():
     print("=" * 50)
 
     # Crear configuración
-    config = UnifiedSystemConfig(
-        environment="development", cache_size=1000, monitoring_enabled=True
-    )
+    config = UnifiedSystemConfig(environment="development", cache_size=1000, monitoring_enabled=True)
 
     # Inicializar sistema
     system = NeuroFusionUnifiedSystem(config)
@@ -900,9 +880,7 @@ async def main():
         print(f"   Dominio: {test_case['domain']}")
 
         try:
-            result = await system.process_query(
-                query=test_case["query"], domain=test_case["domain"]
-            )
+            result = await system.process_query(query=test_case["query"], domain=test_case["domain"])
 
             print(f"   ✅ Respuesta generada")
             print(f"   📊 Calidad: {result['evaluation']['overall_score']:.3f}")

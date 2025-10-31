@@ -332,14 +332,10 @@ def create_production_dependency_context() -> DependencyContext:
 # ============================================================================
 
 
-def create_dependency_resolver() -> (
-    Callable[[str, DependencyContext], Result[DependencyResolution, str]]
-):
+def create_dependency_resolver() -> Callable[[str, DependencyContext], Result[DependencyResolution, str]]:
     """Create dependency resolver - Factory function"""
 
-    def resolver(
-        package_name: str, context: DependencyContext
-    ) -> Result[DependencyResolution, str]:
+    def resolver(package_name: str, context: DependencyContext) -> Result[DependencyResolution, str]:
         request_id = f"dep_{int(time.time())}_{hash(package_name) % 10000}"
 
         # Resolve package
@@ -369,9 +365,7 @@ def create_dependency_resolver() -> (
     return resolver
 
 
-def create_dependency_validation_pipeline() -> (
-    Callable[[DependencyContext], Result[DependencyContext, str]]
-):
+def create_dependency_validation_pipeline() -> Callable[[DependencyContext], Result[DependencyContext, str]]:
     """Create dependency validation pipeline - Factory function"""
 
     def pipeline(context: DependencyContext) -> Result[DependencyContext, str]:

@@ -248,9 +248,7 @@ def init_logging():
                 "debug": config.server.debug,
                 "log_level": config.logging.log_level,
                 "log_file": config.logging.log_file,
-                "model_path": config.model.model_path[:50] + "..."
-                if config.model.model_path
-                else "Not set",
+                "model_path": config.model.model_path[:50] + "..." if config.model.model_path else "Not set",
             }
         },
     )
@@ -259,9 +257,7 @@ def init_logging():
 def log_performance(operation: str, duration: float, **metadata):
     """Log performance metrics"""
     logger = get_logger("main")
-    logger.info(
-        f"Performance: {operation}", duration=duration, extra={"performance_data": metadata}
-    )
+    logger.info(f"Performance: {operation}", duration=duration, extra={"performance_data": metadata})
 
 
 def log_error(error: Exception, context: str = "", **metadata):
@@ -270,9 +266,7 @@ def log_error(error: Exception, context: str = "", **metadata):
     logger.exception(f"Error in {context}: {str(error)}", extra={"error_metadata": metadata})
 
 
-def log_request(
-    request_id: str, method: str, endpoint: str, status_code: int, duration: float = None
-):
+def log_request(request_id: str, method: str, endpoint: str, status_code: int, duration: float = None):
     """Log HTTP request"""
     logger = get_logger("server")
 

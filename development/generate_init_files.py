@@ -313,10 +313,7 @@ def get_main_component():
                 dir_path = Path(root) / dir_name
 
                 # Excluir directorios no deseados
-                if any(
-                    skip in str(dir_path)
-                    for skip in ["__pycache__", ".git", "node_modules", ".venv"]
-                ):
+                if any(skip in str(dir_path) for skip in ["__pycache__", ".git", "node_modules", ".venv"]):
                     continue
 
                 # Solo directorios que podrían ser módulos Python

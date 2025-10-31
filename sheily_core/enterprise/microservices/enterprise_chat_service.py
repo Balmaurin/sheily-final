@@ -135,9 +135,7 @@ class EnterpriseChatService:
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         }
 
-    async def process_enterprise_chat(
-        self, request: EnterpriseChatRequest
-    ) -> EnterpriseChatResponse:
+    async def process_enterprise_chat(self, request: EnterpriseChatRequest) -> EnterpriseChatResponse:
         """
         Procesar consulta de chat empresarial
         Implementa patrón Repository + Service Layer
@@ -152,9 +150,7 @@ class EnterpriseChatService:
             )
 
             if not is_valid:
-                raise HTTPException(
-                    status_code=400, detail=f"Validación empresarial fallida: {validation_reason}"
-                )
+                raise HTTPException(status_code=400, detail=f"Validación empresarial fallida: {validation_reason}")
 
             # 2. Procesamiento empresarial del chat
             chat_result = self.chat_engine(request.query)
@@ -179,9 +175,7 @@ class EnterpriseChatService:
             self._update_enterprise_metrics(processing_time, success=False)
             self.logger.error(f"Error empresarial procesando chat: {e}")
 
-            raise HTTPException(
-                status_code=500, detail="Error interno del servicio empresarial de chat"
-            )
+            raise HTTPException(status_code=500, detail="Error interno del servicio empresarial de chat")
 
     def _update_enterprise_metrics(self, response_time: float, success: bool):
         """Actualizar métricas empresariales"""
@@ -199,9 +193,7 @@ class EnterpriseChatService:
 
         # Calcular promedio empresarial
         if self.response_times:
-            self.health_status.average_response_time_ms = sum(self.response_times) / len(
-                self.response_times
-            )
+            self.health_status.average_response_time_ms = sum(self.response_times) / len(self.response_times)
 
         # Actualizar contadores
         self.health_status.total_requests = self.request_count
@@ -284,9 +276,7 @@ async def get_enterprise_api_key(
 
 
 @app.post("/enterprise/chat", response_model=Dict[str, Any])
-async def enterprise_chat_endpoint(
-    request: Dict[str, Any], api_key: str = Depends(get_enterprise_api_key)
-):
+async def enterprise_chat_endpoint(request: Dict[str, Any], api_key: str = Depends(get_enterprise_api_key)):
     """Endpoint empresarial de chat"""
     try:
         # Convertir request empresarial

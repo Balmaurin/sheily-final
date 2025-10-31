@@ -3,10 +3,11 @@
 Tests de seguridad para Sheily AI
 """
 
-import pytest
 import os
 import re
 from pathlib import Path
+
+import pytest
 
 
 class TestSecurity:

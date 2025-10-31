@@ -55,21 +55,11 @@ def main(args_in: list[str] | None = None) -> None:
     )
     parser.add_argument("--hf-repo", type=str, help="Hugging Face model repository", required=True)
     parser.add_argument("--hf-file", type=str, help="Hugging Face model file", required=True)
-    parser.add_argument(
-        "-ngl", "--n-gpu-layers", type=int, help="layers to the GPU for computation", required=True
-    )
-    parser.add_argument(
-        "--ctx-size", type=int, help="Set the size of the prompt context", required=True
-    )
-    parser.add_argument(
-        "--parallel", type=int, help="Set the number of slots for process requests", required=True
-    )
-    parser.add_argument(
-        "--batch-size", type=int, help="Set the batch size for prompt processing", required=True
-    )
-    parser.add_argument(
-        "--ubatch-size", type=int, help="physical maximum batch size", required=True
-    )
+    parser.add_argument("-ngl", "--n-gpu-layers", type=int, help="layers to the GPU for computation", required=True)
+    parser.add_argument("--ctx-size", type=int, help="Set the size of the prompt context", required=True)
+    parser.add_argument("--parallel", type=int, help="Set the number of slots for process requests", required=True)
+    parser.add_argument("--batch-size", type=int, help="Set the batch size for prompt processing", required=True)
+    parser.add_argument("--ubatch-size", type=int, help="physical maximum batch size", required=True)
     parser.add_argument("--scenario", type=str, help="Scenario to run", required=True)
     parser.add_argument("--duration", type=str, help="Bench scenario", required=True)
 
@@ -130,10 +120,7 @@ def main(args_in: list[str] | None = None) -> None:
         while is_server_listening(args.host, args.port):
             time.sleep(0.1)
 
-    title = (
-        f"llama.cpp {args.name} on {args.runner_label}\n "
-        f"duration={args.duration} {iterations} iterations"
-    )
+    title = f"llama.cpp {args.name} on {args.runner_label}\n " f"duration={args.duration} {iterations} iterations"
     xlabel = (
         f"{args.hf_repo}/{args.hf_file}\n"
         f"parallel={args.parallel} ctx-size={args.ctx_size} ngl={args.n_gpu_layers} batch-size={args.batch_size} ubatch-size={args.ubatch_size} pp={args.max_prompt_tokens} pp+tg={args.max_tokens}\n"
@@ -186,9 +173,7 @@ def main(args_in: list[str] | None = None) -> None:
                 plt.ylabel(ylabel, fontsize=22)
                 plt.xlabel(xlabel, fontsize=14, wrap=True)
                 plt.gca().xaxis.set_major_locator(matplotlib.dates.MinuteLocator())
-                plt.gca().xaxis.set_major_formatter(
-                    matplotlib.dates.DateFormatter("%Y-%m-%d %H:%M:%S")
-                )
+                plt.gca().xaxis.set_major_formatter(matplotlib.dates.DateFormatter("%Y-%m-%d %H:%M:%S"))
                 plt.gcf().autofmt_xdate()
 
                 # Remove borders
@@ -244,9 +229,7 @@ xychart-beta
         },
     }
     with open("results.github.env", "a") as github_env:
-        github_env.write(
-            f"BENCH_RESULTS={json.dumps(bench_results, indent=None, separators=(',', ':') )}\n"
-        )
+        github_env.write(f"BENCH_RESULTS={json.dumps(bench_results, indent=None, separators=(',', ':') )}\n")
         github_env.write(f"BENCH_ITERATIONS={iterations}\n")
 
         title = title.replace("\n", " ")
@@ -271,15 +254,17 @@ def start_benchmark(args):
     k6_args.extend(["--vus", args.parallel])
     k6_args.extend(["--summary-export", "k6-results.json"])
     k6_args.extend(["--out", "csv=k6-results.csv"])
-    
+
     # Preparar variables de entorno de forma segura
     k6_env = os.environ.copy()
-    k6_env.update({
-        "SERVER_BENCH_N_PROMPTS": str(args.n_prompts),
-        "SERVER_BENCH_MAX_PROMPT_TOKENS": str(args.max_prompt_tokens),
-        "SERVER_BENCH_MAX_CONTEXT": str(args.max_tokens)
-    })
-    
+    k6_env.update(
+        {
+            "SERVER_BENCH_N_PROMPTS": str(args.n_prompts),
+            "SERVER_BENCH_MAX_PROMPT_TOKENS": str(args.max_prompt_tokens),
+            "SERVER_BENCH_MAX_CONTEXT": str(args.max_tokens),
+        }
+    )
+
     # Construir comando como lista (más seguro que shell=True)
     k6_cmd = [str(k6_path)] + [str(arg) for arg in k6_args]
     print(f"bench: starting k6 with: {' '.join(k6_cmd)}")
@@ -340,9 +325,7 @@ def start_server_background(args):
     args = [str(arg) for arg in [server_path, *server_args]]
     print(f"bench: starting server with: {' '.join(args)}")
     pkwargs = {"stdout": subprocess.PIPE, "stderr": subprocess.PIPE}
-    server_process = subprocess.Popen(
-        args, **pkwargs
-    )  # pyright: ignore[reportArgumentType, reportCallIssue]
+    server_process = subprocess.Popen(args, **pkwargs)  # pyright: ignore[reportArgumentType, reportCallIssue]
 
     def server_log(in_stream, out_stream):
         for line in iter(in_stream.readline, b""):

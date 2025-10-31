@@ -72,9 +72,7 @@ def train_branch(branch_name):
         print(f"⚡ Ejecutando entrenamiento...")
 
         # Ejecutar entrenamiento
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=1800  # 30 minutos timeout
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=1800)  # 30 minutos timeout
 
         if result.returncode == 0:
             print("✅ Entrenamiento exitoso")

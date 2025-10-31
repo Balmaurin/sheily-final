@@ -5,9 +5,11 @@ Unit tests para sheily_core.config
 Coverage: Configuración, validación y carga de parámetros
 """
 
-import pytest
 from pathlib import Path
-from sheily_core.config import get_config, EnterpriseConfig, EnterpriseConfigManager
+
+import pytest
+
+from sheily_core.config import EnterpriseConfig, EnterpriseConfigManager, get_config
 
 
 class TestConfigLoading:
@@ -61,4 +63,4 @@ class TestConfigDefaults:
         """Verificar atributos de EnterpriseConfig"""
         cfg = get_config()
         # Verificar que tiene atributos esperados
-        assert hasattr(cfg, 'to_dict') or True  # Puede no tener método
+        assert hasattr(cfg, "to_dict") or True  # Puede no tener método

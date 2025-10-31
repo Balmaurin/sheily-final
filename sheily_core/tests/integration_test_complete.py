@@ -17,9 +17,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 # Configurar logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -162,12 +160,7 @@ class SheilyIntegrationTester:
 
         try:
             # Importar y inicializar
-            from sheily_core.llm_engine import (
-                InferenceManager,
-                LLMEngine,
-                ModelManager,
-                TokenizerManager,
-            )
+            from sheily_core.llm_engine import InferenceManager, LLMEngine, ModelManager, TokenizerManager
 
             # Crear instancia
             self.llm_engine = LLMEngine(self.system_config["llm_engine"])
@@ -183,9 +176,7 @@ class SheilyIntegrationTester:
             # Test generación de texto
             test_prompt = "Explica qué es la inteligencia artificial"
 
-            generation_result = await self.llm_engine.generate_text(
-                prompt=test_prompt, max_length=100, temperature=0.7
-            )
+            generation_result = await self.llm_engine.generate_text(prompt=test_prompt, max_length=100, temperature=0.7)
 
             assert generation_result["success"], "Text generation failed"
             assert len(generation_result["generated_text"]) > 10, "Generated text too short"
@@ -232,12 +223,7 @@ class SheilyIntegrationTester:
 
         try:
             # Importar y inicializar
-            from sheily_core.rag_engine import (
-                EmbeddingManager,
-                IndexManager,
-                RAGEngine,
-                RetrievalManager,
-            )
+            from sheily_core.rag_engine import EmbeddingManager, IndexManager, RAGEngine, RetrievalManager
 
             # Crear instancia
             self.rag_engine = RAGEngine(self.system_config["rag_engine"])
@@ -253,9 +239,7 @@ class SheilyIntegrationTester:
             # Test búsqueda
             test_query = "algoritmos de machine learning"
 
-            search_result = await self.rag_engine.search(
-                query=test_query, top_k=5, search_type="hybrid"
-            )
+            search_result = await self.rag_engine.search(query=test_query, top_k=5, search_type="hybrid")
 
             assert search_result["success"], "RAG search failed"
             assert len(search_result["results"]) > 0, "No search results returned"
@@ -302,13 +286,7 @@ class SheilyIntegrationTester:
 
         try:
             # Importar y inicializar
-            from sheily_core.hyperrouter import (
-                BranchSelector,
-                HyperRouter,
-                LoadBalancer,
-                Priority,
-                RouteRequest,
-            )
+            from sheily_core.hyperrouter import BranchSelector, HyperRouter, LoadBalancer, Priority, RouteRequest
 
             # Crear instancia
             self.hyperrouter = HyperRouter(self.system_config["hyperrouter"])
@@ -398,9 +376,7 @@ class SheilyIntegrationTester:
             self.branch_merger = branch_merger
 
             # Test inicialización
-            init_success = await initialize_branches_system(
-                branch_manager, specialization_engine, branch_merger
-            )
+            init_success = await initialize_branches_system(branch_manager, specialization_engine, branch_merger)
             assert init_success, "Branch system initialization failed"
 
             # Test health checks
@@ -412,9 +388,7 @@ class SheilyIntegrationTester:
                 "healthy",
                 "warning",
             ], f"Branch manager unhealthy: {manager_health}"
-            assert (
-                spec_health["status"] == "healthy"
-            ), f"Specialization engine unhealthy: {spec_health}"
+            assert spec_health["status"] == "healthy", f"Specialization engine unhealthy: {spec_health}"
             assert merger_health["status"] == "healthy", f"Branch merger unhealthy: {merger_health}"
 
             # Test consulta de rama
@@ -490,15 +464,11 @@ class SheilyIntegrationTester:
             # Búsqueda RAG
             test_query = "aprendizaje automático supervisado"
 
-            search_result = await self.rag_engine.search(
-                query=test_query, top_k=3, search_type="hybrid"
-            )
+            search_result = await self.rag_engine.search(query=test_query, top_k=3, search_type="hybrid")
 
             # Usar contexto RAG para generar respuesta LLM
             if search_result["success"] and search_result["results"]:
-                rag_context = "\n".join(
-                    [result["content"] for result in search_result["results"][:2]]
-                )
+                rag_context = "\n".join([result["content"] for result in search_result["results"][:2]])
 
                 enhanced_prompt = f"Basado en este contexto: {rag_context}\n\nPregunta: {test_query}\n\nRespuesta:"
 
@@ -677,14 +647,9 @@ class SheilyIntegrationTester:
                             # 2. Procesamiento según ruta seleccionada
                             if "rag_engine" in route_result.selected_components and self.rag_engine:
                                 # Búsqueda RAG
-                                rag_result = await self.rag_engine.search(
-                                    query=test_case["query"], top_k=3
-                                )
+                                rag_result = await self.rag_engine.search(query=test_case["query"], top_k=3)
 
-                            if (
-                                "branch_manager" in route_result.selected_components
-                                and self.branch_manager
-                            ):
+                            if "branch_manager" in route_result.selected_components and self.branch_manager:
                                 # Consulta especializada
                                 from sheily_core.branches import BranchQuery
 
@@ -730,9 +695,7 @@ class SheilyIntegrationTester:
                 )
             )
 
-            logger.info(
-                f"✅ End-to-End test completed: {successful_queries}/{len(test_queries)} queries successful"
-            )
+            logger.info(f"✅ End-to-End test completed: {successful_queries}/{len(test_queries)} queries successful")
 
         except Exception as e:
             execution_time = time.time() - start_time
@@ -822,9 +785,7 @@ class SheilyIntegrationTester:
                 )
             )
 
-            logger.info(
-                f"✅ Concurrent requests test: {successful_requests}/{len(concurrent_requests)} successful"
-            )
+            logger.info(f"✅ Concurrent requests test: {successful_requests}/{len(concurrent_requests)} successful")
 
         except Exception as e:
             execution_time = time.time() - start_time
@@ -865,9 +826,7 @@ class SheilyIntegrationTester:
                 try:
                     from sheily_core.branches import BranchQuery
 
-                    invalid_query = BranchQuery(
-                        branch_name="rama_inexistente_test", query="Test query"
-                    )
+                    invalid_query = BranchQuery(branch_name="rama_inexistente_test", query="Test query")
 
                     result = await self.branch_manager.query_branch(invalid_query)
 
@@ -906,9 +865,7 @@ class SheilyIntegrationTester:
                 try:
                     extremely_long_prompt = "Test prompt " * 1000  # Prompt muy largo
 
-                    result = await self.llm_engine.generate_text(
-                        prompt=extremely_long_prompt, max_length=50
-                    )
+                    result = await self.llm_engine.generate_text(prompt=extremely_long_prompt, max_length=50)
 
                     # Debe manejar graciosamente
                     if isinstance(result, dict) and "success" in result:
@@ -919,9 +876,7 @@ class SheilyIntegrationTester:
 
             execution_time = time.time() - start_time
 
-            error_handling_score = (
-                error_cases_handled / total_error_cases if total_error_cases > 0 else 1.0
-            )
+            error_handling_score = error_cases_handled / total_error_cases if total_error_cases > 0 else 1.0
 
             self.test_results.append(
                 TestResult(
@@ -937,9 +892,7 @@ class SheilyIntegrationTester:
                 )
             )
 
-            logger.info(
-                f"✅ Error handling test: {error_cases_handled}/{total_error_cases} cases handled gracefully"
-            )
+            logger.info(f"✅ Error handling test: {error_cases_handled}/{total_error_cases} cases handled gracefully")
 
         except Exception as e:
             execution_time = time.time() - start_time
@@ -1014,9 +967,7 @@ class SheilyIntegrationTester:
                 )
             )
 
-            logger.info(
-                f"✅ Input validation test: {validation_cases_passed}/{total_validation_cases} cases handled"
-            )
+            logger.info(f"✅ Input validation test: {validation_cases_passed}/{total_validation_cases} cases handled")
 
         except Exception as e:
             execution_time = time.time() - start_time
@@ -1064,9 +1015,7 @@ class SheilyIntegrationTester:
             }
 
         # Determinar estado general
-        overall_status = (
-            "PASSED" if success_rate >= 0.8 else "PARTIAL" if success_rate >= 0.5 else "FAILED"
-        )
+        overall_status = "PASSED" if success_rate >= 0.8 else "PARTIAL" if success_rate >= 0.5 else "FAILED"
 
         report = {
             "status": overall_status,
@@ -1097,30 +1046,18 @@ class SheilyIntegrationTester:
                 for r in self.test_results
             ],
             "system_readiness": {
-                "llm_engine": any(
-                    r.component == "LLM Engine" and r.success for r in self.test_results
-                ),
-                "rag_engine": any(
-                    r.component == "RAG Engine" and r.success for r in self.test_results
-                ),
-                "hyperrouter": any(
-                    r.component == "Hyperrouter" and r.success for r in self.test_results
-                ),
-                "branch_system": any(
-                    r.component == "Branch System" and r.success for r in self.test_results
-                ),
-                "end_to_end": any(
-                    r.component == "End-to-End System" and r.success for r in self.test_results
-                ),
+                "llm_engine": any(r.component == "LLM Engine" and r.success for r in self.test_results),
+                "rag_engine": any(r.component == "RAG Engine" and r.success for r in self.test_results),
+                "hyperrouter": any(r.component == "Hyperrouter" and r.success for r in self.test_results),
+                "branch_system": any(r.component == "Branch System" and r.success for r in self.test_results),
+                "end_to_end": any(r.component == "End-to-End System" and r.success for r in self.test_results),
             },
             "recommendations": self._generate_recommendations(success_rate, results_by_component),
         }
 
         return report
 
-    def _generate_recommendations(
-        self, success_rate: float, results_by_component: Dict
-    ) -> List[str]:
+    def _generate_recommendations(self, success_rate: float, results_by_component: Dict) -> List[str]:
         """Generar recomendaciones basadas en resultados"""
         recommendations = []
 
@@ -1129,9 +1066,7 @@ class SheilyIntegrationTester:
         elif success_rate >= 0.7:
             recommendations.append("✅ Sistema mayormente funcional, revisar componentes con fallos")
         elif success_rate >= 0.5:
-            recommendations.append(
-                "⚠️ Sistema parcialmente funcional, requiere correcciones importantes"
-            )
+            recommendations.append("⚠️ Sistema parcialmente funcional, requiere correcciones importantes")
         else:
             recommendations.append("❌ Sistema requiere revisión completa antes del despliegue")
 
@@ -1140,9 +1075,7 @@ class SheilyIntegrationTester:
             component_success_rate = len([r for r in results if r.success]) / len(results)
 
             if component_success_rate < 0.5:
-                recommendations.append(
-                    f"🔧 Revisar {component}: tasa de éxito baja ({component_success_rate:.1%})"
-                )
+                recommendations.append(f"🔧 Revisar {component}: tasa de éxito baja ({component_success_rate:.1%})")
 
         # Recomendaciones generales
         if success_rate > 0.8:
@@ -1181,9 +1114,7 @@ async def main():
 
     print("\n📋 Resumen por Componente:")
     for component, summary in report["component_summary"].items():
-        print(
-            f"  {component}: {summary['successful_tests']}/{summary['total_tests']} ({summary['success_rate']:.1%})"
-        )
+        print(f"  {component}: {summary['successful_tests']}/{summary['total_tests']} ({summary['success_rate']:.1%})")
 
     print("\n🎯 Estado del Sistema:")
     for system, ready in report["system_readiness"].items():

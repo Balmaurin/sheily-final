@@ -158,9 +158,7 @@ class LazyBase(ABC, metaclass=LazyMeta):
         fn: Callable,
         *,
         use_self: LazyBase | None = None,
-        meta_noop: bool
-        | DTypeLike
-        | tuple[DTypeLike, Callable[[tuple[int, ...]], tuple[int, ...]]] = False,
+        meta_noop: bool | DTypeLike | tuple[DTypeLike, Callable[[tuple[int, ...]], tuple[int, ...]]] = False,
     ) -> Callable[[Any], Any]:
         def wrapped_fn(*args, **kwargs):
             if kwargs is None:
@@ -254,29 +252,35 @@ class LazyBase(ABC, metaclass=LazyMeta):
         # Crear una instancia lazy con los metadatos
         instance = cls.__new__(cls)
         instance._dtype = dtype
-        instance._shape = tuple(shape) if hasattr(shape, '__iter__') else (shape,)
+        instance._shape = tuple(shape) if hasattr(shape, "__iter__") else (shape,)
         instance._meta = True
         instance._data = None  # No cargar datos aún
-        
+
         # Calcular el tamaño esperado
-        if hasattr(dtype, 'itemsize'):
+        if hasattr(dtype, "itemsize"):
             element_size = dtype.itemsize
         else:
             # Tamaños típicos por tipo
             dtype_sizes = {
-                'float32': 4, 'float16': 2, 'float64': 8,
-                'int32': 4, 'int64': 8, 'int16': 2, 'int8': 1,
-                'uint8': 1, 'bool': 1
+                "float32": 4,
+                "float16": 2,
+                "float64": 8,
+                "int32": 4,
+                "int64": 8,
+                "int16": 2,
+                "int8": 1,
+                "uint8": 1,
+                "bool": 1,
             }
             dtype_str = str(dtype).lower()
             element_size = dtype_sizes.get(dtype_str, 4)
-        
+
         total_elements = 1
         for dim in instance._shape:
             total_elements *= dim
-        
+
         instance._expected_size = total_elements * element_size
-        
+
         return instance
 
     @classmethod
@@ -296,9 +300,7 @@ class LazyNumpyTensor(LazyBase):
     shape: tuple[int, ...]  # Makes the type checker happy in quants.py
 
     @classmethod
-    def meta_with_dtype_and_shape(
-        cls, dtype: DTypeLike, shape: tuple[int, ...]
-    ) -> np.ndarray[Any, Any]:
+    def meta_with_dtype_and_shape(cls, dtype: DTypeLike, shape: tuple[int, ...]) -> np.ndarray[Any, Any]:
         # The initial idea was to use np.nan as the fill value,
         # but non-float types like np.int16 can't use that.
         # So zero it is.

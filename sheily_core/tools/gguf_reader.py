@@ -87,11 +87,7 @@ class ReaderField(NamedTuple):
                     if isinstance(index_or_slice, int):
                         return self.parts[self.data[index_or_slice]].tolist()[0]
                     else:
-                        return [
-                            pv
-                            for idx in self.data[index_or_slice]
-                            for pv in self.parts[idx].tolist()
-                        ]
+                        return [pv for idx in self.data[index_or_slice] for pv in self.parts[idx].tolist()]
 
             if main_type == GGUFValueType.STRING:
                 return to_string(self.parts[-1])
@@ -163,18 +159,12 @@ class GGUFReader:
         self.endianess = swapped_endian if self.byte_order == "S" else host_endian
         self.fields: OrderedDict[str, ReaderField] = OrderedDict()
         self.tensors: list[ReaderTensor] = []
-        offs += self._push_field(
-            ReaderField(offs, "GGUF.version", [temp_version], [0], [GGUFValueType.UINT32])
-        )
+        offs += self._push_field(ReaderField(offs, "GGUF.version", [temp_version], [0], [GGUFValueType.UINT32]))
 
         # Check tensor count and kv count
         temp_counts = self._get(offs, np.uint64, 2)
-        offs += self._push_field(
-            ReaderField(offs, "GGUF.tensor_count", [temp_counts[:1]], [0], [GGUFValueType.UINT64])
-        )
-        offs += self._push_field(
-            ReaderField(offs, "GGUF.kv_count", [temp_counts[1:]], [0], [GGUFValueType.UINT64])
-        )
+        offs += self._push_field(ReaderField(offs, "GGUF.tensor_count", [temp_counts[:1]], [0], [GGUFValueType.UINT64]))
+        offs += self._push_field(ReaderField(offs, "GGUF.kv_count", [temp_counts[1:]], [0], [GGUFValueType.UINT64]))
         tensor_count, kv_count = temp_counts
         offs = self._build_fields(offs, kv_count)
 
@@ -212,9 +202,7 @@ class GGUFReader:
         itemsize = int(np.empty([], dtype=dtype).itemsize)
         end_offs = offset + itemsize * count
         arr = self.data[offset:end_offs].view(dtype=dtype)[:count]
-        return arr.view(
-            arr.dtype.newbyteorder(self.byte_order if override_order is None else override_order)
-        )
+        return arr.view(arr.dtype.newbyteorder(self.byte_order if override_order is None else override_order))
 
     def _push_field(self, field: ReaderField, skip_sum: bool = False) -> int:
         if field.name in self.fields:
@@ -260,9 +248,7 @@ class GGUFReader:
             data_idxs: list[int] = []
             # FIXME: Handle multi-dimensional arrays properly instead of flattening
             for idx in range(alen[0]):
-                curr_size, curr_parts, curr_idxs, curr_types = self._get_field_parts(
-                    offs, raw_itype[0]
-                )
+                curr_size, curr_parts, curr_idxs, curr_types = self._get_field_parts(offs, raw_itype[0])
                 if idx == 0:
                     types += curr_types
                 idxs_offs = len(aparts)
@@ -312,9 +298,7 @@ class GGUFReader:
             offs += int(raw_kv_type.nbytes)
             parts: list[npt.NDArray[Any]] = [kv_klen, kv_kdata, raw_kv_type]
             idxs_offs = len(parts)
-            field_size, field_parts, field_idxs, field_types = self._get_field_parts(
-                offs, raw_kv_type[0]
-            )
+            field_size, field_parts, field_idxs, field_types = self._get_field_parts(offs, raw_kv_type[0])
             parts += field_parts
             self._push_field(
                 ReaderField(

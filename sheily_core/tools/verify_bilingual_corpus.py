@@ -61,9 +61,7 @@ def verify_corpus(corpus_path, language):
                             if lang_match == language:
                                 print(f"  ✅ {domain}: Configuración YAML OK")
                             else:
-                                print(
-                                    f"  ⚠️  {domain}: Idioma incorrecto en YAML ({lang_match} != {language})"
-                                )
+                                print(f"  ⚠️  {domain}: Idioma incorrecto en YAML ({lang_match} != {language})")
                         else:  # txt
                             content = f.read().lower()
                             if f"language={language}" in content or f"lang={language}" in content:
@@ -79,17 +77,13 @@ def verify_corpus(corpus_path, language):
 
         # Verificar estructura de directorios
         timestamp_dirs = [
-            d
-            for d in os.listdir(domain_path)
-            if os.path.isdir(os.path.join(domain_path, d)) and d.startswith("2025")
+            d for d in os.listdir(domain_path) if os.path.isdir(os.path.join(domain_path, d)) and d.startswith("2025")
         ]
 
         if timestamp_dirs:
             latest_dir = os.path.join(domain_path, timestamp_dirs[0])
             required_subdirs = ["chunks", "clean", "embeddings", "index", "logs", "raw"]
-            existing_subdirs = [
-                d for d in os.listdir(latest_dir) if os.path.isdir(os.path.join(latest_dir, d))
-            ]
+            existing_subdirs = [d for d in os.listdir(latest_dir) if os.path.isdir(os.path.join(latest_dir, d))]
 
             if all(subdir in existing_subdirs for subdir in required_subdirs):
                 structures_complete += 1

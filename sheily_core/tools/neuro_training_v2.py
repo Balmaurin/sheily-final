@@ -93,14 +93,10 @@ class NeuroTrainingConfig:
     lora_rank: int = 16
     lora_alpha: int = 32
     lora_dropout: float = 0.05
-    target_modules: List[str] = field(
-        default_factory=lambda: ["qkv_proj", "o_proj", "gate_up_proj", "down_proj"]
-    )
+    target_modules: List[str] = field(default_factory=lambda: ["qkv_proj", "o_proj", "gate_up_proj", "down_proj"])
 
     # Estrategias de entrenamiento
-    training_strategies: List[str] = field(
-        default_factory=lambda: ["lora", "full_finetune", "incremental"]
-    )
+    training_strategies: List[str] = field(default_factory=lambda: ["lora", "full_finetune", "incremental"])
     curriculum_learning: bool = True
     meta_learning: bool = True
 
@@ -204,9 +200,7 @@ class MetaOptimizer:
         if not self.optimization_history:
             return "initial"
 
-        recent_losses = [
-            h["current_performance"].get("loss", 1.0) for h in self.optimization_history[-5:]
-        ]
+        recent_losses = [h["current_performance"].get("loss", 1.0) for h in self.optimization_history[-5:]]
 
         if len(recent_losses) < 2:
             return "insufficient_data"
@@ -221,9 +215,7 @@ class MetaOptimizer:
         else:
             return "stable"
 
-    def _optimize_learning_rate(
-        self, current_loss: float, trend: str, context: Dict[str, Any]
-    ) -> float:
+    def _optimize_learning_rate(self, current_loss: float, trend: str, context: Dict[str, Any]) -> float:
         """Optimizar learning rate basado en tendencia"""
         current_lr = context.get("learning_rate", self.config.base_learning_rate)
 
@@ -648,9 +640,7 @@ class NeuroTrainingEngine:
                     return_tensors="pt",
                 )
 
-            tokenized_dataset = dataset.map(
-                tokenize_function, batched=True, num_proc=4, remove_columns=["text"]
-            )
+            tokenized_dataset = dataset.map(tokenize_function, batched=True, num_proc=4, remove_columns=["text"])
 
             # Crear entrenador con métricas avanzadas
             trainer = Trainer(
@@ -702,10 +692,8 @@ class NeuroTrainingEngine:
                             "memory_usage": self._get_memory_usage(),
                         }
 
-                        optimizations = (
-                            self.training_engine.meta_optimizer.optimize_hyperparameters(
-                                performance, context
-                            )
+                        optimizations = self.training_engine.meta_optimizer.optimize_hyperparameters(
+                            performance, context
                         )
 
                         # Aplicar optimizaciones si son significativas
@@ -735,9 +723,7 @@ class NeuroTrainingEngine:
                     """Aplicar optimizaciones sugeridas"""
                     if "learning_rate" in optimizations:
                         args.learning_rate = optimizations["learning_rate"]
-                        self.training_engine.logger.info(
-                            f"Applied LR optimization: {args.learning_rate}"
-                        )
+                        self.training_engine.logger.info(f"Applied LR optimization: {args.learning_rate}")
 
                     if "batch_size" in optimizations:
                         args.per_device_train_batch_size = optimizations["batch_size"]

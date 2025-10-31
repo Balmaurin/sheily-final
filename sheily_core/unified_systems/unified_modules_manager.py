@@ -95,9 +95,7 @@ class UnifiedModulesManager:
 
             self.initialized = True
             logger.info(f"✅ Unified Modules Manager inicializado")
-            logger.info(
-                f"📦 Módulos activos: {self.metrics['active_modules']}/{self.metrics['total_modules']}"
-            )
+            logger.info(f"📦 Módulos activos: {self.metrics['active_modules']}/{self.metrics['total_modules']}")
             logger.info(f"⚡ Funciones totales: {self.metrics['total_functions']}")
 
             return True
@@ -233,12 +231,8 @@ class UnifiedModulesManager:
         """Calcular métricas del sistema"""
         self.metrics["total_modules"] = len(self.modules_config)
         self.metrics["active_modules"] = len(self.modules)
-        self.metrics["failed_modules"] = (
-            self.metrics["total_modules"] - self.metrics["active_modules"]
-        )
-        self.metrics["total_functions"] = sum(
-            config.functions for config in self.modules_config.values()
-        )
+        self.metrics["failed_modules"] = self.metrics["total_modules"] - self.metrics["active_modules"]
+        self.metrics["total_functions"] = sum(config.functions for config in self.modules_config.values())
 
         # Agregar funciones de database
         if self.database:
@@ -253,7 +247,7 @@ class UnifiedModulesManager:
             try:
                 self.database.execute(
                     """
-                    UPDATE modules_status 
+                    UPDATE modules_status
                     SET last_used = ?, usage_count = usage_count + 1
                     WHERE name = ?
                 """,
@@ -424,9 +418,7 @@ async def main():
     print("=" * 70)
 
     # Crear configuración
-    config = UnifiedModulesConfig(
-        system_name="Unified Modules Manager", version="1.0.0", auto_initialize=True
-    )
+    config = UnifiedModulesConfig(system_name="Unified Modules Manager", version="1.0.0", auto_initialize=True)
 
     # Obtener gestor
     manager = await get_modules_manager(config)

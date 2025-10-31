@@ -154,9 +154,7 @@ class ModuleConsolidationMigrator:
             if category_files:
                 analysis_results["duplicate_groups"] += 1
                 analysis_results["files_to_consolidate"] += len(category_files)
-                analysis_results["estimated_savings"] += (
-                    category_size * 0.7
-                )  # Estimación 70% de reducción
+                analysis_results["estimated_savings"] += category_size * 0.7  # Estimación 70% de reducción
 
                 analysis_results["duplicate_details"][category] = {
                     "files": category_files,
@@ -290,16 +288,16 @@ class Unified{class_name}:
     Sistema unificado que consolida funcionalidades de:
     {chr(10).join(f"    - {filename}" for filename in source_files)}
     """
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or {{}}
         self.consolidated_modules = {source_files}
         logger.info(f"✅ Sistema unificado {category} inicializado")
-    
+
     def get_consolidated_modules(self) -> List[str]:
         """Obtener lista de módulos consolidados"""
         return self.consolidated_modules
-    
+
     def get_consolidation_info(self) -> Dict[str, Any]:
         """Obtener información de consolidación"""
         return {{
@@ -324,9 +322,7 @@ if __name__ == "__main__":
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(consolidated_content)
 
-    def create_migration_report(
-        self, analysis_results: Dict[str, Any], consolidation_results: Dict[str, Any]
-    ) -> str:
+    def create_migration_report(self, analysis_results: Dict[str, Any], consolidation_results: Dict[str, Any]) -> str:
         """Crear reporte de migración"""
 
         report = f"""

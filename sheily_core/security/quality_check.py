@@ -297,16 +297,10 @@ class EnterpriseQualityChecker:
 
         return check
 
-    def _determine_status(
-        self, check: QualityCheck, result: subprocess.CompletedProcess
-    ) -> QualityStatus:
+    def _determine_status(self, check: QualityCheck, result: subprocess.CompletedProcess) -> QualityStatus:
         """Determinar estado de verificación con lógica avanzada"""
         if result.returncode == 0:
-            return (
-                QualityStatus.EXCELLENT
-                if self._is_excellent_result(check, result)
-                else QualityStatus.PASSED
-            )
+            return QualityStatus.EXCELLENT if self._is_excellent_result(check, result) else QualityStatus.PASSED
 
         # Verificaciones críticas fallidas
         if check.critical:
@@ -318,9 +312,7 @@ class EnterpriseQualityChecker:
 
         return QualityStatus.FAILED
 
-    def _is_excellent_result(
-        self, check: QualityCheck, result: subprocess.CompletedProcess
-    ) -> bool:
+    def _is_excellent_result(self, check: QualityCheck, result: subprocess.CompletedProcess) -> bool:
         """Determinar si un resultado es excelente"""
         # Lógica específica por herramienta
         if "flake8" in check.name.lower():
@@ -345,9 +337,7 @@ class EnterpriseQualityChecker:
 
             # Penalizaciones por memoria
             if check.metrics.memory_delta > 100 * 1024 * 1024:  # 100MB
-                score -= min(
-                    10, (check.metrics.memory_delta - 100 * 1024 * 1024) / (10 * 1024 * 1024)
-                )
+                score -= min(10, (check.metrics.memory_delta - 100 * 1024 * 1024) / (10 * 1024 * 1024))
 
             # Bonus por eficiencia
             if check.metrics.execution_time < 30 and check.metrics.memory_delta < 50 * 1024 * 1024:
@@ -414,13 +404,9 @@ class EnterpriseQualityChecker:
 
         # Calcular métricas globales
         passed_checks = sum(
-            1
-            for check in results.values()
-            if check.status in [QualityStatus.EXCELLENT, QualityStatus.PASSED]
+            1 for check in results.values() if check.status in [QualityStatus.EXCELLENT, QualityStatus.PASSED]
         )
-        critical_failures = sum(
-            1 for check in results.values() if check.status == QualityStatus.CRITICAL
-        )
+        critical_failures = sum(1 for check in results.values() if check.status == QualityStatus.CRITICAL)
         total_score = sum(check.metrics.score * check.weight for check in results.values())
         max_possible_score = sum(100 * check.weight for check in results.values())
         overall_score = (total_score / max_possible_score) * 100 if max_possible_score > 0 else 0
@@ -433,8 +419,7 @@ class EnterpriseQualityChecker:
             category_scores[check.category].append(check.metrics.score * check.weight)
 
         category_averages = {
-            category: sum(scores) / len(scores) if scores else 0
-            for category, scores in category_scores.items()
+            category: sum(scores) / len(scores) if scores else 0 for category, scores in category_scores.items()
         }
 
         # Generar recomendaciones
@@ -469,9 +454,7 @@ class EnterpriseQualityChecker:
                     "category": check.category,
                     "weight": check.weight,
                     "critical": check.critical,
-                    "output_preview": check.output[:500] + "..."
-                    if len(check.output) > 500
-                    else check.output,
+                    "output_preview": check.output[:500] + "..." if len(check.output) > 500 else check.output,
                     "error": check.error,
                 }
                 for name, check in results.items()
@@ -487,12 +470,8 @@ class EnterpriseQualityChecker:
         recommendations = []
 
         # Análisis de patrones de fallo
-        failed_checks = [
-            name for name, check in results.items() if check.status == QualityStatus.FAILED
-        ]
-        critical_checks = [
-            name for name, check in results.items() if check.status == QualityStatus.CRITICAL
-        ]
+        failed_checks = [name for name, check in results.items() if check.status == QualityStatus.FAILED]
+        critical_checks = [name for name, check in results.items() if check.status == QualityStatus.CRITICAL]
 
         if critical_checks:
             recommendations.append(f"🚨 CORRECCIÓN CRÍTICA REQUERIDA: {', '.join(critical_checks)}")
@@ -500,33 +479,17 @@ class EnterpriseQualityChecker:
         # Recomendaciones por categoría
         for category, avg_score in self._get_category_scores(results).items():
             if avg_score < 70:
-                recommendations.append(
-                    f"📈 Mejorar categoría '{category}': puntuación actual {avg_score:.1f}/100"
-                )
+                recommendations.append(f"📈 Mejorar categoría '{category}': puntuación actual {avg_score:.1f}/100")
 
         # Recomendaciones específicas
-        if any(
-            "coverage" in name.lower()
-            for name, check in results.items()
-            if check.metrics.score < 80
-        ):
+        if any("coverage" in name.lower() for name, check in results.items() if check.metrics.score < 80):
             recommendations.append("📊 Implementar pruebas adicionales para mejorar cobertura")
 
-        if any(
-            "security" in name.lower()
-            for name, check in results.items()
-            if check.status != QualityStatus.PASSED
-        ):
+        if any("security" in name.lower() for name, check in results.items() if check.status != QualityStatus.PASSED):
             recommendations.append("🔒 Revisar y corregir vulnerabilidades de seguridad detectadas")
 
-        if any(
-            "performance" in name.lower()
-            for name, check in results.items()
-            if check.metrics.execution_time > 300
-        ):
-            recommendations.append(
-                "⚡ Optimizar rendimiento: algunas verificaciones tardan demasiado"
-            )
+        if any("performance" in name.lower() for name, check in results.items() if check.metrics.execution_time > 300):
+            recommendations.append("⚡ Optimizar rendimiento: algunas verificaciones tardan demasiado")
 
         # Recomendaciones generales de mejora
         recommendations.extend(
@@ -554,18 +517,12 @@ class EnterpriseQualityChecker:
         """Evaluar quality gates estrictos"""
         gates = {
             "security_gate": all(
-                check.status != QualityStatus.CRITICAL
-                for check in results.values()
-                if check.category == "security"
+                check.status != QualityStatus.CRITICAL for check in results.values() if check.category == "security"
             ),
             "quality_gate": all(check.metrics.score >= 70 for check in results.values()),
-            "performance_gate": all(
-                check.metrics.execution_time < 300 for check in results.values()
-            ),
+            "performance_gate": all(check.metrics.execution_time < 300 for check in results.values()),
             "coverage_gate": any(
-                check.metrics.score >= 85
-                for check in results.values()
-                if "coverage" in check.name.lower()
+                check.metrics.score >= 85 for check in results.values() if "coverage" in check.name.lower()
             ),
         }
 
@@ -644,9 +601,7 @@ class EnterpriseQualityChecker:
 
         self.logger.info(f"Reportes guardados: {json_file}, {txt_file}, {html_file}")
 
-    def _generate_html_report(
-        self, report: Dict[str, Any], results: Dict[str, QualityCheck], html_file: Path
-    ):
+    def _generate_html_report(self, report: Dict[str, Any], results: Dict[str, QualityCheck], html_file: Path):
         """Generar reporte HTML avanzado"""
         html_content = f"""
 <!DOCTYPE html>
@@ -683,7 +638,7 @@ class EnterpriseQualityChecker:
             <div class="score">{report['summary']['overall_score']:.1f}/100</div>
             <p>Calificación: {report['summary']['overall_grade']}</p>
         </div>
-        
+
         <div class="metrics">
             <div class="metric">
                 <h3>Verificaciones</h3>
@@ -698,7 +653,7 @@ class EnterpriseQualityChecker:
                 <p>{report['quality_gates']['gates_passed']}/{report['quality_gates']['total_gates']}</p>
             </div>
         </div>
-        
+
         <div class="results">
             <h2>Resultados Detallados</h2>
             <table>
@@ -730,7 +685,7 @@ class EnterpriseQualityChecker:
                 </tbody>
             </table>
         </div>
-        
+
         <div class="footer" style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #bdc3c7; text-align: center; color: #7f8c8d;">
             <p>Reporte generado por el Sistema de Calidad Ultra-Enterprise de Sheily-AI</p>
         </div>
@@ -749,12 +704,8 @@ def main():
     parser.add_argument("--project", default=".", help="Ruta del proyecto")
     parser.add_argument("--verbose", action="store_true", help="Modo verbose")
     parser.add_argument("--sequential", action="store_true", help="Ejecución secuencial")
-    parser.add_argument(
-        "--quick", action="store_true", help="Modo rápido (solo verificaciones críticas)"
-    )
-    parser.add_argument(
-        "--report-only", action="store_true", help="Solo generar reporte de resultados previos"
-    )
+    parser.add_argument("--quick", action="store_true", help="Modo rápido (solo verificaciones críticas)")
+    parser.add_argument("--report-only", action="store_true", help="Solo generar reporte de resultados previos")
 
     args = parser.parse_args()
 

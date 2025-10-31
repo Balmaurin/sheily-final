@@ -116,15 +116,9 @@ class IntegrationManager:
             processing_steps.append({"step": "routing", "result": routing_result})
 
             # 4. Generación de conocimiento contextual
-            domain = (
-                routing_result.get("domain", "general")
-                if isinstance(routing_result, dict)
-                else "general"
-            )
+            domain = routing_result.get("domain", "general") if isinstance(routing_result, dict) else "general"
             contextual_knowledge = self._generate_contextual_knowledge(adapted_query, domain)
-            processing_steps.append(
-                {"step": "knowledge_generation", "result": contextual_knowledge}
-            )
+            processing_steps.append({"step": "knowledge_generation", "result": contextual_knowledge})
 
             # 5. Análisis de errores potenciales
             error_analysis = self._analyze_potential_errors(adapted_query)
@@ -193,10 +187,7 @@ class IntegrationManager:
         # Clasificación por palabras clave
         if any(word in query_lower for word in ["python", "código", "programar", "función"]):
             domain = "programming"
-        elif any(
-            word in query_lower
-            for word in ["ia", "inteligencia artificial", "machine learning", "modelo"]
-        ):
+        elif any(word in query_lower for word in ["ia", "inteligencia artificial", "machine learning", "modelo"]):
             domain = "ai"
         elif any(word in query_lower for word in ["base de datos", "sql", "database"]):
             domain = "database"
@@ -301,9 +292,7 @@ class IntegrationManager:
 
         # Calcular confianza basada en los pasos exitosos
         successful_steps = sum(
-            1
-            for step in processing_steps
-            if isinstance(step.get("result"), dict) and not step["result"].get("error")
+            1 for step in processing_steps if isinstance(step.get("result"), dict) and not step["result"].get("error")
         )
         total_steps = len(processing_steps)
 
@@ -356,9 +345,7 @@ class IntegrationManager:
             "module_health": self.module_health,
             "config": self.effective_config,
             "interaction_count": len(self.integration_history),
-            "last_interaction": (
-                self.integration_history[-1] if self.integration_history else None
-            ),
+            "last_interaction": (self.integration_history[-1] if self.integration_history else None),
             "timestamp": datetime.now().isoformat(),
         }
 
@@ -376,9 +363,7 @@ class IntegrationManager:
 
         # Determinar salud general
         if health_status["issues"]:
-            health_status["overall_health"] = (
-                "degraded" if len(health_status["issues"]) < 3 else "poor"
-            )
+            health_status["overall_health"] = "degraded" if len(health_status["issues"]) < 3 else "poor"
 
         health_status["timestamp"] = datetime.now().isoformat()
         return health_status
@@ -404,12 +389,8 @@ class IntegrationManager:
                 confidence_scores.append(confidence)
 
         # Estadísticas
-        avg_confidence = (
-            sum(confidence_scores) / len(confidence_scores) if confidence_scores else 0.0
-        )
-        most_common_domain = (
-            max(domain_counts, key=domain_counts.get) if domain_counts else "unknown"
-        )
+        avg_confidence = sum(confidence_scores) / len(confidence_scores) if confidence_scores else 0.0
+        most_common_domain = max(domain_counts, key=domain_counts.get) if domain_counts else "unknown"
 
         self.logger.info(f"Análisis de mejora: Confianza promedio: {avg_confidence:.2f}")
         self.logger.info(f"Dominio más común: {most_common_domain}")

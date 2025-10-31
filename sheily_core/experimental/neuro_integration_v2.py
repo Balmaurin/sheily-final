@@ -205,9 +205,7 @@ class NeuroIntegrationEngine:
                 from sheily_core.memory.sheily_human_memory_v2 import integrate_human_memory_v2
 
                 self.human_memory_engine = integrate_human_memory_v2()
-                self.state.components_health["human_memory"] = ComponentHealth(
-                    "human_memory", "healthy"
-                )
+                self.state.components_health["human_memory"] = ComponentHealth("human_memory", "healthy")
                 success_count += 1
                 self.logger.info("Human memory engine initialized")
             except Exception as e:
@@ -227,9 +225,7 @@ class NeuroIntegrationEngine:
                 self.logger.info("Neuro-RAG engine initialized")
             except Exception as e:
                 self.logger.error(f"Error initializing neuro-RAG: {e}")
-                self.state.components_health["neuro_rag"] = ComponentHealth(
-                    "neuro_rag", "failed", last_error=str(e)
-                )
+                self.state.components_health["neuro_rag"] = ComponentHealth("neuro_rag", "failed", last_error=str(e))
 
         # Inicializar entrenamiento neurológico (LAZY LOADING)
         # No cargar transformers al inicio para acelerar el arranque
@@ -237,13 +233,9 @@ class NeuroIntegrationEngine:
             try:
                 # Solo marcar como pendiente, se cargará cuando se necesite
                 self.neuro_training_engine = None  # Lazy loading
-                self.state.components_health["neuro_training"] = ComponentHealth(
-                    "neuro_training", "lazy_loaded"
-                )
+                self.state.components_health["neuro_training"] = ComponentHealth("neuro_training", "lazy_loaded")
                 success_count += 1
-                self.logger.info(
-                    "⚡ Neuro-training engine configurado para lazy loading (carga rápida)"
-                )
+                self.logger.info("⚡ Neuro-training engine configurado para lazy loading (carga rápida)")
             except Exception as e:
                 self.logger.error(f"Error initializing neuro-training: {e}")
                 self.state.components_health["neuro_training"] = ComponentHealth(
@@ -271,9 +263,7 @@ class NeuroIntegrationEngine:
                 from sheily_train.core.training.neuro_training_v2 import integrate_neuro_training
 
                 self.neuro_training_engine = integrate_neuro_training()
-                self.state.components_health["neuro_training"] = ComponentHealth(
-                    "neuro_training", "healthy"
-                )
+                self.state.components_health["neuro_training"] = ComponentHealth("neuro_training", "healthy")
                 self.logger.info("✅ Neuro-training engine cargado exitosamente")
             except Exception as e:
                 self.logger.error(f"❌ Error cargando neuro-training: {e}")
@@ -283,9 +273,7 @@ class NeuroIntegrationEngine:
                 return None
         return self.neuro_training_engine
 
-    def process_with_context(
-        self, query: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    def process_with_context(self, query: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Procesar consulta con contexto neurológico completo
 
         Args:
@@ -309,9 +297,7 @@ class NeuroIntegrationEngine:
             # 1. Buscar en memoria humana
             if self.human_memory_engine and self.config.enable_human_memory:
                 try:
-                    memory_results = self.human_memory_engine.search_memory(
-                        query, top_k=5, relevance_threshold=0.3
-                    )
+                    memory_results = self.human_memory_engine.search_memory(query, top_k=5, relevance_threshold=0.3)
                     result["memory_results"] = memory_results
                     result["components_used"].append("human_memory")
                 except Exception as e:
@@ -321,9 +307,7 @@ class NeuroIntegrationEngine:
             # 2. Buscar en RAG neurológico
             if self.neuro_rag_engine and self.config.enable_neuro_rag:
                 try:
-                    rag_context = self.neuro_rag_engine.retrieve_context(
-                        query, top_k=3, branch=context.get("branch")
-                    )
+                    rag_context = self.neuro_rag_engine.retrieve_context(query, top_k=3, branch=context.get("branch"))
                     result["rag_context"] = rag_context
                     result["components_used"].append("neuro_rag")
                 except Exception as e:
@@ -395,9 +379,7 @@ class NeuroIntegrationEngine:
 
         return cognitive_load
 
-    def apply_neural_optimization(
-        self, processing_result: Dict[str, Any], cognitive_load: float
-    ) -> Dict[str, Any]:
+    def apply_neural_optimization(self, processing_result: Dict[str, Any], cognitive_load: float) -> Dict[str, Any]:
         """Aplicar optimizaciones neuronales basadas en carga cognitiva
 
         Args:
@@ -416,17 +398,13 @@ class NeuroIntegrationEngine:
                     original_count = len(processing_result["memory_results"])
                     processing_result["memory_results"] = processing_result["memory_results"][:3]
                     optimization["applied"].append("memory_reduction")
-                    optimization["improvements"].append(
-                        f"Reducido de {original_count} a 3 resultados"
-                    )
+                    optimization["improvements"].append(f"Reducido de {original_count} a 3 resultados")
 
                 if "rag_context" in processing_result:
                     original_count = len(processing_result["rag_context"])
                     processing_result["rag_context"] = processing_result["rag_context"][:2]
                     optimization["applied"].append("rag_reduction")
-                    optimization["improvements"].append(
-                        f"Reducido de {original_count} a 2 documentos"
-                    )
+                    optimization["improvements"].append(f"Reducido de {original_count} a 2 documentos")
 
             # Optimización 2: Usar caché para queries similares
             if self.config.cache_enabled:
@@ -503,9 +481,7 @@ class NeuroIntegrationEngine:
                 stats = self.neuro_rag_engine.get_system_stats()
                 response_time = time.time() - start_time
 
-                self.state.components_health["neuro_rag"].update_health(
-                    "healthy", response_time, 0.0
-                )
+                self.state.components_health["neuro_rag"].update_health("healthy", response_time, 0.0)
             except Exception as e:
                 self.state.components_health["neuro_rag"].update_health("failed", error=str(e))
 
@@ -514,9 +490,7 @@ class NeuroIntegrationEngine:
             try:
                 # Verificación básica de estado
                 response_time = 0.1  # Simulado
-                self.state.components_health["neuro_training"].update_health(
-                    "healthy", response_time, 0.0
-                )
+                self.state.components_health["neuro_training"].update_health("healthy", response_time, 0.0)
             except Exception as e:
                 self.state.components_health["neuro_training"].update_health("failed", error=str(e))
 
@@ -615,7 +589,9 @@ class NeuroIntegrationEngine:
 
                 # Agregar contexto de memoria a consulta RAG
                 if memory_context and self.neuro_rag_engine:
-                    enriched_query = f"{query} Context: {' '.join([ctx.get('content', '') for ctx in memory_context[:2]])}"
+                    enriched_query = (
+                        f"{query} Context: {' '.join([ctx.get('content', '') for ctx in memory_context[:2]])}"
+                    )
                     event_data["enriched_query"] = enriched_query
 
         except Exception as e:
@@ -681,20 +657,14 @@ class NeuroIntegrationEngine:
 
             # Optimizar basado en uso de memoria
             high_memory_components = [
-                name
-                for name, metrics in performance_metrics.items()
-                if metrics["memory_usage"] > 0.8
+                name for name, metrics in performance_metrics.items() if metrics["memory_usage"] > 0.8
             ]
 
             if high_memory_components:
                 optimizations.append(f"High memory usage in: {', '.join(high_memory_components)}")
 
             # Optimizar basado en tiempos de respuesta
-            slow_components = [
-                name
-                for name, metrics in performance_metrics.items()
-                if metrics["response_time"] > 1.0
-            ]
+            slow_components = [name for name, metrics in performance_metrics.items() if metrics["response_time"] > 1.0]
 
             if slow_components:
                 optimizations.append(f"Slow response times in: {', '.join(slow_components)}")
@@ -791,9 +761,7 @@ class NeuroIntegrationEngine:
 
         return combined[:10]  # Máximo 10 resultados combinados
 
-    def _generate_enriched_response(
-        self, message: str, combined_context: List[Dict[str, Any]]
-    ) -> str:
+    def _generate_enriched_response(self, message: str, combined_context: List[Dict[str, Any]]) -> str:
         """Generar respuesta enriquecida con contexto avanzado"""
         if not combined_context:
             return "No tengo suficiente contexto para responder adecuadamente."
@@ -876,8 +844,7 @@ class NeuroIntegrationEngine:
 
                 # Actualizar progreso de aprendizaje cruzado
                 avg_learning_progress = (
-                    memory_stats.get("learning_progress", 0.0)
-                    + rag_stats.get("learning_progress", 0.0)
+                    memory_stats.get("learning_progress", 0.0) + rag_stats.get("learning_progress", 0.0)
                 ) / 2
 
                 self.state.learning_progress = avg_learning_progress

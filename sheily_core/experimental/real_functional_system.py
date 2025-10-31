@@ -210,9 +210,7 @@ class RealFAISSRecoveryStrategy(RecoveryStrategy):
                             new_index.add(embedding_array)
 
                             # Guardar nuevo índice
-                            index_file = (
-                                self.memory_integration.data_root / user_id / f"{layer}_faiss.index"
-                            )
+                            index_file = self.memory_integration.data_root / user_id / f"{layer}_faiss.index"
                             index_file.parent.mkdir(parents=True, exist_ok=True)
                             faiss.write_index(new_index, str(index_file))
 
@@ -449,9 +447,7 @@ class RealSafeHumanMemoryEngine:
             if strategy.can_recover(original_error):
                 recovery_result = strategy.recover(original_error)
                 if recovery_result.is_ok():
-                    recovery_actions.append(
-                        f"Estrategia {strategy.__class__.__name__}: {recovery_result.unwrap()}"
-                    )
+                    recovery_actions.append(f"Estrategia {strategy.__class__.__name__}: {recovery_result.unwrap()}")
 
         return Ok(len(recovery_actions) > 0)
 
@@ -507,9 +503,7 @@ class RealSafeHumanMemoryEngine:
             )
 
     @with_error_handling("real_safe_memory_engine", log_errors=True)
-    def safe_search_memory(
-        self, query: str, top_k: int = 5
-    ) -> Result[List[Dict[str, Any]], SheilyError]:
+    def safe_search_memory(self, query: str, top_k: int = 5) -> Result[List[Dict[str, Any]], SheilyError]:
         """Búsqueda segura en memoria con integración real"""
         # Obtener motor de memoria real
         engine = self.memory_integration.get_memory_engine(self.user_id)
@@ -664,9 +658,7 @@ def safe_memory_operation(user_id: str = "user_persistent"):
             # Asegurar integridad antes de ejecutar
             integrity_result = engine.ensure_memory_integrity()
             if integrity_result.is_err():
-                raise RuntimeError(
-                    f"Integridad de memoria comprometida: {integrity_result.error.message}"
-                )
+                raise RuntimeError(f"Integridad de memoria comprometida: {integrity_result.error.message}")
 
             return func(engine, *args, **kwargs)
 

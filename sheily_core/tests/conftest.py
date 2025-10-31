@@ -125,9 +125,7 @@ def rag_engine(test_corpus):
 def test_document_factory():
     """Factory for creating test documents"""
 
-    def create_document(
-        title="Test Document", content="Test content", branch="general", **metadata
-    ):
+    def create_document(title="Test Document", content="Test content", branch="general", **metadata):
         return {"title": title, "content": content, "branch": branch, "metadata": metadata}
 
     return create_document
@@ -274,9 +272,7 @@ def sample_branches_config(temp_dir):
 # Pytest hooks for enhanced test reporting
 def pytest_configure(config):
     """Configure pytest with custom markers"""
-    config.addinivalue_line(
-        "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
-    )
+    config.addinivalue_line("markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')")
     config.addinivalue_line("markers", "integration: marks tests as integration tests")
     config.addinivalue_line("markers", "performance: marks tests as performance tests")
     config.addinivalue_line("markers", "security: marks tests as security tests")
@@ -302,9 +298,7 @@ class TestUtils:
     """Utility class for test helpers"""
 
     @staticmethod
-    def create_test_corpus(
-        base_path: Path, branches: List[str] = None, documents_per_branch: int = 3
-    ):
+    def create_test_corpus(base_path: Path, branches: List[str] = None, documents_per_branch: int = 3):
         """Create a test corpus with specified structure"""
         if branches is None:
             branches = ["programación", "medicina", "inteligencia artificial", "general"]
@@ -334,9 +328,7 @@ class TestUtils:
     @staticmethod
     def assert_performance_threshold(duration: float, threshold: float, operation: str):
         """Assert that operation completed within threshold"""
-        assert (
-            duration <= threshold
-        ), f"{operation} took {duration:.3f}s, exceeds threshold {threshold:.3f}s"
+        assert duration <= threshold, f"{operation} took {duration:.3f}s, exceeds threshold {threshold:.3f}s"
 
 
 # Make TestUtils available globally

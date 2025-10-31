@@ -5,16 +5,12 @@ Unit tests para sheily_core.logger
 Coverage: Sistema de logging empresarial
 """
 
-import pytest
 import logging
 from io import StringIO
-from sheily_core.logger import (
-    get_logger,
-    log_info,
-    log_error,
-    log_warning,
-    setup_enterprise_logging,
-)
+
+import pytest
+
+from sheily_core.logger import get_logger, log_error, log_info, log_warning, setup_enterprise_logging
 
 
 class TestLoggerSetup:
@@ -25,7 +21,7 @@ class TestLoggerSetup:
         logger = get_logger("test_logger")
         assert logger is not None
         # Logger puede ser Logger o EnterpriseLoggerAdapter
-        assert hasattr(logger, 'info') or hasattr(logger, 'debug')
+        assert hasattr(logger, "info") or hasattr(logger, "debug")
 
     def test_logger_has_handlers(self):
         """Verificar que el logger tiene handlers"""
@@ -39,7 +35,7 @@ class TestLoggerSetup:
         # Debe aceptar niveles de logging
         assert logger is not None
         # Logger puede no tener atributo level si es adapter
-        assert hasattr(logger, 'level') or hasattr(logger, 'logger')
+        assert hasattr(logger, "level") or hasattr(logger, "logger")
 
 
 class TestLoggingFunctions:

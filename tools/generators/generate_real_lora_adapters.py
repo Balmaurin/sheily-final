@@ -345,36 +345,20 @@ def generate_realistic_lora_model(branch_name, config):
         "init_lora_weights": True,
         "lora_weights": {
             "q_proj": {
-                "weight_A": [
-                    [random.gauss(0, 0.02) for _ in range(config["r"])] for _ in range(4096)
-                ],
-                "weight_B": [
-                    [random.gauss(0, 0.02) for _ in range(4096)] for _ in range(config["r"])
-                ],
+                "weight_A": [[random.gauss(0, 0.02) for _ in range(config["r"])] for _ in range(4096)],
+                "weight_B": [[random.gauss(0, 0.02) for _ in range(4096)] for _ in range(config["r"])],
             },
             "k_proj": {
-                "weight_A": [
-                    [random.gauss(0, 0.02) for _ in range(config["r"])] for _ in range(4096)
-                ],
-                "weight_B": [
-                    [random.gauss(0, 0.02) for _ in range(4096)] for _ in range(config["r"])
-                ],
+                "weight_A": [[random.gauss(0, 0.02) for _ in range(config["r"])] for _ in range(4096)],
+                "weight_B": [[random.gauss(0, 0.02) for _ in range(4096)] for _ in range(config["r"])],
             },
             "v_proj": {
-                "weight_A": [
-                    [random.gauss(0, 0.02) for _ in range(config["r"])] for _ in range(4096)
-                ],
-                "weight_B": [
-                    [random.gauss(0, 0.02) for _ in range(4096)] for _ in range(config["r"])
-                ],
+                "weight_A": [[random.gauss(0, 0.02) for _ in range(config["r"])] for _ in range(4096)],
+                "weight_B": [[random.gauss(0, 0.02) for _ in range(4096)] for _ in range(config["r"])],
             },
             "o_proj": {
-                "weight_A": [
-                    [random.gauss(0, 0.02) for _ in range(config["r"])] for _ in range(4096)
-                ],
-                "weight_B": [
-                    [random.gauss(0, 0.02) for _ in range(4096)] for _ in range(config["r"])
-                ],
+                "weight_A": [[random.gauss(0, 0.02) for _ in range(config["r"])] for _ in range(4096)],
+                "weight_B": [[random.gauss(0, 0.02) for _ in range(4096)] for _ in range(config["r"])],
             },
         },
         "training_config": {

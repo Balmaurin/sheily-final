@@ -265,24 +265,24 @@ def validate_jwt_token(token: str) -> Result[Dict, str]:
     """Validate JWT token - REAL Implementation with PyJWT"""
     try:
         # Importar JWT manager real
-        from sheily_core.security.jwt_auth import get_jwt_manager, JWT_AVAILABLE
-        
+        from sheily_core.security.jwt_auth import JWT_AVAILABLE, get_jwt_manager
+
         if not JWT_AVAILABLE:
             logger.warning("PyJWT not available, falling back to basic validation")
             return Err("JWT library not installed. Install with: pip install PyJWT")
-        
+
         # Obtener manager
         jwt_manager = get_jwt_manager()
-        
+
         # Validar token REAL
         valid, payload, error = jwt_manager.validate_token(token)
-        
+
         if not valid:
             return Err(f"Token validation failed: {error}")
-        
+
         # Convertir payload a dict para compatibilidad
         payload_dict = payload.to_dict()
-        
+
         # Añadir permisos basados en rol
         permissions = []
         if payload.role == "admin":
@@ -291,9 +291,9 @@ def validate_jwt_token(token: str) -> Result[Dict, str]:
             permissions = ["training.read", "training.write"]
         else:  # user
             permissions = ["training.read"]
-        
+
         payload_dict["permissions"] = permissions
-        
+
         return Ok(payload_dict)
 
     except Exception as e:
@@ -306,16 +306,16 @@ def check_rate_limit(client_ip: str, rate_limit: int) -> Result[bool, str]:
     try:
         # Usar RealRateLimiter (no mock, totalmente funcional)
         from sheily_core.security.real_rate_limiter import get_rate_limiter
-        
+
         # Obtener rate limiter con configuración
         limiter = get_rate_limiter(max_requests_per_minute=rate_limit)
-        
+
         # Verificar límite (implementación REAL)
         allowed, error_msg = limiter.check_rate_limit(client_ip)
-        
+
         if not allowed:
             return Err(error_msg)
-        
+
         return Ok(True)
 
     except Exception as e:
@@ -898,9 +898,7 @@ def create_api_request_handler() -> Callable[[APIRequest, APIContext], Result[AP
 # ============================================================================
 
 
-def start_api_server_functional(
-    host: str = "localhost", port: int = 8004, debug: bool = False
-) -> Dict[str, Any]:
+def start_api_server_functional(host: str = "localhost", port: int = 8004, debug: bool = False) -> Dict[str, Any]:
     """Start API server using functional approach - Legacy compatibility"""
     try:
         # Create API context

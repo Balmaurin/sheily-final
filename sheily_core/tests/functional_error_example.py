@@ -236,9 +236,7 @@ def ejemplo_validacion_composable():
     )
 
     # Crear pipeline de validación
-    pipeline = (
-        ValidationPipeline("texto válido largo").add_rule(regla_longitud).add_rule(regla_contenido)
-    )
+    pipeline = ValidationPipeline("texto válido largo").add_rule(regla_longitud).add_rule(regla_contenido)
 
     resultado = pipeline.validate()
 

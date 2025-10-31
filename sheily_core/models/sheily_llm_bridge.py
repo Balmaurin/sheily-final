@@ -17,9 +17,7 @@ MODEL_PATH = Path(__file__).resolve().parents[2] / "models" / "gguf" / "llama-3.
 LLAMA_BIN = Path(__file__).resolve().parents[2] / "llama.cpp" / "build" / "bin" / "llama-cli"
 
 
-def call_llm(
-    prompt: str, n_predict: int = 128, temp: float = 0.7, top_p: float = 0.9, threads: int = 4
-) -> str:
+def call_llm(prompt: str, n_predict: int = 128, temp: float = 0.7, top_p: float = 0.9, threads: int = 4) -> str:
     if not MODEL_PATH.exists():
         return f"[ERROR] Modelo no encontrado: {MODEL_PATH}"
     prompt = textwrap.dedent(prompt).strip().replace('"', '\\"')

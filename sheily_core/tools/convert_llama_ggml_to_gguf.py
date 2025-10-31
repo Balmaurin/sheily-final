@@ -162,9 +162,7 @@ class GGMLModel:
             self.file_format = GGMLFormat.GGJT
             self.format_version = version
             return 8
-        raise ValueError(
-            f"Unexpected file magic {magic!r}! This doesn't look like a GGML format file."
-        )
+        raise ValueError(f"Unexpected file magic {magic!r}! This doesn't look like a GGML format file.")
 
     def validate_conversion(self, ftype):
         err = ""
@@ -188,9 +186,7 @@ class GGMLModel:
         offset += self.validate_header(data, offset)
         hp = Hyperparameters()
         offset += hp.load(data, offset)
-        logger.info(
-            f"* File format: {self.file_format.name}v{self.format_version} with ftype {hp.ftype.name}"
-        )
+        logger.info(f"* File format: {self.file_format.name}v{self.format_version} with ftype {hp.ftype.name}")
         self.validate_conversion(hp.ftype)
         vocab = Vocab(load_scores=self.file_format > GGMLFormat.GGML)
         offset += vocab.load(data, offset, hp.n_vocab)
@@ -210,9 +206,7 @@ class GGMLModel:
 
 
 class GGMLToGGUF:
-    def __init__(
-        self, ggml_model, data, cfg, params_override=None, vocab_override=None, special_vocab=None
-    ):
+    def __init__(self, ggml_model, data, cfg, params_override=None, vocab_override=None, special_vocab=None):
         hp = ggml_model.hyperparameters
         self.model = ggml_model
         self.data = data
@@ -234,9 +228,7 @@ class GGMLToGGUF:
                 assert n_kv_head is not None, "Couldn't determine n_kv_head from GQA param"
                 logger.info(f"- Guessed n_kv_head = {n_kv_head} based on GQA {cfg.gqa}")
         self.n_kv_head = n_kv_head
-        self.name_map = gguf.get_tensor_name_map(
-            gguf.MODEL_ARCH.LLAMA, ggml_model.hyperparameters.n_layer
-        )
+        self.name_map = gguf.get_tensor_name_map(gguf.MODEL_ARCH.LLAMA, ggml_model.hyperparameters.n_layer)
 
     def save(self):
         logger.info("* Preparing to save GGUF file")
@@ -394,9 +386,7 @@ def handle_metadata(cfg, hp):
         raise ValueError("Unable to load metadata")
     vocab_path = Path(cfg.vocab_dir if cfg.vocab_dir is not None else cfg.model_metadata_dir)
     vocab_factory = convert.VocabFactory(vocab_path)
-    vocab, special_vocab = vocab_factory.load_vocab(
-        cfg.vocabtype.split(","), cfg.model_metadata_dir
-    )
+    vocab, special_vocab = vocab_factory.load_vocab(cfg.vocabtype.split(","), cfg.model_metadata_dir)
     convert.check_vocab_size(params, vocab)
     return params, vocab, special_vocab
 
@@ -407,9 +397,7 @@ def handle_args():
     parser.add_argument("--output", "-o", type=Path, required=True, help="Output GGUF filename")
     parser.add_argument("--name", help="Set model name")
     parser.add_argument("--desc", help="Set model description")
-    parser.add_argument(
-        "--gqa", type=int, default=1, help="grouped-query attention factor (use 8 for LLaMA2 70B)"
-    )
+    parser.add_argument("--gqa", type=int, default=1, help="grouped-query attention factor (use 8 for LLaMA2 70B)")
     parser.add_argument(
         "--eps",
         default="5.0e-06",
@@ -462,12 +450,8 @@ def main():
     params_override = None
     special_vocab = None
     if cfg.model_metadata_dir is not None:
-        (params_override, vocab_override, special_vocab) = handle_metadata(
-            cfg, model.hyperparameters
-        )
-        logger.info(
-            "!! Note: When overriding params the --gqa, --eps and --context-length options are ignored."
-        )
+        (params_override, vocab_override, special_vocab) = handle_metadata(cfg, model.hyperparameters)
+        logger.info("!! Note: When overriding params the --gqa, --eps and --context-length options are ignored.")
         logger.info(f"* Overriding params: {params_override}")
         logger.info(f"* Overriding vocab: {vocab_override}")
         logger.info(f"* Special vocab: {special_vocab}")

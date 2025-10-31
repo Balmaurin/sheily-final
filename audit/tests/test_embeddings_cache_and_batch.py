@@ -3,7 +3,7 @@
 import asyncio
 import os
 
-from sheily_core.data.embeddings import EmbeddingManager, EmbeddingConfig
+from sheily_core.data.embeddings import EmbeddingConfig, EmbeddingManager
 
 
 def test_cache_ttl_and_lru_and_batching():

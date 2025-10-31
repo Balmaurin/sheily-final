@@ -189,9 +189,7 @@ class BranchSelector:
             # Fallback a rama general
             return "general"
 
-    async def _keyword_based_selection(
-        self, query: str, language: str, domain: Optional[str]
-    ) -> SelectionResult:
+    async def _keyword_based_selection(self, query: str, language: str, domain: Optional[str]) -> SelectionResult:
         """
         Selección basada en keywords
         """
@@ -277,9 +275,7 @@ class BranchSelector:
                 metadata={"fallback_reason": "No keywords matched"},
             )
 
-    async def _semantic_similarity_selection(
-        self, query: str, language: str, domain: Optional[str]
-    ) -> SelectionResult:
+    async def _semantic_similarity_selection(self, query: str, language: str, domain: Optional[str]) -> SelectionResult:
         """
         Selección basada en similitud semántica (mock implementation)
         """
@@ -367,8 +363,7 @@ class BranchSelector:
         # Si ambas estrategias seleccionan la misma rama, aumentar confianza
         if keyword_result.selected_branch == semantic_result.selected_branch:
             combined_confidence = (
-                keyword_result.confidence * keyword_weight
-                + semantic_result.confidence * semantic_weight
+                keyword_result.confidence * keyword_weight + semantic_result.confidence * semantic_weight
             ) * 1.2  # Bonus por consenso
 
             selected_branch = keyword_result.selected_branch
@@ -418,9 +413,7 @@ class BranchSelector:
             },
         )
 
-    async def _ml_classification_selection(
-        self, query: str, language: str, domain: Optional[str]
-    ) -> SelectionResult:
+    async def _ml_classification_selection(self, query: str, language: str, domain: Optional[str]) -> SelectionResult:
         """
         Selección basada en clasificación ML (mock implementation)
         """
@@ -433,9 +426,7 @@ class BranchSelector:
 
         # Clasificación real usando algoritmos deterministas
         predicted_branch = self._real_ml_classification(query_features)
-        confidence_score = self._calculate_classification_confidence(
-            query_features, predicted_branch
-        )
+        confidence_score = self._calculate_classification_confidence(query_features, predicted_branch)
 
         return SelectionResult(
             selected_branch=predicted_branch,
@@ -446,9 +437,7 @@ class BranchSelector:
             metadata={"features": query_features, "model": "real_ml_classifier_v1.0"},
         )
 
-    async def _fallback_selection(
-        self, query: str, language: str, domain: Optional[str]
-    ) -> SelectionResult:
+    async def _fallback_selection(self, query: str, language: str, domain: Optional[str]) -> SelectionResult:
         """
         Selección de fallback - rama general
         """
@@ -644,9 +633,7 @@ class BranchSelector:
             "has_numbers": bool(re.search(r"\d", query)),
             "has_symbols": bool(re.search(r"[+\-*/=<>]", query)),
             "question_words": len(
-                re.findall(
-                    r"\b(qué|cómo|cuándo|dónde|por qué|what|how|when|where|why)\b", query.lower()
-                )
+                re.findall(r"\b(qué|cómo|cuándo|dónde|por qué|what|how|when|where|why)\b", query.lower())
             ),
             "technical_terms": len(
                 re.findall(
@@ -715,9 +702,7 @@ class BranchSelector:
         best_branch = max(branch_scores.items(), key=lambda x: x[1])
         return best_branch[0]
 
-    def _calculate_classification_confidence(
-        self, features: Dict[str, Any], predicted_branch: str
-    ) -> float:
+    def _calculate_classification_confidence(self, features: Dict[str, Any], predicted_branch: str) -> float:
         """
         Calcula confianza real de la clasificación
         """
@@ -775,9 +760,7 @@ class BranchSelector:
         total = self._selection_stats["total_selections"]
         current_avg = self._selection_stats["average_confidence"]
 
-        self._selection_stats["average_confidence"] = (
-            current_avg * (total - 1) + result.confidence
-        ) / total
+        self._selection_stats["average_confidence"] = (current_avg * (total - 1) + result.confidence) / total
 
         # Guardar tiempos de selección (últimos 100)
         times = self._selection_stats["selection_times"]
@@ -817,9 +800,7 @@ class BranchSelector:
         stats = self._selection_stats.copy()
 
         if stats["selection_times"]:
-            stats["average_selection_time"] = sum(stats["selection_times"]) / len(
-                stats["selection_times"]
-            )
+            stats["average_selection_time"] = sum(stats["selection_times"]) / len(stats["selection_times"])
         else:
             stats["average_selection_time"] = 0.0
 

@@ -25,9 +25,7 @@ import qrcode
 from cryptography.fernet import Fernet
 
 # Configurar logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -248,9 +246,7 @@ class MultiFactorAuth:
 
             # Generar código QR
             totp = pyotp.TOTP(mfa_secret)
-            provisioning_uri = totp.provisioning_uri(
-                name=user_data["email"], issuer_name="Sheily AI"
-            )
+            provisioning_uri = totp.provisioning_uri(name=user_data["email"], issuer_name="Sheily AI")
 
             # Generar códigos de recuperación
             recovery_codes = self._generate_recovery_codes(user_data["id"])
@@ -263,7 +259,7 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    UPDATE users 
+                    UPDATE users
                     SET mfa_secret = ?, mfa_enabled = TRUE
                     WHERE id = ?
                 """,
@@ -327,7 +323,7 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    SELECT id FROM recovery_codes 
+                    SELECT id FROM recovery_codes
                     WHERE user_id = ? AND code_hash = ? AND used = FALSE AND expires_at > ?
                 """,
                     (user_data["id"], code_hash, datetime.now().isoformat()),
@@ -339,8 +335,8 @@ class MultiFactorAuth:
                     # Marcar código como usado
                     cursor.execute(
                         """
-                        UPDATE recovery_codes 
-                        SET used = TRUE 
+                        UPDATE recovery_codes
+                        SET used = TRUE
                         WHERE id = ?
                     """,
                         (result[0],),
@@ -363,7 +359,7 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    SELECT s.*, u.username, u.email 
+                    SELECT s.*, u.username, u.email
                     FROM sessions s
                     JOIN users u ON s.user_id = u.id
                     WHERE s.session_token = ? AND s.is_active = TRUE AND s.expires_at > ?
@@ -377,8 +373,8 @@ class MultiFactorAuth:
                     # Actualizar última actividad
                     cursor.execute(
                         """
-                        UPDATE sessions 
-                        SET expires_at = ? 
+                        UPDATE sessions
+                        SET expires_at = ?
                         WHERE id = ?
                     """,
                         ((datetime.now() + timedelta(hours=24)).isoformat(), result[0]),
@@ -409,8 +405,8 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    UPDATE sessions 
-                    SET is_active = FALSE 
+                    UPDATE sessions
+                    SET is_active = FALSE
                     WHERE session_token = ?
                 """,
                     (session_token,),
@@ -513,7 +509,7 @@ class MultiFactorAuth:
                             # Desbloquear cuenta
                             cursor.execute(
                                 """
-                                UPDATE users 
+                                UPDATE users
                                 SET account_locked = FALSE, failed_login_attempts = 0
                                 WHERE username = ?
                             """,
@@ -538,7 +534,7 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    UPDATE users 
+                    UPDATE users
                     SET failed_login_attempts = failed_login_attempts + 1,
                         last_failed_login = ?
                     WHERE username = ?
@@ -549,7 +545,7 @@ class MultiFactorAuth:
                 # Bloquear cuenta si hay 5 intentos fallidos
                 cursor.execute(
                     """
-                    UPDATE users 
+                    UPDATE users
                     SET account_locked = TRUE
                     WHERE username = ? AND failed_login_attempts >= 5
                 """,
@@ -569,7 +565,7 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    UPDATE users 
+                    UPDATE users
                     SET failed_login_attempts = 0, account_locked = FALSE
                     WHERE username = ?
                 """,
@@ -589,7 +585,7 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    UPDATE users 
+                    UPDATE users
                     SET last_login = ?
                     WHERE username = ?
                 """,
@@ -739,9 +735,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 # Configurar logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -880,9 +874,7 @@ class DataEncryption:
             logger.error(f"❌ Error desencriptando datos: {e}")
             raise
 
-    def encrypt_file(
-        self, file_path: Union[str, Path], output_path: Union[str, Path] = None
-    ) -> Path:
+    def encrypt_file(self, file_path: Union[str, Path], output_path: Union[str, Path] = None) -> Path:
         """Encriptar archivo"""
         try:
             file_path = Path(file_path)
@@ -940,9 +932,7 @@ class DataEncryption:
                 if encrypted_file_path.name.endswith(".encrypted"):
                     output_path = encrypted_file_path.parent / encrypted_file_path.name[:-10]
                 else:
-                    output_path = (
-                        encrypted_file_path.parent / f"decrypted_{encrypted_file_path.name}"
-                    )
+                    output_path = encrypted_file_path.parent / f"decrypted_{encrypted_file_path.name}"
             else:
                 output_path = Path(output_path)
 
@@ -1151,9 +1141,7 @@ class FileEncryption:
     def __init__(self, encryption: DataEncryption):
         self.encryption = encryption
 
-    def encrypt_file_with_metadata(
-        self, file_path: Union[str, Path], metadata: Dict[str, Any] = None
-    ) -> Path:
+    def encrypt_file_with_metadata(self, file_path: Union[str, Path], metadata: Dict[str, Any] = None) -> Path:
         """Encriptar archivo con metadatos"""
         try:
             file_path = Path(file_path)
@@ -1199,9 +1187,7 @@ class FileEncryption:
             logger.error(f"❌ Error encriptando archivo con metadatos: {e}")
             raise
 
-    def decrypt_file_with_metadata(
-        self, encrypted_file_path: Union[str, Path]
-    ) -> Tuple[bytes, Dict[str, Any]]:
+    def decrypt_file_with_metadata(self, encrypted_file_path: Union[str, Path]) -> Tuple[bytes, Dict[str, Any]]:
         """Desencriptar archivo con metadatos"""
         try:
             encrypted_file_path = Path(encrypted_file_path)
@@ -1483,9 +1469,7 @@ class UnifiedAuthSecuritySystem:
         """Inicializar componentes criptográficos"""
         try:
             # Generar par de claves RSA para firmas digitales
-            self.private_key = rsa.generate_private_key(
-                public_exponent=65537, key_size=2048, backend=default_backend()
-            )
+            self.private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048, backend=default_backend())
             self.public_key = self.private_key.public_key()
 
             logger.info("✅ Componentes criptográficos inicializados")
@@ -1615,9 +1599,7 @@ class UnifiedAuthSecuritySystem:
             # Actualizar perfil de usuario
             self._update_user_2fa_status(user_id, True)
 
-            self._log_security_event(
-                user_id, "2fa_setup", SecurityLevel.HIGH, details={"method": "totp"}
-            )
+            self._log_security_event(user_id, "2fa_setup", SecurityLevel.HIGH, details={"method": "totp"})
 
             return {
                 "secret": secret,
@@ -1741,16 +1723,12 @@ class UnifiedAuthSecuritySystem:
 
         # Verificar longitud mínima
         if len(password) < self.password_min_length:
-            issues.append(
-                f"La contraseña debe tener al menos {self.password_min_length} caracteres"
-            )
+            issues.append(f"La contraseña debe tener al menos {self.password_min_length} caracteres")
         else:
             score += 20
 
         # Verificar caracteres especiales
-        if self.password_require_special and not any(
-            c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password
-        ):
+        if self.password_require_special and not any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password):
             issues.append("La contraseña debe contener al menos un carácter especial")
         else:
             score += 20
@@ -1821,7 +1799,7 @@ class UnifiedAuthSecuritySystem:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO recovery_tokens 
+                INSERT INTO recovery_tokens
                 (token_id, user_id, token_hash, ip_address, created_at, expires_at)
                 VALUES (?, ?, ?, ?, ?, ?)
             """,
@@ -1859,8 +1837,8 @@ class UnifiedAuthSecuritySystem:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                SELECT token_id, expires_at, is_used 
-                FROM recovery_tokens 
+                SELECT token_id, expires_at, is_used
+                FROM recovery_tokens
                 WHERE user_id = ? AND token_hash = ?
             """,
                 (user_id, token_hash),
@@ -1910,9 +1888,7 @@ class UnifiedAuthSecuritySystem:
         """Registrar actividad del usuario"""
         try:
             # Registrar en monitor de actividad
-            self.activity_monitor.log_activity(
-                user_id, activity_type, details, ip_address, device_info
-            )
+            self.activity_monitor.log_activity(user_id, activity_type, details, ip_address, device_info)
 
             # Actualizar último acceso
             self._update_user_last_activity(user_id)
@@ -1923,9 +1899,7 @@ class UnifiedAuthSecuritySystem:
                 self._handle_anomalies(user_id, anomalies)
 
             # Detectar intrusiones
-            intrusion_risk = self.intrusion_detector.analyze_activity(
-                user_id, activity_type, ip_address, device_info
-            )
+            intrusion_risk = self.intrusion_detector.analyze_activity(user_id, activity_type, ip_address, device_info)
             if intrusion_risk > 0.7:
                 self._handle_intrusion_attempt(user_id, intrusion_risk, details)
 
@@ -1973,7 +1947,7 @@ class UnifiedAuthSecuritySystem:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO jwt_tokens 
+                INSERT INTO jwt_tokens
                 (token_id, user_id, token_hash, created_at, expires_at)
                 VALUES (?, ?, ?, ?, ?)
             """,
@@ -2024,7 +1998,7 @@ class UnifiedAuthSecuritySystem:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO security_events 
+                INSERT INTO security_events
                 (event_id, user_id, event_type, severity, timestamp, ip_address, device_info, details, risk_score)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
@@ -2102,9 +2076,9 @@ class UnifiedAuthSecuritySystem:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                SELECT event_id, event_type, severity, timestamp, ip_address, 
+                SELECT event_id, event_type, severity, timestamp, ip_address,
                        device_info, details, risk_score
-                FROM security_events 
+                FROM security_events
                 WHERE user_id = ? AND timestamp >= ?
                 ORDER BY timestamp DESC
             """,

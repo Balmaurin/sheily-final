@@ -153,24 +153,12 @@ class SPLDataPersistence:
             )
 
             # Índices para optimizar consultas
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_transactions_user ON transactions(from_user, to_user)"
-            )
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_transactions_type ON transactions(transaction_type)"
-            )
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_transactions_status ON transactions(status)"
-            )
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_transactions_created ON transactions(created_at)"
-            )
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_balances_user ON token_balances(user_id)"
-            )
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_balances_mint ON token_balances(token_mint)"
-            )
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_transactions_user ON transactions(from_user, to_user)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_transactions_type ON transactions(transaction_type)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_transactions_status ON transactions(status)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_transactions_created ON transactions(created_at)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_balances_user ON token_balances(user_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_balances_mint ON token_balances(token_mint)")
 
             conn.commit()
 
@@ -193,8 +181,8 @@ class SPLDataPersistence:
 
                     cursor.execute(
                         """
-                        INSERT OR REPLACE INTO token_accounts 
-                        (user_id, token_account, associated_token_account, mint_address, 
+                        INSERT OR REPLACE INTO token_accounts
+                        (user_id, token_account, associated_token_account, mint_address,
                          balance, created_at, last_updated, is_active)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     """,
@@ -262,7 +250,7 @@ class SPLDataPersistence:
                     # Actualizar cuenta de token
                     cursor.execute(
                         """
-                        UPDATE token_accounts 
+                        UPDATE token_accounts
                         SET balance = ?, last_updated = ?
                         WHERE user_id = ? AND mint_address = ?
                     """,
@@ -272,10 +260,10 @@ class SPLDataPersistence:
                     # Actualizar balance
                     cursor.execute(
                         """
-                        INSERT OR REPLACE INTO token_balances 
+                        INSERT OR REPLACE INTO token_balances
                         (user_id, token_mint, balance, last_updated, transaction_count)
-                        VALUES (?, ?, ?, ?, 
-                            COALESCE((SELECT transaction_count FROM token_balances 
+                        VALUES (?, ?, ?, ?,
+                            COALESCE((SELECT transaction_count FROM token_balances
                                      WHERE user_id = ? AND token_mint = ?), 0) + 1)
                     """,
                         (
@@ -306,7 +294,7 @@ class SPLDataPersistence:
 
                     cursor.execute(
                         """
-                        INSERT INTO transactions 
+                        INSERT INTO transactions
                         (transaction_id, signature, from_user, to_user, amount, token_mint,
                          transaction_type, reason, status, block_height, fee, slot,
                          confirmation_status, created_at, confirmed_at, metadata)
@@ -327,11 +315,7 @@ class SPLDataPersistence:
                             transaction.slot,
                             transaction.confirmation_status,
                             transaction.created_at.isoformat(),
-                            (
-                                transaction.confirmed_at.isoformat()
-                                if transaction.confirmed_at
-                                else None
-                            ),
+                            (transaction.confirmed_at.isoformat() if transaction.confirmed_at else None),
                             (json.dumps(transaction.metadata) if transaction.metadata else None),
                         ),
                     )
@@ -375,11 +359,7 @@ class SPLDataPersistence:
                         slot=row["slot"],
                         confirmation_status=row["confirmation_status"],
                         created_at=datetime.fromisoformat(row["created_at"]),
-                        confirmed_at=(
-                            datetime.fromisoformat(row["confirmed_at"])
-                            if row["confirmed_at"]
-                            else None
-                        ),
+                        confirmed_at=(datetime.fromisoformat(row["confirmed_at"]) if row["confirmed_at"] else None),
                         metadata=(json.loads(row["metadata"]) if row["metadata"] else None),
                     )
                 return None
@@ -396,7 +376,7 @@ class SPLDataPersistence:
 
                 cursor.execute(
                     """
-                    SELECT * FROM transactions 
+                    SELECT * FROM transactions
                     WHERE from_user = ? OR to_user = ?
                     ORDER BY created_at DESC
                     LIMIT ?
@@ -422,11 +402,7 @@ class SPLDataPersistence:
                             slot=row["slot"],
                             confirmation_status=row["confirmation_status"],
                             created_at=datetime.fromisoformat(row["created_at"]),
-                            confirmed_at=(
-                                datetime.fromisoformat(row["confirmed_at"])
-                                if row["confirmed_at"]
-                                else None
-                            ),
+                            confirmed_at=(datetime.fromisoformat(row["confirmed_at"]) if row["confirmed_at"] else None),
                             metadata=(json.loads(row["metadata"]) if row["metadata"] else None),
                         )
                     )
@@ -445,7 +421,7 @@ class SPLDataPersistence:
 
                 cursor.execute(
                     """
-                    SELECT * FROM token_balances 
+                    SELECT * FROM token_balances
                     WHERE user_id = ? AND token_mint = ?
                 """,
                     (user_id, token_mint),
@@ -486,8 +462,8 @@ class SPLDataPersistence:
 
                     cursor.execute(
                         """
-                        UPDATE transactions 
-                        SET status = ?, signature = ?, block_height = ?, fee = ?, 
+                        UPDATE transactions
+                        SET status = ?, signature = ?, block_height = ?, fee = ?,
                             slot = ?, confirmation_status = ?, confirmed_at = ?
                         WHERE transaction_id = ?
                     """,
@@ -531,7 +507,7 @@ class SPLDataPersistence:
 
                     cursor.execute(
                         """
-                        INSERT OR REPLACE INTO token_statistics 
+                        INSERT OR REPLACE INTO token_statistics
                         (token_mint, total_supply, circulating_supply, burned_supply,
                          total_accounts, total_transactions, last_updated)
                         VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -597,7 +573,7 @@ class SPLDataPersistence:
                 # Total de transacciones
                 cursor.execute(
                     """
-                    SELECT COUNT(*) as total FROM transactions 
+                    SELECT COUNT(*) as total FROM transactions
                     WHERE created_at >= ?
                 """,
                     (since_date.isoformat(),),
@@ -607,20 +583,18 @@ class SPLDataPersistence:
                 # Transacciones por tipo
                 cursor.execute(
                     """
-                    SELECT transaction_type, COUNT(*) as count FROM transactions 
+                    SELECT transaction_type, COUNT(*) as count FROM transactions
                     WHERE created_at >= ?
                     GROUP BY transaction_type
                 """,
                     (since_date.isoformat(),),
                 )
-                transactions_by_type = {
-                    row["transaction_type"]: row["count"] for row in cursor.fetchall()
-                }
+                transactions_by_type = {row["transaction_type"]: row["count"] for row in cursor.fetchall()}
 
                 # Transacciones por estado
                 cursor.execute(
                     """
-                    SELECT status, COUNT(*) as count FROM transactions 
+                    SELECT status, COUNT(*) as count FROM transactions
                     WHERE created_at >= ?
                     GROUP BY status
                 """,
@@ -631,7 +605,7 @@ class SPLDataPersistence:
                 # Total de fees
                 cursor.execute(
                     """
-                    SELECT SUM(fee) as total_fees FROM transactions 
+                    SELECT SUM(fee) as total_fees FROM transactions
                     WHERE created_at >= ? AND fee IS NOT NULL
                 """,
                     (since_date.isoformat(),),

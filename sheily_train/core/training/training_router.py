@@ -22,9 +22,11 @@ from result import Err, Ok, Result
 # Functional Data Types for Training Routing
 # ============================================================================
 
+
 @dataclass(frozen=True)
 class TrainingRoute:
     """Immutable training route"""
+
     route_id: str
     source_branch: str
     target_branch: str
@@ -39,6 +41,7 @@ class TrainingRoute:
 @dataclass(frozen=True)
 class TrainingRouteRequest:
     """Immutable training route request"""
+
     request_id: str
     query: str
     language: str
@@ -52,6 +55,7 @@ class TrainingRouteRequest:
 @dataclass(frozen=True)
 class TrainingRouteResult:
     """Immutable training route result"""
+
     request_id: str
     selected_branch: str
     confidence: float
@@ -64,6 +68,7 @@ class TrainingRouteResult:
 @dataclass(frozen=True)
 class TrainingRouterContext:
     """Functional context for training routing operations"""
+
     routes: Dict[str, TrainingRoute]
     requests: Dict[str, TrainingRouteRequest]
     results: Dict[str, TrainingRouteResult]
@@ -75,6 +80,7 @@ class TrainingRouterContext:
 # Pure Functions for Training Routing
 # ============================================================================
 
+
 def create_training_route(
     source_branch: str,
     target_branch: str,
@@ -82,7 +88,7 @@ def create_training_route(
     priority: int = 1,
     route_type: str = "direct",
     conditions: Dict[str, Any] = None,
-    metadata: Dict[str, Any] = None
+    metadata: Dict[str, Any] = None,
 ) -> TrainingRoute:
     """Create training route - Pure function"""
     return TrainingRoute(
@@ -94,7 +100,7 @@ def create_training_route(
         route_type=route_type,
         conditions=conditions or {},
         metadata=metadata or {},
-        created_at=time.strftime("%Y-%m-%dT%H:%M:%S")
+        created_at=time.strftime("%Y-%m-%dT%H:%M:%S"),
     )
 
 
@@ -104,7 +110,7 @@ def create_training_route_request(
     branch_name: str,
     priority: int = 1,
     context: Dict[str, Any] = None,
-    metadata: Dict[str, Any] = None
+    metadata: Dict[str, Any] = None,
 ) -> TrainingRouteRequest:
     """Create training route request - Pure function"""
     return TrainingRouteRequest(
@@ -115,7 +121,7 @@ def create_training_route_request(
         priority=priority,
         context=context or {},
         metadata=metadata or {},
-        timestamp=time.strftime("%Y-%m-%dT%H:%M:%S")
+        timestamp=time.strftime("%Y-%m-%dT%H:%M:%S"),
     )
 
 
@@ -125,7 +131,7 @@ def create_training_route_result(
     confidence: float,
     route_path: List[str],
     processing_time: float,
-    metadata: Dict[str, Any] = None
+    metadata: Dict[str, Any] = None,
 ) -> TrainingRouteResult:
     """Create training route result - Pure function"""
     return TrainingRouteResult(
@@ -135,7 +141,7 @@ def create_training_route_result(
         route_path=route_path,
         processing_time=processing_time,
         metadata=metadata or {},
-        timestamp=time.strftime("%Y-%m-%dT%H:%M:%S")
+        timestamp=time.strftime("%Y-%m-%dT%H:%M:%S"),
     )
 
 
@@ -161,18 +167,14 @@ def calculate_route_priority(route: TrainingRoute, request: TrainingRouteRequest
 
 
 def select_best_training_route(
-    request: TrainingRouteRequest,
-    available_routes: List[TrainingRoute]
+    request: TrainingRouteRequest, available_routes: List[TrainingRoute]
 ) -> Optional[TrainingRoute]:
     """Select best training route for request - Pure function"""
     if not available_routes:
         return None
 
     # Calculate priorities for all routes
-    route_priorities = [
-        (route, calculate_route_priority(route, request))
-        for route in available_routes
-    ]
+    route_priorities = [(route, calculate_route_priority(route, request)) for route in available_routes]
 
     # Sort by priority (descending)
     route_priorities.sort(key=lambda x: x[1], reverse=True)
@@ -218,8 +220,12 @@ def compose_training_routes(routes: List[TrainingRoute]) -> Dict[str, List[Train
 # Functional Routing Pipeline Operations
 # ============================================================================
 
-def create_language_aware_router(language: str) -> Callable[[TrainingRouteRequest, List[TrainingRoute]], Optional[TrainingRoute]]:
+
+def create_language_aware_router(
+    language: str,
+) -> Callable[[TrainingRouteRequest, List[TrainingRoute]], Optional[TrainingRoute]]:
     """Create language-aware router - Factory function"""
+
     def router(request: TrainingRouteRequest, routes: List[TrainingRoute]) -> Optional[TrainingRoute]:
         # Filter routes by language
         language_routes = [r for r in routes if r.language == language]
@@ -229,11 +235,15 @@ def create_language_aware_router(language: str) -> Callable[[TrainingRouteReques
             language_routes = routes
 
         return select_best_training_route(request, language_routes)
+
     return router
 
 
-def create_branch_specific_router(branch_name: str) -> Callable[[TrainingRouteRequest, List[TrainingRoute]], Optional[TrainingRoute]]:
+def create_branch_specific_router(
+    branch_name: str,
+) -> Callable[[TrainingRouteRequest, List[TrainingRoute]], Optional[TrainingRoute]]:
     """Create branch-specific router - Factory function"""
+
     def router(request: TrainingRouteRequest, routes: List[TrainingRoute]) -> Optional[TrainingRoute]:
         # Filter routes by branch
         branch_routes = [r for r in routes if r.source_branch == branch_name]
@@ -243,11 +253,13 @@ def create_branch_specific_router(branch_name: str) -> Callable[[TrainingRouteRe
             branch_routes = [r for r in routes if r.source_branch == "general"]
 
         return select_best_training_route(request, branch_routes)
+
     return router
 
 
 def create_hyperrouter_integration() -> Callable[[TrainingRouteRequest, Dict], Result[TrainingRouteResult, str]]:
     """Create hyperrouter integration - Factory function"""
+
     def integration(request: TrainingRouteRequest, hyperrouter_config: Dict) -> Result[TrainingRouteResult, str]:
         try:
             # This would integrate with the actual hyperrouter
@@ -272,7 +284,7 @@ def create_hyperrouter_integration() -> Callable[[TrainingRouteRequest, Dict], R
                 confidence=confidence,
                 route_path=[request.branch_name, selected_branch],
                 processing_time=processing_time,
-                metadata={"router": "hyperrouter", "strategy": "intelligent"}
+                metadata={"router": "hyperrouter", "strategy": "intelligent"},
             )
 
             return Ok(result)
@@ -282,7 +294,9 @@ def create_hyperrouter_integration() -> Callable[[TrainingRouteRequest, Dict], R
     return integration
 
 
-def create_training_routing_pipeline(language: str, branch_name: str) -> Callable[[str, Dict], Result[TrainingRouteResult, str]]:
+def create_training_routing_pipeline(
+    language: str, branch_name: str
+) -> Callable[[str, Dict], Result[TrainingRouteResult, str]]:
     """Create complete training routing pipeline - Factory function"""
     lang_router = create_language_aware_router(language)
     branch_router = create_branch_specific_router(branch_name)
@@ -291,10 +305,7 @@ def create_training_routing_pipeline(language: str, branch_name: str) -> Callabl
     def pipeline(query: str, context: Dict) -> Result[TrainingRouteResult, str]:
         # Create route request
         request = create_training_route_request(
-            query=query,
-            language=language,
-            branch_name=branch_name,
-            context=context
+            query=query, language=language, branch_name=branch_name, context=context
         )
 
         # Get available routes (this would come from configuration)
@@ -317,7 +328,7 @@ def create_training_routing_pipeline(language: str, branch_name: str) -> Callabl
             confidence=0.8,  # Default confidence
             route_path=[request.branch_name, selected_route.target_branch],
             processing_time=0.1,
-            metadata={"route_type": selected_route.route_type}
+            metadata={"route_type": selected_route.route_type},
         )
 
         return Ok(result)
@@ -329,24 +340,15 @@ def create_training_routing_pipeline(language: str, branch_name: str) -> Callabl
 # Training Router Context Management
 # ============================================================================
 
-def create_training_router_context(
-    hyperrouter_config: Dict[str, Any],
-    logger: Any = None
-) -> TrainingRouterContext:
+
+def create_training_router_context(hyperrouter_config: Dict[str, Any], logger: Any = None) -> TrainingRouterContext:
     """Create training router context - Pure function"""
     return TrainingRouterContext(
-        routes={},
-        requests={},
-        results={},
-        hyperrouter_config=hyperrouter_config,
-        logger=logger
+        routes={}, requests={}, results={}, hyperrouter_config=hyperrouter_config, logger=logger
     )
 
 
-def register_training_route(
-    context: TrainingRouterContext,
-    route: TrainingRoute
-) -> TrainingRouterContext:
+def register_training_route(context: TrainingRouterContext, route: TrainingRoute) -> TrainingRouterContext:
     """Register training route in context - Pure function"""
     new_routes = {**context.routes, route.route_id: route}
 
@@ -355,13 +357,12 @@ def register_training_route(
         requests=context.requests,
         results=context.results,
         hyperrouter_config=context.hyperrouter_config,
-        logger=context.logger
+        logger=context.logger,
     )
 
 
 def record_training_route_request(
-    context: TrainingRouterContext,
-    request: TrainingRouteRequest
+    context: TrainingRouterContext, request: TrainingRouteRequest
 ) -> TrainingRouterContext:
     """Record training route request - Pure function"""
     new_requests = {**context.requests, request.request_id: request}
@@ -371,14 +372,11 @@ def record_training_route_request(
         requests=new_requests,
         results=context.results,
         hyperrouter_config=context.hyperrouter_config,
-        logger=context.logger
+        logger=context.logger,
     )
 
 
-def record_training_route_result(
-    context: TrainingRouterContext,
-    result: TrainingRouteResult
-) -> TrainingRouterContext:
+def record_training_route_result(context: TrainingRouterContext, result: TrainingRouteResult) -> TrainingRouterContext:
     """Record training route result - Pure function"""
     new_results = {**context.results, result.request_id: result}
 
@@ -387,7 +385,7 @@ def record_training_route_result(
         requests=context.requests,
         results=new_results,
         hyperrouter_config=context.hyperrouter_config,
-        logger=context.logger
+        logger=context.logger,
     )
 
 
@@ -395,11 +393,9 @@ def record_training_route_result(
 # Legacy Compatibility Functions
 # ============================================================================
 
+
 def route_training_task_functional(
-    query: str,
-    language: str,
-    branch_name: str,
-    context: Dict[str, Any] = None
+    query: str, language: str, branch_name: str, context: Dict[str, Any] = None
 ) -> Dict[str, Any]:
     """Route training task using functional approach - Legacy compatibility"""
     try:
@@ -419,21 +415,13 @@ def route_training_task_functional(
                 "route_path": route_result.route_path,
                 "processing_time": route_result.processing_time,
                 "metadata": route_result.metadata,
-                "timestamp": route_result.timestamp
+                "timestamp": route_result.timestamp,
             }
         else:
-            return {
-                "success": False,
-                "error": result.unwrap_err(),
-                "fallback_branch": branch_name
-            }
+            return {"success": False, "error": result.unwrap_err(), "fallback_branch": branch_name}
 
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "fallback_branch": branch_name
-        }
+        return {"success": False, "error": str(e), "fallback_branch": branch_name}
 
 
 # ============================================================================
@@ -442,21 +430,28 @@ def route_training_task_functional(
 
 __all__ = [
     # Data types
-    "TrainingRoute", "TrainingRouteRequest", "TrainingRouteResult", "TrainingRouterContext",
-
+    "TrainingRoute",
+    "TrainingRouteRequest",
+    "TrainingRouteResult",
+    "TrainingRouterContext",
     # Pure functions
-    "create_training_route", "create_training_route_request", "create_training_route_result",
-    "calculate_route_priority", "select_best_training_route", "validate_training_route",
+    "create_training_route",
+    "create_training_route_request",
+    "create_training_route_result",
+    "calculate_route_priority",
+    "select_best_training_route",
+    "validate_training_route",
     "compose_training_routes",
-
     # Factory functions
-    "create_language_aware_router", "create_branch_specific_router",
-    "create_hyperrouter_integration", "create_training_routing_pipeline",
-
+    "create_language_aware_router",
+    "create_branch_specific_router",
+    "create_hyperrouter_integration",
+    "create_training_routing_pipeline",
     # Context management
-    "create_training_router_context", "register_training_route",
-    "record_training_route_request", "record_training_route_result",
-
+    "create_training_router_context",
+    "register_training_route",
+    "record_training_route_request",
+    "record_training_route_result",
     # Legacy compatibility
-    "route_training_task_functional"
+    "route_training_task_functional",
 ]

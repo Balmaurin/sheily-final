@@ -31,12 +31,9 @@ logger = get_logger("sheily_api")
 
 # Import ultra-fast systems (mandatory, no fallbacks)
 try:
-    from sheily_core.core.sei_licore_ultra_fast import (
-        get_performance_report,
-        optimize_memory,
-        think_ultra_fast,
-    )
+    from sheily_core.core.sei_licore_ultra_fast import get_performance_report, optimize_memory, think_ultra_fast
     from sheily_core.core.ultra_fast_search import file_searcher, search_files
+
     ULTRA_FAST_AVAILABLE = True
 except ImportError as e:
     raise
@@ -44,6 +41,7 @@ except ImportError as e:
 # Import real ChatEngine (mandatory, no fallbacks)
 try:
     from sheily_core.chat import ChatEngine, ChatResponse, create_chat_engine
+
     ADVANCED_CHAT_AVAILABLE = True
 except ImportError as e:
     raise
@@ -108,9 +106,7 @@ class SimpleChatEngine:
         start_time = time.time()
 
         # Find best match
-        response_text = (
-            "Entiendo tu consulta, pero necesito más contexto para darte una respuesta específica."
-        )
+        response_text = "Entiendo tu consulta, pero necesito más contexto para darte una respuesta específica."
         branch = "general"
         confidence = 0.3
 
@@ -178,9 +174,7 @@ class ChatResponseModel(BaseModel):
 async def health():
     """Enhanced health check with system metrics"""
     uptime = time.time() - system_metrics["start_time"]
-    avg_response_time = system_metrics["total_processing_time"] / max(
-        system_metrics["requests_count"], 1
-    )
+    avg_response_time = system_metrics["total_processing_time"] / max(system_metrics["requests_count"], 1)
 
     return HealthResponse(
         status="ok",
@@ -395,9 +389,7 @@ async def ultra_fast_search(query: str, max_results: int = 20):
             "performance": {
                 "search_speed_ms": search_time * 1000,
                 "results_per_second": len(results) / max(search_time, 0.001),
-                "index_size": len(file_searcher.index.file_paths)
-                if hasattr(file_searcher, "index")
-                else 0,
+                "index_size": len(file_searcher.index.file_paths) if hasattr(file_searcher, "index") else 0,
             },
         }
     except Exception as e:
@@ -427,12 +419,8 @@ async def sei_licore_ultra_fast_endpoint(query: str, context: Optional[Dict[str,
                 "optimization": thinking_result.get("optimization", {}),
             },
             "metadata": {
-                "processing_strategy": thinking_result.get("thought_process", {}).get(
-                    "processing_strategy", "unknown"
-                ),
-                "confidence_score": thinking_result.get("thought_process", {}).get(
-                    "confidence_score", 0.0
-                ),
+                "processing_strategy": thinking_result.get("thought_process", {}).get("processing_strategy", "unknown"),
+                "confidence_score": thinking_result.get("thought_process", {}).get("confidence_score", 0.0),
                 "timestamp": datetime.now().isoformat(),
             },
         }

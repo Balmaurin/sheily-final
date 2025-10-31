@@ -23,9 +23,7 @@ import qrcode
 from cryptography.fernet import Fernet
 
 # Configurar logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -253,9 +251,7 @@ class MultiFactorAuth:
 
             # Generar código QR
             totp = pyotp.TOTP(mfa_secret)
-            provisioning_uri = totp.provisioning_uri(
-                name=user_data["email"], issuer_name="Shaili AI"
-            )
+            provisioning_uri = totp.provisioning_uri(name=user_data["email"], issuer_name="Shaili AI")
 
             # Generar códigos de recuperación
             recovery_codes = self._generate_recovery_codes(user_data["id"])
@@ -268,7 +264,7 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    UPDATE users 
+                    UPDATE users
                     SET mfa_secret = ?, mfa_enabled = TRUE
                     WHERE id = ?
                 """,
@@ -332,7 +328,7 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    SELECT id FROM recovery_codes 
+                    SELECT id FROM recovery_codes
                     WHERE user_id = ? AND code_hash = ? AND used = FALSE AND expires_at > ?
                 """,
                     (user_data["id"], code_hash, datetime.now().isoformat()),
@@ -344,8 +340,8 @@ class MultiFactorAuth:
                     # Marcar código como usado
                     cursor.execute(
                         """
-                        UPDATE recovery_codes 
-                        SET used = TRUE 
+                        UPDATE recovery_codes
+                        SET used = TRUE
                         WHERE id = ?
                     """,
                         (result[0],),
@@ -368,7 +364,7 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    SELECT s.*, u.username, u.email 
+                    SELECT s.*, u.username, u.email
                     FROM sessions s
                     JOIN users u ON s.user_id = u.id
                     WHERE s.session_token = ? AND s.is_active = TRUE AND s.expires_at > ?
@@ -385,8 +381,8 @@ class MultiFactorAuth:
                     # Actualizar última actividad
                     cursor.execute(
                         """
-                        UPDATE sessions 
-                        SET expires_at = ? 
+                        UPDATE sessions
+                        SET expires_at = ?
                         WHERE id = ?
                     """,
                         ((datetime.now() + timedelta(hours=24)).isoformat(), session_row["id"]),
@@ -417,8 +413,8 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    UPDATE sessions 
-                    SET is_active = FALSE 
+                    UPDATE sessions
+                    SET is_active = FALSE
                     WHERE session_token = ?
                 """,
                     (session_token,),
@@ -521,7 +517,7 @@ class MultiFactorAuth:
                             # Desbloquear cuenta
                             cursor.execute(
                                 """
-                                UPDATE users 
+                                UPDATE users
                                 SET account_locked = FALSE, failed_login_attempts = 0
                                 WHERE username = ?
                             """,
@@ -546,7 +542,7 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    UPDATE users 
+                    UPDATE users
                     SET failed_login_attempts = failed_login_attempts + 1,
                         last_failed_login = ?
                     WHERE username = ?
@@ -557,7 +553,7 @@ class MultiFactorAuth:
                 # Bloquear cuenta si hay 5 intentos fallidos
                 cursor.execute(
                     """
-                    UPDATE users 
+                    UPDATE users
                     SET account_locked = TRUE
                     WHERE username = ? AND failed_login_attempts >= 5
                 """,
@@ -577,7 +573,7 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    UPDATE users 
+                    UPDATE users
                     SET failed_login_attempts = 0, account_locked = FALSE
                     WHERE username = ?
                 """,
@@ -597,7 +593,7 @@ class MultiFactorAuth:
 
                 cursor.execute(
                     """
-                    UPDATE users 
+                    UPDATE users
                     SET last_login = ?
                     WHERE username = ?
                 """,

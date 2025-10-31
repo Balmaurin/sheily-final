@@ -252,16 +252,10 @@ class UnifiedLearningQualitySystem:
 
         # Índices
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_domain ON learning_experiences(domain)")
-        cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_timestamp ON learning_experiences(timestamp)"
-        )
-        cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_quality_score ON learning_experiences(quality_score)"
-        )
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON learning_experiences(timestamp)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_quality_score ON learning_experiences(quality_score)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_eval_domain ON quality_evaluations(domain)")
-        cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_eval_score ON quality_evaluations(overall_score)"
-        )
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_eval_score ON quality_evaluations(overall_score)")
 
         self.conn.commit()
         cursor.close()
@@ -335,9 +329,7 @@ class UnifiedLearningQualitySystem:
             # Actualizar estadísticas
             self.learning_stats["total_experiences"] += 1
             self.learning_stats["average_quality"] = (
-                self.learning_stats["average_quality"]
-                * (self.learning_stats["total_experiences"] - 1)
-                + quality_score
+                self.learning_stats["average_quality"] * (self.learning_stats["total_experiences"] - 1) + quality_score
             ) / self.learning_stats["total_experiences"]
 
             return {
@@ -456,13 +448,9 @@ class UnifiedLearningQualitySystem:
         # Actualizar tasa de aprendizaje adaptativamente
         if self.learning_config.enable_adaptive_learning:
             if experience.quality_score > 0.8:
-                self.learning_rate = max(
-                    self.learning_rate * 0.95, 0.001
-                )  # Reducir si la calidad es alta
+                self.learning_rate = max(self.learning_rate * 0.95, 0.001)  # Reducir si la calidad es alta
             elif experience.quality_score < 0.5:
-                self.learning_rate = min(
-                    self.learning_rate * 1.05, 0.1
-                )  # Aumentar si la calidad es baja
+                self.learning_rate = min(self.learning_rate * 1.05, 0.1)  # Aumentar si la calidad es baja
 
         # Registrar métricas de aprendizaje
         self.performance_metrics["learning_improvement"].append(improvement)
@@ -718,9 +706,7 @@ class UnifiedLearningQualitySystem:
 
         return domain_adaptations.get(domain, {"general_weight": 0.5})
 
-    def _update_knowledge_base(
-        self, experience: LearningExperience, learning_result: Dict[str, Any]
-    ):
+    def _update_knowledge_base(self, experience: LearningExperience, learning_result: Dict[str, Any]):
         """Actualizar base de conocimiento"""
         domain = experience.domain
 
@@ -731,9 +717,7 @@ class UnifiedLearningQualitySystem:
         max_experiences = self.learning_config.knowledge_base_size // len(self.knowledge_base)
         if len(self.knowledge_base[domain]) > max_experiences:
             # Mantener las experiencias más recientes y de mayor calidad
-            self.knowledge_base[domain].sort(
-                key=lambda x: (x.quality_score, x.timestamp), reverse=True
-            )
+            self.knowledge_base[domain].sort(key=lambda x: (x.quality_score, x.timestamp), reverse=True)
             self.knowledge_base[domain] = self.knowledge_base[domain][:max_experiences]
 
     async def _save_learning_experience(self, experience: LearningExperience):
@@ -743,7 +727,7 @@ class UnifiedLearningQualitySystem:
 
             cursor.execute(
                 """
-                INSERT INTO learning_experiences 
+                INSERT INTO learning_experiences
                 (id, input_data, target_data, domain, quality_score, learning_mode, timestamp, metadata, performance_metrics)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
@@ -773,7 +757,7 @@ class UnifiedLearningQualitySystem:
 
             cursor.execute(
                 """
-                INSERT INTO quality_evaluations 
+                INSERT INTO quality_evaluations
                 (query, response, reference, context, domain, metrics, overall_score, issues, timestamp, processing_time)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
@@ -900,9 +884,7 @@ class UnifiedLearningQualitySystem:
                 "average_score": round(avg_score, 3),
                 "domain_evaluations": domain_evaluations,
                 "domain_average_score": round(domain_avg_score, 3),
-                "recent_evaluations": (
-                    len(self.quality_history[-100:]) if self.quality_history else 0
-                ),
+                "recent_evaluations": (len(self.quality_history[-100:]) if self.quality_history else 0),
             }
 
         except Exception as e:
@@ -947,13 +929,9 @@ def get_unified_learning_quality_system(
 async def main():
     """Función principal de demostración"""
     # Configurar sistema
-    learning_config = LearningConfig(
-        learning_rate=0.01, enable_adaptive_learning=True, quality_threshold=0.7
-    )
+    learning_config = LearningConfig(learning_rate=0.01, enable_adaptive_learning=True, quality_threshold=0.7)
 
-    quality_config = QualityConfig(
-        similarity_threshold=0.6, coherence_threshold=0.7, enable_advanced_metrics=True
-    )
+    quality_config = QualityConfig(similarity_threshold=0.6, coherence_threshold=0.7, enable_advanced_metrics=True)
 
     system = get_unified_learning_quality_system(learning_config, quality_config)
 

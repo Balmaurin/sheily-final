@@ -8,7 +8,7 @@ Sistema completo de tests para Sheily-AI organizado profesionalmente:
 
 Estructura:
 ├── unit/         → Tests unitarios (branches, config, datasets, etc.)
-├── integration/  → Tests de integración (API, E2E, etc.)  
+├── integration/  → Tests de integración (API, E2E, etc.)
 ├── evaluation/   → Tests de evaluación RAG (métricas, corpus, etc.)
 ├── core/         → Tests core del sistema (memoria, RAG core, etc.)
 └── config/       → Configuración centralizada
@@ -304,9 +304,7 @@ class SheilyTestSuite:
                 "total_tests": total_tests,
                 "passed": passed_tests,
                 "failed": total_tests - passed_tests,
-                "success_rate": round(passed_tests / total_tests * 100, 1)
-                if total_tests > 0
-                else 0,
+                "success_rate": round(passed_tests / total_tests * 100, 1) if total_tests > 0 else 0,
             },
             "by_category": {},
             "detailed_results": [],
@@ -434,9 +432,7 @@ class SheilyTestSuite:
         print(f"\n📂 POR CATEGORÍA:")
         for category, data in report["by_category"].items():
             status = "✅" if data["failed"] == 0 else "❌"
-            print(
-                f"   {status} {category}: {data['passed']}/{data['tests']} ({data['success_rate']}%)"
-            )
+            print(f"   {status} {category}: {data['passed']}/{data['tests']} ({data['success_rate']}%)")
 
         # Calificación general
         if summary["success_rate"] >= 95:
@@ -485,9 +481,7 @@ Ejemplos de uso:
         help="Ejecutar solo una categoría específica",
     )
     parser.add_argument("--list", action="store_true", help="Listar tests disponibles")
-    parser.add_argument(
-        "--parallel", action="store_true", help="Ejecución paralela (donde sea posible)"
-    )
+    parser.add_argument("--parallel", action="store_true", help="Ejecución paralela (donde sea posible)")
     parser.add_argument("--quick", action="store_true", help="Modo rápido para tests RAG")
 
     args = parser.parse_args()

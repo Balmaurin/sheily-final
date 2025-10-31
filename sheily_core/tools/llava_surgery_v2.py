@@ -145,9 +145,7 @@ if args.clean_vision_tower:
             print(f"No vision tower found in {projector_checkpoint_path}")
             # we break once none is found, so far all models append them at the end
             # break
-    print(
-        "Done! All vision tower tensors are removed from the model files and stored in llava.clip file."
-    )
+    print("Done! All vision tower tensors are removed from the model files and stored in llava.clip file.")
 
 # Now we look for the projector in the last checkpoint
 model_files = sorted(glob.glob(f"{args.model}/*"), key=os.path.getmtime, reverse=True)

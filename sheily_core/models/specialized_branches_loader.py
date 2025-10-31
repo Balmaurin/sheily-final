@@ -36,9 +36,7 @@ from typing import Dict, List, Optional, Tuple
 class SpecializedBranchesLoader:
     """Cargador de ramas especializadas para RAG híbrido"""
 
-    def __init__(
-        self, branches_root: str, corpus_root: str, cache_db: str = "specialized_branches.db"
-    ):
+    def __init__(self, branches_root: str, corpus_root: str, cache_db: str = "specialized_branches.db"):
         self.branches_root = Path(branches_root)
         self.corpus_root = Path(corpus_root)
         self.cache_db = cache_db
@@ -377,7 +375,7 @@ class SpecializedBranchesLoader:
             # Guardar en base de datos
             self.conn.execute(
                 """
-                INSERT OR REPLACE INTO domain_router 
+                INSERT OR REPLACE INTO domain_router
                 (domain, keywords, weight, branch_priority, routing_rules)
                 VALUES (?, ?, ?, ?, ?)
             """,
@@ -424,9 +422,7 @@ class SpecializedBranchesLoader:
 
         # Cargar router desde DB si no está en memoria
         if not self.domain_router:
-            cursor = self.conn.execute(
-                "SELECT domain, keywords, weight, routing_rules FROM domain_router"
-            )
+            cursor = self.conn.execute("SELECT domain, keywords, weight, routing_rules FROM domain_router")
             for row in cursor:
                 domain, keywords_json, weight, rules_json = row
                 self.domain_router[domain] = {
@@ -456,9 +452,7 @@ class SpecializedBranchesLoader:
         score += exact_matches * 0.4
 
         # Match parcial
-        partial_matches = sum(
-            1 for kw in rules.get("partial_match", []) if any(part in query for part in kw.split())
-        )
+        partial_matches = sum(1 for kw in rules.get("partial_match", []) if any(part in query for part in kw.split()))
         score += partial_matches * 0.2
 
         # Boost semántico (keywords importantes)
@@ -484,10 +478,10 @@ class SpecializedBranchesLoader:
         """Obtener documentos especializados de un dominio"""
         cursor = self.conn.execute(
             """
-            SELECT content, metadata, specialization_score 
-            FROM domain_documents 
+            SELECT content, metadata, specialization_score
+            FROM domain_documents
             WHERE domain = ? OR branch_name LIKE ?
-            ORDER BY specialization_score DESC 
+            ORDER BY specialization_score DESC
             LIMIT ?
         """,
             (domain, f"%{domain}%", limit),
@@ -541,11 +535,7 @@ class SpecializedBranchesLoader:
                 for i, line in enumerate(f):
                     try:
                         data = json.loads(line.strip())
-                        content = (
-                            data.get("text", data.get("instruction", ""))
-                            + " "
-                            + data.get("output", "")
-                        )
+                        content = data.get("text", data.get("instruction", "")) + " " + data.get("output", "")
 
                         if content.strip():
                             # Calcular score de especialización
@@ -554,7 +544,7 @@ class SpecializedBranchesLoader:
                             # Insertar en base de datos
                             self.conn.execute(
                                 """
-                                INSERT OR REPLACE INTO domain_documents 
+                                INSERT OR REPLACE INTO domain_documents
                                 (branch_name, domain, content, metadata, specialization_score, last_indexed)
                                 VALUES (?, ?, ?, ?, ?, ?)
                             """,
@@ -593,7 +583,7 @@ class SpecializedBranchesLoader:
 
             self.conn.execute(
                 """
-                INSERT OR REPLACE INTO domain_documents 
+                INSERT OR REPLACE INTO domain_documents
                 (branch_name, domain, content, metadata, specialization_score, last_indexed)
                 VALUES (?, ?, ?, ?, ?, ?)
             """,
@@ -649,9 +639,9 @@ class SpecializedBranchesLoader:
 
         cursor = self.conn.execute(
             """
-            SELECT domain, COUNT(*), AVG(specialization_score) 
-            FROM domain_documents 
-            GROUP BY domain 
+            SELECT domain, COUNT(*), AVG(specialization_score)
+            FROM domain_documents
+            GROUP BY domain
             ORDER BY COUNT(*) DESC
         """
         )

@@ -5,7 +5,7 @@
 💬 TESTS REALES DE CHAT SYSTEM - SHEILY AI
 
 Tests comprehensivos del sistema completo de chat:
-- Interfaz de línea de comandos (CLI) 
+- Interfaz de línea de comandos (CLI)
 - Interfaz web con Gradio/Streamlit
 - Gestión de conversaciones y contexto
 - Sistema de prompts y templates
@@ -149,9 +149,7 @@ class ChatEngine:
         )
 
         # Agregar mensaje de sistema inicial
-        system_message = ChatMessage(
-            role="system", content=self.config["system_prompt"], timestamp=now
-        )
+        system_message = ChatMessage(role="system", content=self.config["system_prompt"], timestamp=now)
         session.messages.append(system_message)
 
         self.sessions[session_id] = session
@@ -194,9 +192,7 @@ class ChatEngine:
         session = self.sessions[session_id]
 
         # Agregar mensaje del usuario
-        user_message = ChatMessage(
-            role="user", content=message, timestamp=datetime.now().isoformat()
-        )
+        user_message = ChatMessage(role="user", content=message, timestamp=datetime.now().isoformat())
         session.messages.append(user_message)
 
         # Generar respuesta
@@ -213,9 +209,7 @@ class ChatEngine:
 
         return assistant_message
 
-    def send_message_stream(
-        self, message: str, session_id: Optional[str] = None
-    ) -> Generator[str, None, None]:
+    def send_message_stream(self, message: str, session_id: Optional[str] = None) -> Generator[str, None, None]:
         """Enviar mensaje y obtener respuesta en streaming"""
         if session_id is None:
             session_id = self.current_session_id
@@ -226,9 +220,7 @@ class ChatEngine:
         session = self.sessions[session_id]
 
         # Agregar mensaje del usuario
-        user_message = ChatMessage(
-            role="user", content=message, timestamp=datetime.now().isoformat()
-        )
+        user_message = ChatMessage(role="user", content=message, timestamp=datetime.now().isoformat())
         session.messages.append(user_message)
 
         # Generar respuesta en streaming
@@ -238,9 +230,7 @@ class ChatEngine:
             yield chunk
 
         # Crear mensaje de respuesta final
-        assistant_message = ChatMessage(
-            role="assistant", content=full_response, timestamp=datetime.now().isoformat()
-        )
+        assistant_message = ChatMessage(role="assistant", content=full_response, timestamp=datetime.now().isoformat())
         session.messages.append(assistant_message)
 
         # Actualizar sesión
@@ -264,9 +254,7 @@ class ChatEngine:
 
         return response
 
-    def _generate_response_stream(
-        self, message: str, session: ChatSession
-    ) -> Generator[str, None, None]:
+    def _generate_response_stream(self, message: str, session: ChatSession) -> Generator[str, None, None]:
         """Generar respuesta en streaming"""
         if not self.is_running:
             raise RuntimeError("Chat engine no está inicializado")
@@ -349,9 +337,7 @@ class ChatEngine:
 
         return True
 
-    def export_conversation(
-        self, session_id: Optional[str] = None, format_type: str = "json"
-    ) -> Dict[str, Any]:
+    def export_conversation(self, session_id: Optional[str] = None, format_type: str = "json") -> Dict[str, Any]:
         """Exportar conversación en formato específico"""
         if session_id is None:
             session_id = self.current_session_id
@@ -417,17 +403,9 @@ class ChatEngine:
     def get_statistics(self) -> Dict[str, Any]:
         """Obtener estadísticas del motor de chat"""
         total_messages = sum(len(session.messages) for session in self.sessions.values())
-        user_messages = sum(
-            1
-            for session in self.sessions.values()
-            for msg in session.messages
-            if msg.role == "user"
-        )
+        user_messages = sum(1 for session in self.sessions.values() for msg in session.messages if msg.role == "user")
         assistant_messages = sum(
-            1
-            for session in self.sessions.values()
-            for msg in session.messages
-            if msg.role == "assistant"
+            1 for session in self.sessions.values() for msg in session.messages if msg.role == "assistant"
         )
 
         return {

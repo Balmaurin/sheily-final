@@ -152,9 +152,7 @@ class ModuleInitializer:
             return None
 
         # Registrar estrategia de recuperación
-        self.module_validator.register_recovery_strategy(
-            "método requerido", missing_method_recovery
-        )
+        self.module_validator.register_recovery_strategy("método requerido", missing_method_recovery)
 
     def discover_modules(self) -> Dict[str, Type]:
         """
@@ -169,11 +167,7 @@ class ModuleInitializer:
             for file in files:
                 if file.endswith(".py") and not file.startswith("__"):
                     module_path = os.path.join(root, file)
-                    module_name = (
-                        os.path.relpath(module_path, self.base_path)
-                        .replace("/", ".")
-                        .replace(".py", "")
-                    )
+                    module_name = os.path.relpath(module_path, self.base_path).replace("/", ".").replace(".py", "")
 
                     try:
                         module = importlib.import_module(f"modules.{module_name}")
@@ -188,9 +182,7 @@ class ModuleInitializer:
                                 and not hasattr(obj, "__dataclass_fields__")  # Excluir dataclasses
                                 and not name.endswith("Config")  # Excluir clases de configuración
                                 and not name.endswith("Wallet")  # Excluir clases de wallet
-                                and not name.endswith(
-                                    "Transaction"
-                                )  # Excluir clases de transacción
+                                and not name.endswith("Transaction")  # Excluir clases de transacción
                             ):
                                 self.discovered_modules[name] = obj
 

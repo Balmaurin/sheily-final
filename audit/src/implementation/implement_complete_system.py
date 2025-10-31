@@ -876,13 +876,9 @@ find models/ corpus_ES/ sheily_train/ -type f -exec ls -l {} \\;
         print("  ✅ Estándares de calidad establecidos")
 
         print("\n🎯 PRÓXIMOS PASOS:")
-        print(
-            "  1. Ejecutar entrenamiento: python3 sheily_train/core/training/comprehensive_training.py"
-        )
+        print("  1. Ejecutar entrenamiento: python3 sheily_train/core/training/comprehensive_training.py")
         print("  2. Monitorear progreso: python3 sheily_train/tools/monitoring/health_monitor.py")
-        print(
-            "  3. Validar resultados: python3 sheily_train/core/validation/advanced_validation.py"
-        )
+        print("  3. Validar resultados: python3 sheily_train/core/validation/advanced_validation.py")
         print("  4. Revisar documentación: sheily_train/docs/")
 
 

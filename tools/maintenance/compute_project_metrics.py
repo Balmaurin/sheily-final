@@ -19,7 +19,7 @@ import json
 import os
 import re
 import sys
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple
@@ -125,7 +125,11 @@ def compute_quality() -> Tuple[int, Dict[str, bool]]:
     editorconfig = (REPO_ROOT / ".editorconfig").exists()
 
     # Check for tools presence in pyproject or requirements
-    req = (REPO_ROOT / "requirements.txt").read_text(encoding="utf-8", errors="ignore") if (REPO_ROOT / "requirements.txt").exists() else ""
+    req = (
+        (REPO_ROOT / "requirements.txt").read_text(encoding="utf-8", errors="ignore")
+        if (REPO_ROOT / "requirements.txt").exists()
+        else ""
+    )
     pypr = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8", errors="ignore") if pyproject else ""
 
     tools = {
@@ -151,8 +155,16 @@ def compute_quality() -> Tuple[int, Dict[str, bool]]:
 
 
 def compute_security() -> Tuple[int, Dict[str, bool]]:
-    req = (REPO_ROOT / "requirements.txt").read_text(encoding="utf-8", errors="ignore") if (REPO_ROOT / "requirements.txt").exists() else ""
-    pre_commit = (REPO_ROOT / ".pre-commit-config.yaml").read_text(encoding="utf-8", errors="ignore") if (REPO_ROOT / ".pre-commit-config.yaml").exists() else ""
+    req = (
+        (REPO_ROOT / "requirements.txt").read_text(encoding="utf-8", errors="ignore")
+        if (REPO_ROOT / "requirements.txt").exists()
+        else ""
+    )
+    pre_commit = (
+        (REPO_ROOT / ".pre-commit-config.yaml").read_text(encoding="utf-8", errors="ignore")
+        if (REPO_ROOT / ".pre-commit-config.yaml").exists()
+        else ""
+    )
 
     flags = {
         "detect_secrets": ".secrets.baseline" in os.listdir(REPO_ROOT) if REPO_ROOT.exists() else False,
@@ -196,8 +208,17 @@ def compute_testing() -> Tuple[int, Dict[str, int]]:
     summary = {
         "tests_py": count_py(tests_root),
         "core_tests_py": count_py(sheily_core_tests),
-        "has_pytest_cfg": (REPO_ROOT / "pytest.ini").exists() or ("[tool.pytest.ini_options]" in (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8", errors="ignore") if (REPO_ROOT / "pyproject.toml").exists() else ""),
-        "has_coverage_cfg": ("[tool.coverage.run]" in (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8", errors="ignore") if (REPO_ROOT / "pyproject.toml").exists() else ""),
+        "has_pytest_cfg": (REPO_ROOT / "pytest.ini").exists()
+        or (
+            "[tool.pytest.ini_options]" in (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8", errors="ignore")
+            if (REPO_ROOT / "pyproject.toml").exists()
+            else ""
+        ),
+        "has_coverage_cfg": (
+            "[tool.coverage.run]" in (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8", errors="ignore")
+            if (REPO_ROOT / "pyproject.toml").exists()
+            else ""
+        ),
     }
 
     total_tests = summary["tests_py"] + summary["core_tests_py"]
@@ -234,7 +255,11 @@ def compute_docs() -> Tuple[int, Dict[str, bool]]:
 
 
 def compute_dependencies() -> Tuple[int, Dict[str, bool]]:
-    req = (REPO_ROOT / "requirements.txt").read_text(encoding="utf-8", errors="ignore") if (REPO_ROOT / "requirements.txt").exists() else ""
+    req = (
+        (REPO_ROOT / "requirements.txt").read_text(encoding="utf-8", errors="ignore")
+        if (REPO_ROOT / "requirements.txt").exists()
+        else ""
+    )
     flags = {
         "has_requirements": (REPO_ROOT / "requirements.txt").exists(),
         "has_security_tools": all(x in req for x in ["safety", "pip-audit", "bandit"]),
@@ -386,7 +411,9 @@ def main() -> int:
         "overall": scores.overall(),
         "facts": asdict(facts),
     }
-    (out_dir / "project_metrics.json").write_text(json.dumps(json_payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    (out_dir / "project_metrics.json").write_text(
+        json.dumps(json_payload, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
 
     md_block = build_markdown(scores)
     md_doc = [
@@ -396,7 +423,7 @@ def main() -> int:
         "",
         md_block,
         "",
-        "> Nota: Estos valores se calculan del código y configuración actual, sin depender de documentación." ,
+        "> Nota: Estos valores se calculan del código y configuración actual, sin depender de documentación.",
     ]
     (out_dir / "project_metrics.md").write_text("\n".join(md_doc), encoding="utf-8")
 

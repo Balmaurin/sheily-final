@@ -10,9 +10,10 @@ Inicia todo automáticamente sin problemas.
 """
 
 import os
-import sys
 import subprocess
+import sys
 import time
+
 
 def main():
     print("🚀 INICIO ULTRA-RÁPIDO DEL SISTEMA RAG")
@@ -23,10 +24,11 @@ def main():
     # 1. Verificar dependencias críticas
     print("📦 Verificando dependencias críticas...")
     try:
-        import sentence_transformers
         import faiss
         import fastapi
+        import sentence_transformers
         import uvicorn
+
         print("   ✅ Todas las dependencias están instaladas")
     except ImportError as e:
         print(f"   ❌ Dependencia faltante: {e}")
@@ -39,17 +41,19 @@ def main():
 
     # 3. Iniciar RAG Service
     print("🌐 Iniciando RAG Service...")
-    rag_proc = subprocess.Popen([
-        sys.executable, "start_rag_service.py"
-    ], cwd=project_dir, creationflags=subprocess.CREATE_NEW_CONSOLE)
+    rag_proc = subprocess.Popen(
+        [sys.executable, "start_rag_service.py"], cwd=project_dir, creationflags=subprocess.CREATE_NEW_CONSOLE
+    )
 
     time.sleep(4)  # Esperar que cargue el modelo
 
     # 4. Iniciar Chat Service
     print("💬 Iniciando Chat Service...")
-    chat_proc = subprocess.Popen([
-        sys.executable, "-m", "sheily_core.integration.web_chat_server"
-    ], cwd=project_dir, creationflags=subprocess.CREATE_NEW_CONSOLE)
+    chat_proc = subprocess.Popen(
+        [sys.executable, "-m", "sheily_core.integration.web_chat_server"],
+        cwd=project_dir,
+        creationflags=subprocess.CREATE_NEW_CONSOLE,
+    )
 
     time.sleep(3)  # Esperar que se conecte al RAG
 
@@ -57,6 +61,7 @@ def main():
     print("🔍 Verificando servicios...")
     try:
         import requests
+
         time.sleep(1)
 
         # RAG
@@ -84,7 +89,9 @@ def main():
     print("   • Chat Service: http://localhost:8000")
     print("\n🧪 Prueba rápida:")
     print("   curl http://localhost:8001/health")
-    print("   curl -X POST http://localhost:8000/chat -H 'Content-Type: application/json' -d '{\"message\":\"¿Qué es la antropología?\",\"use_rag\":true}'")
+    print(
+        '   curl -X POST http://localhost:8000/chat -H \'Content-Type: application/json\' -d \'{"message":"¿Qué es la antropología?","use_rag":true}\''
+    )
     print("\n🛑 Cierra esta ventana para detener todo")
     print("=" * 50)
 
@@ -102,6 +109,7 @@ def main():
         except:
             pass
         print("✅ Servicios detenidos")
+
 
 if __name__ == "__main__":
     exit(main())

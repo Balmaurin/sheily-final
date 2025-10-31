@@ -21,9 +21,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 # Configurar logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -167,9 +165,7 @@ class DataEncryption:
             logger.error(f"❌ Error desencriptando datos: {e}")
             raise
 
-    def encrypt_file(
-        self, file_path: Union[str, Path], output_path: Union[str, Path] = None
-    ) -> Path:
+    def encrypt_file(self, file_path: Union[str, Path], output_path: Union[str, Path] = None) -> Path:
         """Encriptar archivo"""
         try:
             file_path = Path(file_path)
@@ -227,9 +223,7 @@ class DataEncryption:
                 if encrypted_file_path.name.endswith(".encrypted"):
                     output_path = encrypted_file_path.parent / encrypted_file_path.name[:-10]
                 else:
-                    output_path = (
-                        encrypted_file_path.parent / f"decrypted_{encrypted_file_path.name}"
-                    )
+                    output_path = encrypted_file_path.parent / f"decrypted_{encrypted_file_path.name}"
             else:
                 output_path = Path(output_path)
 
@@ -444,9 +438,7 @@ class FileEncryption:
     def __init__(self, encryption: DataEncryption):
         self.encryption = encryption
 
-    def encrypt_file_with_metadata(
-        self, file_path: Union[str, Path], metadata: Dict[str, Any] = None
-    ) -> Path:
+    def encrypt_file_with_metadata(self, file_path: Union[str, Path], metadata: Dict[str, Any] = None) -> Path:
         """Encriptar archivo con metadatos"""
         try:
             file_path = Path(file_path)
@@ -492,9 +484,7 @@ class FileEncryption:
             logger.error(f"❌ Error encriptando archivo con metadatos: {e}")
             raise
 
-    def decrypt_file_with_metadata(
-        self, encrypted_file_path: Union[str, Path]
-    ) -> Tuple[bytes, Dict[str, Any]]:
+    def decrypt_file_with_metadata(self, encrypted_file_path: Union[str, Path]) -> Tuple[bytes, Dict[str, Any]]:
         """Desencriptar archivo con metadatos"""
         try:
             encrypted_file_path = Path(encrypted_file_path)

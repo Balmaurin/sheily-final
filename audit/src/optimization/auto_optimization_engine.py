@@ -346,9 +346,7 @@ class ImpactPredictor:
         # Payback period = effort hours / impact score
         return recommendation.effort_hours / impact_score
 
-    def prioritize_recommendations(
-        self, recommendations: List[Recommendation]
-    ) -> List[Tuple[Recommendation, float]]:
+    def prioritize_recommendations(self, recommendations: List[Recommendation]) -> List[Tuple[Recommendation, float]]:
         """Prioritize recommendations by ROI.
 
         Args:
@@ -402,18 +400,14 @@ class OptimizerCore:
             "total_recommendations": len(recommendations),
             "recommendations": [asdict(rec) for rec in recommendations],
             "analyses": analyses,
-            "prioritized": [
-                {"recommendation": asdict(rec), "roi_score": roi} for rec, roi in prioritized
-            ],
+            "prioritized": [{"recommendation": asdict(rec), "roi_score": roi} for rec, roi in prioritized],
             "quick_wins": self._identify_quick_wins(prioritized),
             "strategic_items": self._identify_strategic_items(prioritized),
         }
 
         return result
 
-    def _identify_quick_wins(
-        self, prioritized: List[Tuple[Recommendation, float]]
-    ) -> List[Dict[str, Any]]:
+    def _identify_quick_wins(self, prioritized: List[Tuple[Recommendation, float]]) -> List[Dict[str, Any]]:
         """Identify quick win recommendations.
 
         Args:
@@ -426,15 +420,11 @@ class OptimizerCore:
 
         for rec, roi in prioritized:
             if rec.effort_hours < 4 and roi > 1.0:
-                quick_wins.append(
-                    {"id": rec.id, "title": rec.title, "effort_hours": rec.effort_hours, "roi": roi}
-                )
+                quick_wins.append({"id": rec.id, "title": rec.title, "effort_hours": rec.effort_hours, "roi": roi})
 
         return quick_wins
 
-    def _identify_strategic_items(
-        self, prioritized: List[Tuple[Recommendation, float]]
-    ) -> List[Dict[str, Any]]:
+    def _identify_strategic_items(self, prioritized: List[Tuple[Recommendation, float]]) -> List[Dict[str, Any]]:
         """Identify strategic long-term items.
 
         Args:

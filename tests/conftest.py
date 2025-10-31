@@ -8,7 +8,6 @@ from typing import Generator
 
 import pytest
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 ANTHROPOLOGY_ROOT = PROJECT_ROOT / "all-Branches" / "anthropology"
 SRC_PATH = ANTHROPOLOGY_ROOT / "src"

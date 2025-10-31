@@ -96,9 +96,7 @@ def handle_learning_input(content: str) -> str:
         elif ext == ".txt":
             txt = path.read_text(encoding="utf-8")
             txt = cleaner.clean_text(txt)
-            ids = vault.remember_chunked(
-                txt, USER_ID, origin="docs", meta={"source_file": path.name}
-            )
+            ids = vault.remember_chunked(txt, USER_ID, origin="docs", meta={"source_file": path.name})
             return f"He guardado {len(ids)} fragmento(s) de {path.name}."
     # Texto directo
     txt = cleaner.clean_text(content)

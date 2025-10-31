@@ -3,13 +3,14 @@
 Tests de performance para Sheily AI
 """
 
-import pytest
-import time
-import psutil
-import os
-from pathlib import Path
 import asyncio
+import os
+import time
+from pathlib import Path
 from unittest.mock import Mock
+
+import psutil
+import pytest
 
 
 class TestPerformance:
@@ -56,7 +57,7 @@ class TestPerformance:
     @pytest.mark.asyncio
     async def test_embedding_performance(self):
         """Test performance de embeddings"""
-        from sheily_core.data.embeddings import ProductionEmbeddingManager, EmbeddingConfig
+        from sheily_core.data.embeddings import EmbeddingConfig, ProductionEmbeddingManager
 
         config = EmbeddingConfig()
         manager = ProductionEmbeddingManager(config)
@@ -98,6 +99,7 @@ class TestPerformance:
     def test_concurrent_processing(self):
         """Test procesamiento concurrente"""
         import threading
+
         from sheily_core.data.document_processor import DocumentProcessor
 
         processor = DocumentProcessor()
@@ -180,6 +182,7 @@ class TestScalability:
     def test_memory_cleanup(self):
         """Test limpieza de memoria"""
         import gc
+
         from sheily_core.data.document_processor import DocumentProcessor
 
         process = psutil.Process(os.getpid())
@@ -207,8 +210,8 @@ class TestScalability:
 
     def test_file_system_performance(self):
         """Test performance del sistema de archivos"""
-        import tempfile
         import shutil
+        import tempfile
 
         # Crear directorio temporal
         with tempfile.TemporaryDirectory() as temp_dir:

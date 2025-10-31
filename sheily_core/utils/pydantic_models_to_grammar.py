@@ -6,17 +6,7 @@ import re
 from copy import copy
 from enum import Enum
 from inspect import getdoc, isclass
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    List,
-    Optional,
-    Union,
-    get_args,
-    get_origin,
-    get_type_hints,
-)
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Union, get_args, get_origin, get_type_hints
 
 from docstring_parser import parse
 from pydantic import BaseModel, create_model
@@ -222,9 +212,7 @@ def generate_gbnf_integer_rules(max_digit=None, min_digit=None):
     return integer_rule, additional_rules
 
 
-def generate_gbnf_float_rules(
-    max_digit=None, min_digit=None, max_precision=None, min_precision=None
-):
+def generate_gbnf_float_rules(max_digit=None, min_digit=None, max_precision=None, min_precision=None):
     """
     Generate GBNF float rules based on the given constraints.
 
@@ -287,9 +275,7 @@ def generate_gbnf_float_rules(
         if min_digit is not None and min_digit > 1:
             integer_rule_part += " [0-9]" * (min_digit - 1)
         if max_digit is not None:
-            integer_rule_part += "".join(
-                [" [0-9]?"] * (max_digit - (min_digit if min_digit is not None else 1))
-            )
+            integer_rule_part += "".join([" [0-9]?"] * (max_digit - (min_digit if min_digit is not None else 1)))
         additional_rules.append(f"{integer_part_rule} ::= {integer_rule_part.strip()}")
 
     return float_rule, additional_rules
@@ -413,9 +399,7 @@ def generate_gbnf_rule_for_type(
 
         # Defining the union grammar rule separately
         if len(union_rules) == 1:
-            union_grammar_rule = (
-                f"{model_name}-{field_name}-optional ::= {' | '.join(union_rules)} | null"
-            )
+            union_grammar_rule = f"{model_name}-{field_name}-optional ::= {' | '.join(union_rules)} | null"
         else:
             union_grammar_rule = f"{model_name}-{field_name}-union ::= {' | '.join(union_rules)}"
         rules.append(union_grammar_rule)
@@ -424,18 +408,12 @@ def generate_gbnf_rule_for_type(
         else:
             gbnf_type = f"{model_name}-{field_name}-union"
     elif isclass(origin_type) and issubclass(origin_type, str):
-        if (
-            field_info
-            and hasattr(field_info, "json_schema_extra")
-            and field_info.json_schema_extra is not None
-        ):
+        if field_info and hasattr(field_info, "json_schema_extra") and field_info.json_schema_extra is not None:
             triple_quoted_string = field_info.json_schema_extra.get("triple_quoted_string", False)
             markdown_string = field_info.json_schema_extra.get("markdown_code_block", False)
 
             gbnf_type = (
-                PydanticDataType.TRIPLE_QUOTED_STRING.value
-                if triple_quoted_string
-                else PydanticDataType.STRING.value
+                PydanticDataType.TRIPLE_QUOTED_STRING.value if triple_quoted_string else PydanticDataType.STRING.value
             )
             gbnf_type = PydanticDataType.MARKDOWN_CODE_BLOCK.value if markdown_string else gbnf_type
 
@@ -548,9 +526,7 @@ def generate_gbnf_grammar(
             init_signature = inspect.signature(model.__init__)
             parameters = init_signature.parameters
             model_fields = {
-                name: (param.annotation, param.default)
-                for name, param in parameters.items()
-                if name != "self"
+                name: (param.annotation, param.default) for name, param in parameters.items() if name != "self"
             }
     else:
         # For Pydantic models, use model_fields and check for ellipsis (required fields)
@@ -566,9 +542,7 @@ def generate_gbnf_grammar(
         if not issubclass(model, BaseModel):
             field_type, default_value = field_info
             # Check if the field is optional (not required)
-            is_optional = (default_value is not inspect.Parameter.empty) and (
-                default_value is not Ellipsis
-            )
+            is_optional = (default_value is not inspect.Parameter.empty) and (default_value is not Ellipsis)
         else:
             field_type = field_info
             field_info = model.model_fields[field_name]
@@ -587,9 +561,7 @@ def generate_gbnf_grammar(
         if not look_for_markdown_code_block and not look_for_triple_quoted_string:
             if rule_name not in created_rules:
                 created_rules[rule_name] = additional_rules
-            model_rule_parts.append(
-                f' ws "\\"{field_name}\\"" ":" ws {rule_name}'
-            )  # Adding escaped quotes
+            model_rule_parts.append(f' ws "\\"{field_name}\\"" ":" ws {rule_name}')  # Adding escaped quotes
             nested_rules.extend(additional_rules)
         else:
             has_triple_quoted_string = look_for_triple_quoted_string
@@ -649,9 +621,7 @@ def generate_gbnf_grammar_from_pydantic_models(
             all_rules.extend(model_rules)
 
         if list_of_outputs:
-            root_rule = (
-                r'root ::= (" "| "\n") "[" ws grammar-models ("," ws grammar-models)* ws "]"' + "\n"
-            )
+            root_rule = r'root ::= (" "| "\n") "[" ws grammar-models ("," ws grammar-models)* ws "]"' + "\n"
         else:
             root_rule = r'root ::= (" "| "\n") grammar-models' + "\n"
         root_rule += "grammar-models ::= " + " | ".join(
@@ -686,9 +656,7 @@ def generate_gbnf_grammar_from_pydantic_models(
         grammar_model_rules += "\n" + "\n".join(mod_rules)
 
         for model in models:
-            model_rules, has_special_string = generate_gbnf_grammar(
-                model, processed_models, created_rules
-            )
+            model_rules, has_special_string = generate_gbnf_grammar(model, processed_models, created_rules)
 
             if not has_special_string:
                 model_rules[0] += r'"\n" ws "}"'
@@ -763,13 +731,7 @@ closing-triple-ticks ::= "```" "\n"'''
 triple-quoted-string ::= triple-quotes triple-quoted-string-content triple-quotes
 triple-quoted-string-content ::= ( [^'] | "'" [^'] |  "'"  "'" [^']  )*
 triple-quotes ::= "'''" """
-    return (
-        "\n"
-        + "\n".join(additional_grammar)
-        + any_block
-        + primitive_grammar
-        + markdown_code_block_grammar
-    )
+    return "\n" + "\n".join(additional_grammar) + any_block + primitive_grammar + markdown_code_block_grammar
 
 
 def generate_markdown_documentation(
@@ -838,9 +800,7 @@ def generate_markdown_documentation(
             and hasattr(model.Config, "json_schema_extra")
             and "example" in model.Config.json_schema_extra
         ):
-            documentation += (
-                f"  Expected Example Output for {format_model_and_field_name(model.__name__)}:\n"
-            )
+            documentation += f"  Expected Example Output for {format_model_and_field_name(model.__name__)}:\n"
             json_example = json.dumps(model.Config.json_schema_extra["example"])
             documentation += format_multiline_description(json_example, 2) + "\n"
 
@@ -1011,9 +971,7 @@ def generate_text_documentation(
             and hasattr(model.Config, "json_schema_extra")
             and "example" in model.Config.json_schema_extra
         ):
-            documentation += (
-                f"  Expected Example Output for {format_model_and_field_name(model.__name__)}:\n"
-            )
+            documentation += f"  Expected Example Output for {format_model_and_field_name(model.__name__)}:\n"
             json_example = json.dumps(model.Config.json_schema_extra["example"])
             documentation += format_multiline_description(json_example, 2) + "\n"
 
@@ -1196,9 +1154,7 @@ def generate_and_save_gbnf_grammar_and_documentation(
         pydantic_model_list, outer_object_name, outer_object_content, list_of_outputs
     )
     grammar = remove_empty_lines(grammar)
-    save_gbnf_grammar_and_documentation(
-        grammar, documentation, grammar_file_path, documentation_file_path
-    )
+    save_gbnf_grammar_and_documentation(grammar, documentation, grammar_file_path, documentation_file_path)
 
 
 def generate_gbnf_grammar_and_documentation(
@@ -1303,9 +1259,7 @@ def create_dynamic_model_from_function(func: Callable[..., Any]):
 
         # Assert that the parameter has a type annotation
         if param.annotation == inspect.Parameter.empty:
-            raise TypeError(
-                f"Parameter '{param.name}' in function '{func.__name__}' lacks a type annotation"
-            )
+            raise TypeError(f"Parameter '{param.name}' in function '{func.__name__}' lacks a type annotation")
 
         # Find the parameter's description in the docstring
         param_doc = next((d for d in docstring.params if d.arg_name == param.name), None)
@@ -1407,9 +1361,7 @@ def list_to_enum(enum_name, values):
     return Enum(enum_name, {value: value for value in values})
 
 
-def convert_dictionary_to_pydantic_model(
-    dictionary: dict[str, Any], model_name: str = "CustomModel"
-) -> type[Any]:
+def convert_dictionary_to_pydantic_model(dictionary: dict[str, Any], model_name: str = "CustomModel") -> type[Any]:
     """
     Convert a dictionary to a Pydantic model class.
 
@@ -1425,9 +1377,7 @@ def convert_dictionary_to_pydantic_model(
     if "properties" in dictionary:
         for field_name, field_data in dictionary.get("properties", {}).items():
             if field_data == "object":
-                submodel = convert_dictionary_to_pydantic_model(
-                    dictionary, f"{model_name}_{field_name}"
-                )
+                submodel = convert_dictionary_to_pydantic_model(dictionary, f"{model_name}_{field_name}")
                 fields[field_name] = (submodel, ...)
             else:
                 field_type = field_data.get("type", "str")
@@ -1438,16 +1388,12 @@ def convert_dictionary_to_pydantic_model(
                     items = field_data.get("items", {})
                     if items != {}:
                         array = {"properties": items}
-                        array_type = convert_dictionary_to_pydantic_model(
-                            array, f"{model_name}_{field_name}_items"
-                        )
+                        array_type = convert_dictionary_to_pydantic_model(array, f"{model_name}_{field_name}_items")
                         fields[field_name] = (List[array_type], ...)
                     else:
                         fields[field_name] = (list, ...)
                 elif field_type == "object":
-                    submodel = convert_dictionary_to_pydantic_model(
-                        field_data, f"{model_name}_{field_name}"
-                    )
+                    submodel = convert_dictionary_to_pydantic_model(field_data, f"{model_name}_{field_name}")
                     fields[field_name] = (submodel, ...)
                 elif field_type == "required":
                     required = field_data.get("enum", [])

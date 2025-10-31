@@ -373,9 +373,7 @@ class AdvancedFileProcessor:
 
             video.release()
 
-            content.append(
-                "\n[Nota: Para transcripción de video, usar herramientas especializadas]"
-            )
+            content.append("\n[Nota: Para transcripción de video, usar herramientas especializadas]")
 
             return "\n".join(content)
         except Exception as e:
@@ -791,9 +789,7 @@ class SheilyMemoryIntegrator:
         }
 
         for category, keywords in categories.items():
-            matches = sum(
-                1 for keyword in keywords if keyword in content_lower or keyword in file_lower
-            )
+            matches = sum(1 for keyword in keywords if keyword in content_lower or keyword in file_lower)
             if matches >= 2:
                 return category
 
@@ -819,9 +815,7 @@ class SheilyMemoryIntegrator:
 
         return list(set(tags))[:6]
 
-    def create_memory_entry(
-        self, file_info: Dict[str, Any], content: str, memory_id: str
-    ) -> Dict[str, Any]:
+    def create_memory_entry(self, file_info: Dict[str, Any], content: str, memory_id: str) -> Dict[str, Any]:
         """Crear entrada de memoria estructurada"""
         chunks = self.create_chunks(content)
         category = self.detect_category(content, file_info["file_name"])
@@ -1071,9 +1065,7 @@ def print_dependencies_status():
         print("pip install chardet")
 
     print("\n# Instalación completa:")
-    print(
-        "pip install PyPDF2 python-docx pandas openpyxl pillow pytesseract SpeechRecognition opencv-python chardet"
-    )
+    print("pip install PyPDF2 python-docx pandas openpyxl pillow pytesseract SpeechRecognition opencv-python chardet")
     print("=" * 70)
 
 

@@ -48,9 +48,7 @@ __all__ = [
 # ==============================================================================
 __version__ = "2.0.0"
 __author__ = "Sheily AI Team"
-__description__ = (
-    "Sistema avanzado de memoria híbrida humano-IA con procesamiento automático de archivos"
-)
+__description__ = "Sistema avanzado de memoria híbrida humano-IA con procesamiento automático de archivos"
 
 # ==============================================================================
 # IMPORTS CONDICIONALES PARA MEJOR COMPATIBILIDAD

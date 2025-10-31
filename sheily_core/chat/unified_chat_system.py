@@ -252,9 +252,7 @@ class UnifiedChatSystem:
             for keyword in keywords:
                 if keyword.lower() in query_lower:
                     score += 3.0
-                    self.logger.debug(
-                        f"Keyword '{keyword}' encontrada en rama '{branch_name}' (+3.0)"
-                    )
+                    self.logger.debug(f"Keyword '{keyword}' encontrada en rama '{branch_name}' (+3.0)")
 
             # Score por nombre de rama
             if branch_name.lower() in query_lower:
@@ -292,9 +290,7 @@ class UnifiedChatSystem:
             self.logger.info("Rama detectada: 'general' (por defecto)")
             return "general", 0.1
 
-    def search_specialized_context(
-        self, query: str, branch_name: str, rag_pipeline=None
-    ) -> List[str]:
+    def search_specialized_context(self, query: str, branch_name: str, rag_pipeline=None) -> List[str]:
         """
         📚 BUSCAR CONTEXTO RAG ESPECIALIZADO
 
@@ -367,9 +363,7 @@ class UnifiedChatSystem:
                         self.logger.debug(f"Error reading corpus file {txt_file}: {e}")
                         continue
 
-                self.logger.debug(
-                    f"Encontrados {len(corpus_docs)} docs en corpus de '{branch_name}'"
-                )
+                self.logger.debug(f"Encontrados {len(corpus_docs)} docs en corpus de '{branch_name}'")
         except Exception as e:
             self.logger.warning(f"Error accediendo corpus: {e}")
 
@@ -402,9 +396,7 @@ class UnifiedChatSystem:
 
         return basic_knowledge.get(branch_name, basic_knowledge["general"])
 
-    def generate_response_with_gguf(
-        self, query: str, context_docs: List[str], branch_name: str
-    ) -> str:
+    def generate_response_with_gguf(self, query: str, context_docs: List[str], branch_name: str) -> str:
         """
         🧠 GENERAR RESPUESTA con modelo GGUF Q4 nativo
 
@@ -480,9 +472,7 @@ class UnifiedChatSystem:
             self.logger.exception(f"Error ejecutando GGUF: {e}")
             return self._generate_fallback_response(query, branch_name)
 
-    def _create_specialized_prompt(
-        self, query: str, context_docs: List[str], branch_name: str
-    ) -> str:
+    def _create_specialized_prompt(self, query: str, context_docs: List[str], branch_name: str) -> str:
         """Crear prompt especializado por rama"""
 
         # Prompt base por rama

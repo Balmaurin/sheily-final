@@ -71,7 +71,7 @@ class UnifiedLearningSystem:
             # No hay dominios predefinidos, solo insertar si no existe
             cursor.execute(
                 """
-                INSERT OR IGNORE INTO performance_metrics (domain) 
+                INSERT OR IGNORE INTO performance_metrics (domain)
                 VALUES (?)
             """,
                 ("general",),
@@ -94,8 +94,8 @@ class UnifiedLearningSystem:
                 # Insertar entrada de conocimiento
                 cursor.execute(
                     """
-                    INSERT INTO knowledge_base 
-                    (domain, input_text, target_text, quality_score) 
+                    INSERT INTO knowledge_base
+                    (domain, input_text, target_text, quality_score)
                     VALUES (?, ?, ?, ?)
                 """,
                     (domain, input_text, target_text, quality_score),
@@ -104,8 +104,8 @@ class UnifiedLearningSystem:
                 # Actualizar métricas de rendimiento
                 cursor.execute(
                     """
-                    UPDATE performance_metrics 
-                    SET total_entries = total_entries + 1, 
+                    UPDATE performance_metrics
+                    SET total_entries = total_entries + 1,
                         average_quality = (average_quality * (total_entries) + ?) / (total_entries + 1),
                         last_updated = CURRENT_TIMESTAMP
                     WHERE domain = ?
@@ -134,10 +134,10 @@ class UnifiedLearningSystem:
             # Eliminar entradas más antiguas
             cursor.execute(
                 """
-                DELETE FROM knowledge_base 
+                DELETE FROM knowledge_base
                 WHERE id IN (
-                    SELECT id FROM knowledge_base 
-                    ORDER BY timestamp ASC 
+                    SELECT id FROM knowledge_base
+                    ORDER BY timestamp ASC
                     LIMIT ?
                 )
             """,
@@ -152,7 +152,7 @@ class UnifiedLearningSystem:
             if domain:
                 cursor.execute(
                     """
-                    SELECT * FROM performance_metrics 
+                    SELECT * FROM performance_metrics
                     WHERE domain = ?
                 """,
                     (domain,),
@@ -165,9 +165,7 @@ class UnifiedLearningSystem:
 
         return results
 
-    def query_knowledge_base(
-        self, query: str, domain: Optional[str] = None, top_k: int = 5
-    ) -> List[Dict[str, Any]]:
+    def query_knowledge_base(self, query: str, domain: Optional[str] = None, top_k: int = 5) -> List[Dict[str, Any]]:
         """Consultar base de conocimiento"""
         with sqlite3.connect(self.config.database_path) as conn:
             cursor = conn.cursor()
@@ -175,10 +173,10 @@ class UnifiedLearningSystem:
             if domain:
                 cursor.execute(
                     """
-                    SELECT input_text, target_text, quality_score 
-                    FROM knowledge_base 
-                    WHERE domain = ? 
-                    ORDER BY quality_score DESC 
+                    SELECT input_text, target_text, quality_score
+                    FROM knowledge_base
+                    WHERE domain = ?
+                    ORDER BY quality_score DESC
                     LIMIT ?
                 """,
                     (domain, top_k),
@@ -186,9 +184,9 @@ class UnifiedLearningSystem:
             else:
                 cursor.execute(
                     """
-                    SELECT input_text, target_text, quality_score 
-                    FROM knowledge_base 
-                    ORDER BY quality_score DESC 
+                    SELECT input_text, target_text, quality_score
+                    FROM knowledge_base
+                    ORDER BY quality_score DESC
                     LIMIT ?
                 """,
                     (top_k,),

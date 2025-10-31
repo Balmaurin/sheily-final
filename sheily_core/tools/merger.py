@@ -190,9 +190,7 @@ class BranchMerger:
 
             # Obtener conocimiento general relevante
             if self.enable_general_knowledge:
-                general_knowledge = await self._extract_general_knowledge(
-                    query, specialized_response
-                )
+                general_knowledge = await self._extract_general_knowledge(query, specialized_response)
                 merge_input.general_knowledge = general_knowledge
 
             # Seleccionar estrategia de fusión
@@ -207,9 +205,7 @@ class BranchMerger:
             if quality_score < self.quality_threshold:
                 # Re-intentar con estrategia alternativa
                 alternative_strategy = await self._select_alternative_strategy(merge_strategy)
-                merged_result = await self._execute_merge_strategy(
-                    merge_input, alternative_strategy
-                )
+                merged_result = await self._execute_merge_strategy(merge_input, alternative_strategy)
                 quality_score = await self._assess_merge_quality(merged_result, merge_input)
                 merge_strategy = alternative_strategy
 
@@ -274,9 +270,7 @@ class BranchMerger:
                 return await self.merge_responses(branch_responses[0], query, context)
 
             # Fusión compleja multi-rama
-            fusion_result = await self._execute_multi_branch_fusion(
-                branch_responses, query, context
-            )
+            fusion_result = await self._execute_multi_branch_fusion(branch_responses, query, context)
 
             processing_time = time.time() - start_time
 
@@ -416,9 +410,7 @@ class BranchMerger:
             # Por defecto, usar fusión adaptativa
             return MergeStrategy.ADAPTIVE_MERGE
 
-    async def _execute_merge_strategy(
-        self, merge_input: MergeInput, strategy: MergeStrategy
-    ) -> Dict[str, Any]:
+    async def _execute_merge_strategy(self, merge_input: MergeInput, strategy: MergeStrategy) -> Dict[str, Any]:
         """
         Ejecutar estrategia de fusión específica
 
@@ -475,9 +467,7 @@ class BranchMerger:
                     additional_content.append(f"• {source['content'][:200]}...")
 
             if additional_content:
-                merged_parts.append(
-                    f"\n**Información Complementaria:**\n" + "\n".join(additional_content)
-                )
+                merged_parts.append(f"\n**Información Complementaria:**\n" + "\n".join(additional_content))
 
         merged_response = "\n".join(merged_parts)
 
@@ -533,9 +523,7 @@ class BranchMerger:
                     additional_info.append(f"**{source['title']}**: {source['content'][:150]}...")
 
             if additional_info:
-                additional_section = f"\n\n## Información Adicional\n\n" + "\n\n".join(
-                    additional_info
-                )
+                additional_section = f"\n\n## Información Adicional\n\n" + "\n\n".join(additional_info)
 
         # 5. Conclusión integradora
         conclusion = await self._generate_integrative_conclusion(
@@ -543,7 +531,9 @@ class BranchMerger:
         )
 
         # Ensamblar respuesta jerárquica
-        hierarchical_response = f"{introduction}\n\n{specialized_section}{context_section}{additional_section}\n\n{conclusion}"
+        hierarchical_response = (
+            f"{introduction}\n\n{specialized_section}{context_section}{additional_section}\n\n{conclusion}"
+        )
 
         # Calcular confianza (más alta debido a estructura organizada)
         confidence = min(specialized_response.confidence + 0.15, 1.0)
@@ -658,9 +648,7 @@ class BranchMerger:
         consensus_analysis = await self._analyze_consensus(sources_content)
 
         # Construir respuesta basada en consenso
-        consensus_response = await self._build_consensus_response(
-            sources_content, consensus_analysis
-        )
+        consensus_response = await self._build_consensus_response(sources_content, consensus_analysis)
 
         # Calcular confianza de consenso
         consensus_confidence = consensus_analysis["consensus_score"]
@@ -688,9 +676,7 @@ class BranchMerger:
             hierarchical_result = await self._hierarchical_merge(merge_input)
 
             # Aplicar refinamiento de consenso
-            consensus_refinement = await self._apply_consensus_refinement(
-                hierarchical_result, merge_input
-            )
+            consensus_refinement = await self._apply_consensus_refinement(hierarchical_result, merge_input)
 
             return {
                 **hierarchical_result,
@@ -710,9 +696,7 @@ class BranchMerger:
             weighted_result = await self._weighted_combination_merge(merge_input)
 
             # Aplicar mejoras adaptativas
-            adaptive_improvements = await self._apply_adaptive_improvements(
-                weighted_result, merge_input
-            )
+            adaptive_improvements = await self._apply_adaptive_improvements(weighted_result, merge_input)
 
             return adaptive_improvements
 
@@ -731,9 +715,7 @@ class BranchMerger:
         # Construir respuesta multi-rama
         if complementarity_analysis["high_complementarity"]:
             # Fusión complementaria
-            fused_response = await self._create_complementary_fusion(
-                sorted_responses, complementarity_analysis
-            )
+            fused_response = await self._create_complementary_fusion(sorted_responses, complementarity_analysis)
         else:
             # Fusión por consenso
             fused_response = await self._create_consensus_fusion(sorted_responses)
@@ -844,9 +826,7 @@ class BranchMerger:
             "medicina": f"En el ámbito médico, considerando '{query[:50]}...':",
         }
 
-        return introductions.get(
-            domain, f"Análisis especializado en {domain} para '{query[:50]}...':"
-        )
+        return introductions.get(domain, f"Análisis especializado en {domain} para '{query[:50]}...':")
 
     async def _generate_integrative_conclusion(self, specialized_response: Any, query: str) -> str:
         """Generar conclusión integradora"""
@@ -944,65 +924,54 @@ class BranchMerger:
 
         # Calcular calidad total
         quality_score = (
-            length_factor * 0.2
-            + structure_factor * 0.3
-            + integration_factor * 0.2
-            + confidence_factor * 0.3
+            length_factor * 0.2 + structure_factor * 0.3 + integration_factor * 0.2 + confidence_factor * 0.3
         )
 
         return min(quality_score, 1.0)
 
     # Métodos mock para análisis complejo (implementación simplificada)
 
-    async def _analyze_integration_context(
-        self, query: str, specialized: str, general: str
-    ) -> Dict:
+    async def _analyze_integration_context(self, query: str, specialized: str, general: str) -> Dict:
         """Analizar contexto de integración - USA ANÁLISIS REAL"""
         from sheily_core.tools.real_merger_analysis import get_real_analyzer
-        
+
         analyzer = get_real_analyzer()
         # Llamar método REAL (no mock)
         result = analyzer.analyze_integration_context(query, specialized, general)
-        
+
         # Convertir formato para compatibilidad
         return {
             "integration_points": result["integration_points"],
-            "enrichment_opportunities": [
-                f"Integración en: {ip['keyword']}" 
-                for ip in result["integration_points"][:3]
-            ],
+            "enrichment_opportunities": [f"Integración en: {ip['keyword']}" for ip in result["integration_points"][:3]],
             "integration_quality": result["integration_score"],
         }
 
     async def _analyze_consensus(self, sources: List[Dict]) -> Dict:
         """Analizar consenso entre fuentes - USA ANÁLISIS REAL"""
         from sheily_core.tools.real_merger_analysis import get_real_analyzer
-        
+
         analyzer = get_real_analyzer()
         # Llamar método REAL (no mock)
         result = analyzer.analyze_consensus(sources)
-        
+
         # Convertir formato
         consensus_level = result["consensus_level"]
         return {
             "consensus_score": consensus_level,
             "agreement_level": "high" if consensus_level > 0.7 else "medium" if consensus_level > 0.4 else "low",
             "conflicts": [] if result["divergence"] < 0.3 else ["Divergencia detectada"],
-            "num_sources": result["num_sources"]
+            "num_sources": result["num_sources"],
         }
 
     async def _build_consensus_response(self, sources: List[Dict], analysis: Dict) -> str:
         """Construir respuesta de consenso - USA ANÁLISIS REAL"""
         from sheily_core.tools.real_merger_analysis import get_real_analyzer
-        
+
         # Convertir sources a formato esperado
         sources_formatted = []
         for s in sources:
-            sources_formatted.append({
-                "response": s.get("content", ""),
-                "confidence": s.get("confidence", 0.5)
-            })
-        
+            sources_formatted.append({"response": s.get("content", ""), "confidence": s.get("confidence", 0.5)})
+
         analyzer = get_real_analyzer()
         # Llamar método REAL (no mock)
         return analyzer.build_consensus_response(sources_formatted, analysis)
@@ -1010,11 +979,11 @@ class BranchMerger:
     async def _evaluate_merge_characteristics(self, merge_input: MergeInput) -> Dict:
         """Evaluar características para fusión - USA ANÁLISIS REAL"""
         from sheily_core.tools.real_merger_analysis import get_real_analyzer
-        
+
         analyzer = get_real_analyzer()
         # Llamar método REAL (no mock)
         result = analyzer.evaluate_merge_characteristics(merge_input)
-        
+
         # Añadir context_rich
         result["context_rich"] = bool(merge_input.merge_context and merge_input.general_knowledge)
         return result
@@ -1022,134 +991,138 @@ class BranchMerger:
     async def _apply_consensus_refinement(self, result: Dict, merge_input: MergeInput) -> Dict:
         """Aplicar refinamiento de consenso - IMPLEMENTACIÓN REAL"""
         from sheily_core.tools.real_merger_analysis import get_real_analyzer
-        
+
         analyzer = get_real_analyzer()
-        
+
         # Analizar la respuesta fusionada
         response_text = result.get("response", "")
         sources = merge_input.additional_sources
-        
+
         if not sources or not response_text:
             return result
-        
+
         # Evaluar calidad de la fusión
         original_responses = [{"response": s.get("content", "")} for s in sources]
         quality_score = analyzer.assess_multi_branch_quality(response_text, original_responses)
-        
+
         # Refinar si la calidad es baja
         if quality_score < 0.7:
             # Añadir contexto adicional
-            refinement = "\n\n**Nota**: Esta respuesta combina múltiples perspectivas con diferentes niveles de confianza."
+            refinement = (
+                "\n\n**Nota**: Esta respuesta combina múltiples perspectivas con diferentes niveles de confianza."
+            )
             result["response"] = response_text + refinement
             result["quality_score"] = quality_score
             result["refined"] = True
         else:
             result["quality_score"] = quality_score
             result["refined"] = False
-        
+
         return result
 
     async def _apply_adaptive_improvements(self, result: Dict, merge_input: MergeInput) -> Dict:
         """Aplicar mejoras adaptativas - IMPLEMENTACIÓN REAL"""
         from sheily_core.tools.real_merger_analysis import get_real_analyzer
-        
+
         analyzer = get_real_analyzer()
         response_text = result.get("response", "")
-        
+
         # Evaluar características del merge
         characteristics = analyzer.evaluate_merge_characteristics(merge_input)
-        
+
         # Aplicar mejoras según características
         improved_response = response_text
         confidence_boost = 0.0
-        
+
         # Si es complejo, añadir estructura
         if characteristics.get("complexity_high"):
             if not response_text.startswith("**"):
                 improved_response = f"🔍 **Análisis Integrado**\n\n{response_text}"
                 confidence_boost += 0.02
-        
+
         # Si hay múltiples fuentes, añadir síntesis
         if characteristics.get("sources_multiple"):
             num_sources = characteristics.get("num_additional_sources", 0)
-            synthesis = f"\n\n💡 **Síntesis**: Respuesta construida a partir de {num_sources + 1} fuentes complementarias."
+            synthesis = (
+                f"\n\n💡 **Síntesis**: Respuesta construida a partir de {num_sources + 1} fuentes complementarias."
+            )
             improved_response += synthesis
             confidence_boost += 0.03
-        
+
         # Si hay contexto rico, mencionarlo
         if characteristics.get("context_rich"):
             improved_response += "\n*Información contextualizada con conocimiento general.*"
             confidence_boost += 0.02
-        
+
         return {
             **result,
             "response": improved_response,
             "confidence": min(result.get("confidence", 0.5) + confidence_boost, 1.0),
-            "improvements_applied": True
+            "improvements_applied": True,
         }
 
     async def _analyze_branch_complementarity(self, responses: List[Any]) -> Dict:
         """Analizar complementariedad entre ramas - USA ANÁLISIS REAL"""
         from sheily_core.tools.real_merger_analysis import get_real_analyzer
-        
+
         analyzer = get_real_analyzer()
         # Llamar método REAL (no mock)
         result = analyzer.analyze_branch_complementarity(responses)
-        
+
         # Añadir campos adicionales
         result["overlap_areas"] = ["overlap detectado"] if result["overlap_percentage"] > 0.3 else []
-        result["unique_contributions"] = [
-            f"Contribución de {r.branch_name}" for r in responses
-        ] if hasattr(responses[0], 'branch_name') else []
-        
+        result["unique_contributions"] = (
+            [f"Contribución de {r.branch_name}" for r in responses] if hasattr(responses[0], "branch_name") else []
+        )
+
         return result
 
     async def _create_complementary_fusion(self, responses: List[Any], analysis: Dict) -> str:
         """Crear fusión complementaria - IMPLEMENTACIÓN REAL"""
         from sheily_core.tools.real_merger_analysis import get_real_analyzer
-        
+
         analyzer = get_real_analyzer()
-        
+
         # Análisis de complementariedad REAL
         complementarity_score = analysis.get("complementarity_score", 0.5)
         high_complementarity = analysis.get("high_complementarity", False)
-        
+
         fusion_parts = []
-        
+
         # Encabezado según nivel de complementariedad
         if high_complementarity:
             fusion_parts.append("**Análisis Multi-Dominio Complementario** (Alta Complementariedad)\n")
         else:
             fusion_parts.append("**Análisis Multi-Fuente Integrado**\n")
-        
+
         # Incluir cada perspectiva con análisis de contribución
         for i, response in enumerate(responses[:3], 1):
-            branch_name = getattr(response, 'branch_name', f'Fuente {i}')
-            response_text = getattr(response, 'response', str(response))
-            confidence = getattr(response, 'confidence', 0.5)
-            
+            branch_name = getattr(response, "branch_name", f"Fuente {i}")
+            response_text = getattr(response, "response", str(response))
+            confidence = getattr(response, "confidence", 0.5)
+
             # Extraer keywords únicos de esta respuesta
             keywords = analyzer._extract_keywords(response_text)
             unique_contribution = f" (Conceptos clave: {', '.join(keywords[:3])})" if keywords else ""
-            
+
             # Truncar inteligentemente en punto o línea
             truncate_at = 300
             if len(response_text) > truncate_at:
                 # Buscar punto más cercano
-                nearest_period = response_text[:truncate_at].rfind('.')
+                nearest_period = response_text[:truncate_at].rfind(".")
                 if nearest_period > truncate_at - 50:
                     truncate_at = nearest_period + 1
                 display_text = response_text[:truncate_at] + "..."
             else:
                 display_text = response_text
-            
+
             fusion_parts.append(
                 f"\n**{i}. {branch_name}** (confianza: {confidence:.0%}){unique_contribution}:\n{display_text}"
             )
-        
+
         # Síntesis integradora REAL basada en análisis
         overlap_pct = analysis.get("overlap_percentage", 0)
-        
+
         if high_complementarity:
             synthesis = (
                 f"\n**Síntesis Integradora:**\n"
@@ -1163,9 +1136,9 @@ class BranchMerger:
                 f"Integración de {len(responses)} fuentes con {100-overlap_pct:.0%} de contenido único. "
                 f"Las perspectivas muestran convergencia en conceptos centrales."
             )
-        
+
         fusion_parts.append(synthesis)
-        
+
         return "\n".join(fusion_parts)
 
     async def _create_consensus_fusion(self, responses: List[Any]) -> str:
@@ -1187,40 +1160,37 @@ class BranchMerger:
     async def _calculate_multi_branch_consensus(self, responses: List[Any]) -> float:
         """Calcular consenso multi-rama - IMPLEMENTACIÓN REAL"""
         from sheily_core.tools.real_merger_analysis import get_real_analyzer
-        
+
         if not responses:
             return 0.0
-        
+
         analyzer = get_real_analyzer()
-        
+
         # Convertir a formato de análisis
         sources_data = []
         for r in responses:
-            sources_data.append({
-                "response": getattr(r, 'response', str(r)),
-                "confidence": getattr(r, 'confidence', 0.5)
-            })
-        
+            sources_data.append(
+                {"response": getattr(r, "response", str(r)), "confidence": getattr(r, "confidence", 0.5)}
+            )
+
         # Análisis REAL de consenso
         analysis = analyzer.analyze_consensus(sources_data)
-        
+
         # Retornar nivel de consenso calculado con algoritmo real
         return analysis.get("consensus_level", 0.5)
 
-    async def _assess_multi_branch_quality(
-        self, response: str, original_responses: List[Any]
-    ) -> float:
+    async def _assess_multi_branch_quality(self, response: str, original_responses: List[Any]) -> float:
         """Evaluar calidad multi-rama - IMPLEMENTACIÓN REAL"""
         from sheily_core.tools.real_merger_analysis import get_real_analyzer
-        
+
         if not response or not original_responses:
             return 0.5
-        
+
         analyzer = get_real_analyzer()
-        
+
         # Usar evaluación REAL de calidad
         quality_score = analyzer.assess_multi_branch_quality(response, original_responses)
-        
+
         return quality_score
 
     def _generate_cache_key(self, specialized_response: Any, query: str) -> str:
@@ -1238,9 +1208,7 @@ class BranchMerger:
 
         self.merge_cache[cache_key] = result
 
-    async def _update_merge_stats(
-        self, result: MergeResult, strategy: MergeStrategy, processing_time: float
-    ):
+    async def _update_merge_stats(self, result: MergeResult, strategy: MergeStrategy, processing_time: float):
         """Actualizar estadísticas de fusión"""
         self.stats["total_merges"] += 1
 
@@ -1253,14 +1221,10 @@ class BranchMerger:
         total = self.stats["total_merges"]
 
         current_quality_avg = self.stats["average_quality_score"]
-        self.stats["average_quality_score"] = (
-            current_quality_avg * (total - 1) + result.merge_quality_score
-        ) / total
+        self.stats["average_quality_score"] = (current_quality_avg * (total - 1) + result.merge_quality_score) / total
 
         current_time_avg = self.stats["average_processing_time"]
-        self.stats["average_processing_time"] = (
-            current_time_avg * (total - 1) + processing_time
-        ) / total
+        self.stats["average_processing_time"] = (current_time_avg * (total - 1) + processing_time) / total
 
         # Contar fuentes combinadas
         for source in result.sources_combined:
@@ -1276,9 +1240,7 @@ class BranchMerger:
             "status": "healthy",
             "total_merges": self.stats["total_merges"],
             "success_rate": (
-                self.stats["successful_merges"] / self.stats["total_merges"]
-                if self.stats["total_merges"] > 0
-                else 0.0
+                self.stats["successful_merges"] / self.stats["total_merges"] if self.stats["total_merges"] > 0 else 0.0
             ),
             "average_quality": self.stats["average_quality_score"],
             "cache_size": len(self.merge_cache),

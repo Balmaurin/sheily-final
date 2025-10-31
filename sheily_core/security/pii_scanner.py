@@ -7,9 +7,7 @@ PII_PATTERNS = {
     "email": re.compile(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+"),
     "credit_card": re.compile(r"\b(?:\d[ -]*?){13,16}\b"),
     "ssn_us": re.compile(r"\b\d{3}-\d{2}-\d{4}\b"),
-    "phone": re.compile(
-        r"\b(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,4}\)?[-.\s]?)?\d{3,4}[-.\s]?\d{3,4}\b"
-    ),
+    "phone": re.compile(r"\b(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,4}\)?[-.\s]?)?\d{3,4}[-.\s]?\d{3,4}\b"),
 }
 
 

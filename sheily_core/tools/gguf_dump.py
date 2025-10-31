@@ -10,10 +10,7 @@ from pathlib import Path
 from typing import Any
 
 # Necessary to load the local gguf package
-if (
-    "NO_LOCAL_GGUF" not in os.environ
-    and (Path(__file__).parent.parent.parent.parent / "gguf-py").exists()
-):
+if "NO_LOCAL_GGUF" not in os.environ and (Path(__file__).parent.parent.parent.parent / "gguf-py").exists():
     sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from gguf import GGUFReader, GGUFValueType, ReaderTensor  # noqa: E402
@@ -34,9 +31,7 @@ def get_file_host_endian(reader: GGUFReader) -> tuple[str, str]:
 # please see the comments in the modify_gguf.py example.
 def dump_metadata(reader: GGUFReader, args: argparse.Namespace) -> None:
     host_endian, file_endian = get_file_host_endian(reader)
-    print(
-        f"* File is {file_endian} endian, script is running on a {host_endian} endian host."
-    )  # noqa: NP100
+    print(f"* File is {file_endian} endian, script is running on a {host_endian} endian host.")  # noqa: NP100
     print(f"* Dumping {len(reader.fields)} key/value pair(s)")  # noqa: NP100
     for n, field in enumerate(reader.fields.values(), 1):
         if not field.types:
@@ -67,9 +62,7 @@ def dump_metadata(reader: GGUFReader, args: argparse.Namespace) -> None:
         return
     print(f"* Dumping {len(reader.tensors)} tensor(s)")  # noqa: NP100
     for n, tensor in enumerate(reader.tensors, 1):
-        prettydims = ", ".join(
-            "{0:5}".format(d) for d in list(tensor.shape) + [1] * (4 - len(tensor.shape))
-        )
+        prettydims = ", ".join("{0:5}".format(d) for d in list(tensor.shape) + [1] * (4 - len(tensor.shape)))
         print(
             f"  {n:5}: {tensor.n_elements:10} | {prettydims} | {tensor.tensor_type.name:7} | {tensor.name}"
         )  # noqa: NP100
@@ -112,9 +105,7 @@ def dump_metadata_json(reader: GGUFReader, args: argparse.Namespace) -> None:
     json.dump(result, sys.stdout)
 
 
-def markdown_table_with_alignment_support(
-    header_map: list[dict[str, str]], data: list[dict[str, Any]]
-):
+def markdown_table_with_alignment_support(header_map: list[dict[str, str]], data: list[dict[str, Any]]):
     # JSON to Markdown table formatting: https://stackoverflow.com/a/72983854/2850957
 
     # Alignment Utility Function
@@ -161,8 +152,7 @@ def markdown_table_with_alignment_support(
     )
     rows.append(
         "|".join(
-            dashAlign(rowsPadding[index], columnEntry.get("align"))
-            for index, columnEntry in enumerate(header_map)
+            dashAlign(rowsPadding[index], columnEntry.get("align")) for index, columnEntry in enumerate(header_map)
         )
     )
 
@@ -170,9 +160,7 @@ def markdown_table_with_alignment_support(
     for item in data:
         rows.append(
             "|".join(
-                strAlign(
-                    rowsPadding[index], columnEntry.get("align"), str(item[columnEntry["key_name"]])
-                )
+                strAlign(rowsPadding[index], columnEntry.get("align"), str(item[columnEntry["key_name"]]))
                 for index, columnEntry in enumerate(header_map)
             )
         )
@@ -285,9 +273,7 @@ def dump_markdown_metadata(reader: GGUFReader, args: argparse.Namespace) -> None
         def escape_markdown_inline_code(value_string):
             # Find the longest contiguous sequence of backticks in the string then
             # wrap string with appropriate number of backticks required to escape it
-            max_backticks = max(
-                (len(match.group(0)) for match in re.finditer(r"`+", value_string)), default=0
-            )
+            max_backticks = max((len(match.group(0)) for match in re.finditer(r"`+", value_string)), default=0)
             inline_code_marker = "`" * (max_backticks + 1)
 
             # If the string starts or ends with a backtick, add a space at the beginning and end
@@ -326,9 +312,7 @@ def dump_markdown_metadata(reader: GGUFReader, args: argparse.Namespace) -> None
                         )
                         if len(value_string) > truncate_length:
                             head = escape_markdown_inline_code(value_string[: truncate_length // 2])
-                            tail = escape_markdown_inline_code(
-                                value_string[-truncate_length // 2 :]
-                            )
+                            tail = escape_markdown_inline_code(value_string[-truncate_length // 2 :])
                             value = "{head}...{tail}".format(head=head, tail=tail)
                         else:
                             value = escape_markdown_inline_code(value_string)
@@ -337,11 +321,11 @@ def dump_markdown_metadata(reader: GGUFReader, args: argparse.Namespace) -> None
                 elif curr_type in reader.gguf_scalar_to_np:
                     render_element = min(7, total_elements)
                     for element_pos in range(render_element):
-                        array_elements.append(
-                            str(field.parts[-1 - (total_elements - element_pos - 1)][0])
-                        )
+                        array_elements.append(str(field.parts[-1 - (total_elements - element_pos - 1)][0]))
 
-                value = f'[ {", ".join(array_elements).strip()}{", ..." if total_elements > len(array_elements) else ""} ]'
+                value = (
+                    f'[ {", ".join(array_elements).strip()}{", ..." if total_elements > len(array_elements) else ""} ]'
+                )
 
         kv_dump_table.append(
             {
@@ -361,9 +345,7 @@ def dump_markdown_metadata(reader: GGUFReader, args: argparse.Namespace) -> None
         {"key_name": "value", "header_name": "Value", "align": "left"},
     ]
 
-    markdown_content += markdown_table_with_alignment_support(
-        kv_dump_table_header_map, kv_dump_table
-    )
+    markdown_content += markdown_table_with_alignment_support(kv_dump_table_header_map, kv_dump_table)
 
     markdown_content += "\n"
 
@@ -383,9 +365,7 @@ def dump_markdown_metadata(reader: GGUFReader, args: argparse.Namespace) -> None
             if tensor_components[0] == "blk":
                 tensor_group_name = f"{tensor_components[0]}.{tensor_components[1]}"
             elif tensor_components[0] in ["enc", "dec"] and tensor_components[1] == "blk":
-                tensor_group_name = (
-                    f"{tensor_components[0]}.{tensor_components[1]}.{tensor_components[2]}"
-                )
+                tensor_group_name = f"{tensor_components[0]}.{tensor_components[1]}.{tensor_components[2]}"
             elif tensor_components[0] in ["enc", "dec"]:
                 tensor_group_name = f"{tensor_components[0]}"
 
@@ -399,9 +379,7 @@ def dump_markdown_metadata(reader: GGUFReader, args: argparse.Namespace) -> None
             tensor_name_to_key[tensor.name] = key
 
         # Tensors Mapping Dump
-        markdown_content += (
-            f"## Tensors Overview {element_count_rounded_notation(total_elements)} Elements\n\n"
-        )
+        markdown_content += f"## Tensors Overview {element_count_rounded_notation(total_elements)} Elements\n\n"
         markdown_content += f"Total number of elements in all tensors: {total_elements} Elements\n"
         markdown_content += "\n"
 
@@ -414,9 +392,7 @@ def dump_markdown_metadata(reader: GGUFReader, args: argparse.Namespace) -> None
 
         markdown_content += "### Tensor Data Offset\n"
         markdown_content += "\n"
-        markdown_content += (
-            "This table contains the offset and data segment relative to start of file\n"
-        )
+        markdown_content += "This table contains the offset and data segment relative to start of file\n"
         markdown_content += "\n"
 
         tensor_mapping_table: list[dict[str, str | int]] = []
@@ -461,12 +437,8 @@ def dump_markdown_metadata(reader: GGUFReader, args: argparse.Namespace) -> None
                     prettify_element_est_count_size,
                     len(str(element_count_rounded_notation(tensor.n_elements))),
                 )
-                prettify_element_count_size = max(
-                    prettify_element_count_size, len(str(tensor.n_elements))
-                )
-                for i, dimension_size in enumerate(
-                    list(tensor.shape) + [1] * (4 - len(tensor.shape))
-                ):
+                prettify_element_count_size = max(prettify_element_count_size, len(str(tensor.n_elements)))
+                for i, dimension_size in enumerate(list(tensor.shape) + [1] * (4 - len(tensor.shape))):
                     prettify_dimension_max_widths[i] = max(
                         prettify_dimension_max_widths.get(i, 1), len(str(dimension_size))
                     )
@@ -481,10 +453,10 @@ def dump_markdown_metadata(reader: GGUFReader, args: argparse.Namespace) -> None
                     f"{str(d):>{prettify_dimension_max_widths[i]}}"
                     for i, d in enumerate(list(tensor.shape) + [1] * (4 - len(tensor.shape)))
                 )
-                element_count_est = f"({element_count_rounded_notation(tensor.n_elements):>{prettify_element_est_count_size}})"
-                element_count_string = (
-                    f"{element_count_est} {tensor.n_elements:>{prettify_element_count_size}}"
+                element_count_est = (
+                    f"({element_count_rounded_notation(tensor.n_elements):>{prettify_element_est_count_size}})"
                 )
+                element_count_string = f"{element_count_est} {tensor.n_elements:>{prettify_element_count_size}}"
                 type_name_string = f"{tensor.tensor_type.name}"
                 if tensor.n_elements > 0:
                     bpw = (tensor.n_bytes * 8) / tensor.n_elements
@@ -518,31 +490,25 @@ def dump_markdown_metadata(reader: GGUFReader, args: argparse.Namespace) -> None
                 {"key_name": "bpw", "header_name": "BPW", "align": "right"},
             ]
 
-            markdown_content += markdown_table_with_alignment_support(
-                tensor_dump_table_header_map, tensor_dump_table
-            )
+            markdown_content += markdown_table_with_alignment_support(tensor_dump_table_header_map, tensor_dump_table)
 
             markdown_content += "\n"
-            markdown_content += f"- Total elements in {group}: ({element_count_rounded_notation(group_elements):>4}) {group_elements}\n"
+            markdown_content += (
+                f"- Total elements in {group}: ({element_count_rounded_notation(group_elements):>4}) {group_elements}\n"
+            )
             markdown_content += f"- Percentage of total elements: {group_percentage:.2f}%\n"
             if total_group_elements > 0:
                 total_group_bpw = (total_group_bytes * 8) / total_group_elements
-                markdown_content += (
-                    f"- Bits per Weight (BPW) for {group}: {total_group_bpw:.4f} bits\n"
-                )
+                markdown_content += f"- Bits per Weight (BPW) for {group}: {total_group_bpw:.4f} bits\n"
             else:
-                markdown_content += (
-                    f"- Bits per Weight (BPW) for {group}: undefined (no elements)\n"
-                )
+                markdown_content += f"- Bits per Weight (BPW) for {group}: undefined (no elements)\n"
             markdown_content += "\n\n"
             total_model_bytes += total_group_bytes
             total_model_elements += total_group_elements
 
     if total_model_elements > 0:
         total_model_bpw = (total_model_bytes * 8) / total_model_elements
-        markdown_content += (
-            f"Total BPW for {os.path.basename(args.model)}: {total_model_bpw:.4f} bits"
-        )
+        markdown_content += f"Total BPW for {os.path.basename(args.model)}: {total_model_bpw:.4f} bits"
     else:
         markdown_content += f"Total BPW for {os.path.basename(args.model)}: undefined (no elements)"
     print(markdown_content)  # noqa: NP100
@@ -553,9 +519,7 @@ def main() -> None:
     parser.add_argument("model", type=str, help="GGUF format model filename")
     parser.add_argument("--no-tensors", action="store_true", help="Don't dump tensor metadata")
     parser.add_argument("--json", action="store_true", help="Produce JSON output")
-    parser.add_argument(
-        "--json-array", action="store_true", help="Include full array values in JSON output (long)"
-    )
+    parser.add_argument("--json-array", action="store_true", help="Include full array values in JSON output (long)")
     parser.add_argument("--data-offset", action="store_true", help="Start of data offset")
     parser.add_argument(
         "--data-alignment",

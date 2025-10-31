@@ -36,10 +36,7 @@ from PySide6.QtWidgets import (
 )
 
 # Necessary to load the local gguf package
-if (
-    "NO_LOCAL_GGUF" not in os.environ
-    and (Path(__file__).parent.parent.parent.parent / "gguf-py").exists()
-):
+if "NO_LOCAL_GGUF" not in os.environ and (Path(__file__).parent.parent.parent.parent / "gguf-py").exists():
     sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 import gguf
@@ -115,16 +112,10 @@ class TokenizerEditorDialog(QDialog):
         self.tokens_table = QTableWidget()
         self.tokens_table.setColumnCount(4)
         self.tokens_table.setHorizontalHeaderLabels(["Index", "Token", "Type", "Score"])
-        self.tokens_table.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.ResizeToContents
-        )
+        self.tokens_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
         self.tokens_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
-        self.tokens_table.horizontalHeader().setSectionResizeMode(
-            2, QHeaderView.ResizeMode.ResizeToContents
-        )
-        self.tokens_table.horizontalHeader().setSectionResizeMode(
-            3, QHeaderView.ResizeMode.ResizeToContents
-        )
+        self.tokens_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
+        self.tokens_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
 
         layout.addWidget(self.tokens_table)
 
@@ -144,9 +135,7 @@ class TokenizerEditorDialog(QDialog):
         layout.addLayout(controls_layout)
 
         # Buttons
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
@@ -172,9 +161,7 @@ class TokenizerEditorDialog(QDialog):
                     self.filtered_indices.append(i)
 
         # Reset to first page and reload
-        self.total_pages = max(
-            1, (len(self.filtered_indices) + self.page_size - 1) // self.page_size
-        )
+        self.total_pages = max(1, (len(self.filtered_indices) + self.page_size - 1) // self.page_size)
         self.current_page = 0
         self.page_label.setText(f"Page 1 of {self.total_pages}")
         self.load_page()
@@ -271,9 +258,7 @@ class TokenizerEditorDialog(QDialog):
 
         layout.addWidget(combo)
 
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttons.accepted.connect(dialog.accept)
         buttons.rejected.connect(dialog.reject)
         layout.addWidget(buttons)
@@ -308,9 +293,7 @@ class TokenizerEditorDialog(QDialog):
             self.filtered_indices.append(orig_idx)
 
         # Update pagination
-        self.total_pages = max(
-            1, (len(self.filtered_indices) + self.page_size - 1) // self.page_size
-        )
+        self.total_pages = max(1, (len(self.filtered_indices) + self.page_size - 1) // self.page_size)
 
         # Go to the last page to show the new item
         self.current_page = self.total_pages - 1
@@ -356,9 +339,7 @@ class TokenizerEditorDialog(QDialog):
                 self.filtered_indices.append(i)
 
         # Update pagination
-        self.total_pages = max(
-            1, (len(self.filtered_indices) + self.page_size - 1) // self.page_size
-        )
+        self.total_pages = max(1, (len(self.filtered_indices) + self.page_size - 1) // self.page_size)
         self.current_page = min(self.current_page, self.total_pages - 1)
         self.page_label.setText(f"Page {self.current_page + 1} of {self.total_pages}")
 
@@ -434,24 +415,14 @@ class ArrayEditorDialog(QDialog):
         if self.enum_type is not None:
             self.items_table.setColumnCount(3)
             self.items_table.setHorizontalHeaderLabels(["Index", "Value", "Actions"])
-            self.items_table.horizontalHeader().setSectionResizeMode(
-                0, QHeaderView.ResizeMode.ResizeToContents
-            )
-            self.items_table.horizontalHeader().setSectionResizeMode(
-                1, QHeaderView.ResizeMode.Stretch
-            )
-            self.items_table.horizontalHeader().setSectionResizeMode(
-                2, QHeaderView.ResizeMode.ResizeToContents
-            )
+            self.items_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+            self.items_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+            self.items_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
         else:
             self.items_table.setColumnCount(2)
             self.items_table.setHorizontalHeaderLabels(["Index", "Value"])
-            self.items_table.horizontalHeader().setSectionResizeMode(
-                0, QHeaderView.ResizeMode.ResizeToContents
-            )
-            self.items_table.horizontalHeader().setSectionResizeMode(
-                1, QHeaderView.ResizeMode.Stretch
-            )
+            self.items_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+            self.items_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
 
         layout.addWidget(self.items_table)
 
@@ -477,9 +448,7 @@ class ArrayEditorDialog(QDialog):
         layout.addLayout(controls_layout)
 
         # Buttons
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
@@ -518,9 +487,7 @@ class ArrayEditorDialog(QDialog):
                         self.filtered_indices.append(i)
 
         # Reset to first page and reload
-        self.total_pages = max(
-            1, (len(self.filtered_indices) + self.page_size - 1) // self.page_size
-        )
+        self.total_pages = max(1, (len(self.filtered_indices) + self.page_size - 1) // self.page_size)
         self.current_page = 0
         self.page_label.setText(f"Page 1 of {self.total_pages}")
         self.load_page()
@@ -636,9 +603,7 @@ class ArrayEditorDialog(QDialog):
 
         layout.addWidget(combo)
 
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttons.accepted.connect(dialog.accept)
         buttons.rejected.connect(dialog.reject)
         layout.addWidget(buttons)
@@ -680,9 +645,7 @@ class ArrayEditorDialog(QDialog):
         self.filtered_indices.append(orig_idx)
 
         # Update pagination
-        self.total_pages = max(
-            1, (len(self.filtered_indices) + self.page_size - 1) // self.page_size
-        )
+        self.total_pages = max(1, (len(self.filtered_indices) + self.page_size - 1) // self.page_size)
 
         # Go to the last page to show the new item
         self.current_page = self.total_pages - 1
@@ -736,9 +699,7 @@ class ArrayEditorDialog(QDialog):
                         self.filtered_indices.append(i)
 
         # Update pagination
-        self.total_pages = max(
-            1, (len(self.filtered_indices) + self.page_size - 1) // self.page_size
-        )
+        self.total_pages = max(1, (len(self.filtered_indices) + self.page_size - 1) // self.page_size)
         self.current_page = min(self.current_page, self.total_pages - 1)
         self.page_label.setText(f"Page {self.current_page + 1} of {self.total_pages}")
 
@@ -779,9 +740,7 @@ class ArrayEditorDialog(QDialog):
 
         layout.addWidget(combo)
 
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttons.accepted.connect(dialog.accept)
         buttons.rejected.connect(dialog.reject)
         layout.addWidget(buttons)
@@ -831,9 +790,7 @@ class AddMetadataDialog(QDialog):
 
         layout.addLayout(form_layout)
 
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
@@ -918,18 +875,10 @@ class GGUFEditorWindow(QMainWindow):
         self.metadata_table = QTableWidget()
         self.metadata_table.setColumnCount(4)
         self.metadata_table.setHorizontalHeaderLabels(["Key", "Type", "Value", "Actions"])
-        self.metadata_table.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.Stretch
-        )
-        self.metadata_table.horizontalHeader().setSectionResizeMode(
-            1, QHeaderView.ResizeMode.ResizeToContents
-        )
-        self.metadata_table.horizontalHeader().setSectionResizeMode(
-            2, QHeaderView.ResizeMode.Stretch
-        )
-        self.metadata_table.horizontalHeader().setSectionResizeMode(
-            3, QHeaderView.ResizeMode.ResizeToContents
-        )
+        self.metadata_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        self.metadata_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        self.metadata_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        self.metadata_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
         metadata_layout.addWidget(self.metadata_table)
 
         # Metadata controls
@@ -949,24 +898,12 @@ class GGUFEditorWindow(QMainWindow):
 
         self.tensors_table = QTableWidget()
         self.tensors_table.setColumnCount(5)
-        self.tensors_table.setHorizontalHeaderLabels(
-            ["Name", "Type", "Shape", "Elements", "Size (bytes)"]
-        )
-        self.tensors_table.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.Stretch
-        )
-        self.tensors_table.horizontalHeader().setSectionResizeMode(
-            1, QHeaderView.ResizeMode.ResizeToContents
-        )
-        self.tensors_table.horizontalHeader().setSectionResizeMode(
-            2, QHeaderView.ResizeMode.ResizeToContents
-        )
-        self.tensors_table.horizontalHeader().setSectionResizeMode(
-            3, QHeaderView.ResizeMode.ResizeToContents
-        )
-        self.tensors_table.horizontalHeader().setSectionResizeMode(
-            4, QHeaderView.ResizeMode.ResizeToContents
-        )
+        self.tensors_table.setHorizontalHeaderLabels(["Name", "Type", "Shape", "Elements", "Size (bytes)"])
+        self.tensors_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        self.tensors_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        self.tensors_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
+        self.tensors_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
+        self.tensors_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
         tensors_layout.addWidget(self.tensors_table)
 
         # Add tabs to tab widget
@@ -1003,9 +940,7 @@ class GGUFEditorWindow(QMainWindow):
             return False
 
     def open_file(self):
-        file_path, _ = QFileDialog.getOpenFileName(
-            self, "Open GGUF File", "", "GGUF Files (*.gguf);;All Files (*)"
-        )
+        file_path, _ = QFileDialog.getOpenFileName(self, "Open GGUF File", "", "GGUF Files (*.gguf);;All Files (*)")
 
         if not file_path:
             return
@@ -1169,7 +1104,9 @@ class GGUFEditorWindow(QMainWindow):
             else:
                 array_elements = [str(array_values[i]) for i in range(render_element)]
 
-            return f"[ {', '.join(array_elements).strip()}{', ...' if len(array_values) > len(array_elements) else ''} ]"
+            return (
+                f"[ {', '.join(array_elements).strip()}{', ...' if len(array_values) > len(array_elements) else ''} ]"
+            )
 
         return "Complex value"
 
@@ -1374,9 +1311,7 @@ class GGUFEditorWindow(QMainWindow):
 
         layout.addWidget(combo)
 
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttons.accepted.connect(dialog.accept)
         buttons.rejected.connect(dialog.reject)
         layout.addWidget(buttons)
@@ -1571,9 +1506,7 @@ class GGUFEditorWindow(QMainWindow):
             QMessageBox.information(self, "No Changes", "No changes to save")
             return
 
-        file_path, _ = QFileDialog.getSaveFileName(
-            self, "Save GGUF File As", "", "GGUF Files (*.gguf);;All Files (*)"
-        )
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save GGUF File As", "", "GGUF Files (*.gguf);;All Files (*)")
 
         if not file_path:
             return

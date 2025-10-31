@@ -65,9 +65,7 @@ def test_single_prompt_similarity(python_emb, cpp_emb, tokens, prompt):
         py_mag = np.linalg.norm(python_emb[0])
         cpp_mag = np.linalg.norm(cpp_emb[0])
         ratio = py_mag / cpp_mag if cpp_mag > 0 else float("inf")
-        print(
-            f"   Pooled embedding: Python={py_mag:.3f}, llama.cpp={cpp_mag:.3f}, ratio={ratio:.3f}"
-        )
+        print(f"   Pooled embedding: Python={py_mag:.3f}, llama.cpp={cpp_mag:.3f}, ratio={ratio:.3f}")
 
         # 2. Cross-model similarity for pooled embeddings
         print(f"\n2. Cross-Model Pooled Embedding Similarity:")
@@ -89,16 +87,10 @@ def test_single_prompt_similarity(python_emb, cpp_emb, tokens, prompt):
         # if the vectors are on the same "sphere". This does not tell us about
         # direction (meaning of the token embedding), just magnitude.
         for i in range(n_tokens):
-            py_mag = np.linalg.norm(
-                python_emb[i]
-            )  # calculate standard euclidean norm for Python embeddings
-            cpp_mag = np.linalg.norm(
-                cpp_emb[i]
-            )  # calculate standard euclidean norm for llama.cpp embeddings
+            py_mag = np.linalg.norm(python_emb[i])  # calculate standard euclidean norm for Python embeddings
+            cpp_mag = np.linalg.norm(cpp_emb[i])  # calculate standard euclidean norm for llama.cpp embeddings
             ratio = py_mag / cpp_mag if cpp_mag > 0 else float("inf")
-            print(
-                f"   Token {i} ({tokens[i]}): Python={py_mag:.3f}, llama.cpp={cpp_mag:.3f}, ratio={ratio:.3f}"
-            )
+            print(f"   Token {i} ({tokens[i]}): Python={py_mag:.3f}, llama.cpp={cpp_mag:.3f}, ratio={ratio:.3f}")
 
         # 2. Cosine similarity between tokens within each model
         # Here we check the direction of token embeddings to see if the have the
@@ -157,18 +149,10 @@ def read_prompt_from_file(file_path):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Test semantic similarity between Python and llama.cpp embeddings"
-    )
-    parser.add_argument(
-        "--model-path", "-m", required=True, help="Path to the original Python model"
-    )
-    parser.add_argument(
-        "--python-embeddings", "-pe", help='Path to pytorch embeddings "logits" binary file'
-    )
-    parser.add_argument(
-        "--cpp-embeddings", "-ce", help='Path to llama.cpp embeddings "logits" binary file'
-    )
+    parser = argparse.ArgumentParser(description="Test semantic similarity between Python and llama.cpp embeddings")
+    parser.add_argument("--model-path", "-m", required=True, help="Path to the original Python model")
+    parser.add_argument("--python-embeddings", "-pe", help='Path to pytorch embeddings "logits" binary file')
+    parser.add_argument("--cpp-embeddings", "-ce", help='Path to llama.cpp embeddings "logits" binary file')
     parser.add_argument(
         "--causal",
         "-c",
@@ -199,9 +183,7 @@ def main():
 
     if unreleased_model_name:
         model_name_lower = unreleased_model_name.lower()
-        unreleased_module_path = (
-            f"transformers.models.{model_name_lower}.modular_{model_name_lower}"
-        )
+        unreleased_module_path = f"transformers.models.{model_name_lower}.modular_{model_name_lower}"
         if args.causal:
             class_name = f"{unreleased_model_name}ForCausalLM"
         else:
@@ -228,12 +210,8 @@ def main():
     print(f"hidden_size: {model.config.hidden_size}")
 
     # Load binary embeddings from data directory.
-    llamacpp_embeddings = load_embeddings_from_file(
-        args.cpp_embeddings, n_tokens, model.config.hidden_size
-    )
-    python_embeddings = load_embeddings_from_file(
-        args.python_embeddings, n_tokens, model.config.hidden_size
-    )
+    llamacpp_embeddings = load_embeddings_from_file(args.cpp_embeddings, n_tokens, model.config.hidden_size)
+    python_embeddings = load_embeddings_from_file(args.python_embeddings, n_tokens, model.config.hidden_size)
 
     # Run comparison
     results = test_single_prompt_similarity(python_embeddings, llamacpp_embeddings, tokens, prompt)

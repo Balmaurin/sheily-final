@@ -207,9 +207,7 @@ def test_chat_completion_stream(
             assert data["usage"]["completion_tokens"] == n_predicted
 
 
-def _validate_stream_choice(
-    data, index: int, content: str, re_content: str, finish_reason: str, last_cmpl_id
-):
+def _validate_stream_choice(data, index: int, content: str, re_content: str, finish_reason: str, last_cmpl_id):
     """Validar choice en stream"""
     choice = data["choices"][0]
     if index == 0:
@@ -344,9 +342,7 @@ def test_apply_chat_template():
         ({"type": "json_object", "schema": {"type": "hiccup"}}, 0, None),
     ],
 )
-def test_completion_with_response_format(
-    response_format: dict, n_predicted: int, re_content: str | None
-):
+def test_completion_with_response_format(response_format: dict, n_predicted: int, re_content: str | None):
     global server
     server.start()
     res = server.make_request(
@@ -377,9 +373,7 @@ def test_completion_with_response_format(
         (True, {"const": "42"}, 6, '"42"'),
     ],
 )
-def test_completion_with_json_schema(
-    jinja: bool, json_schema: dict, n_predicted: int, re_content: str
-):
+def test_completion_with_json_schema(jinja: bool, json_schema: dict, n_predicted: int, re_content: str):
     global server
     server.jinja = jinja
     server.start()
@@ -578,9 +572,7 @@ def test_logprobs_stream():
     for i, data in enumerate(res):
         if not data.choices:
             continue
-        output_text, aggregated_text = _process_stream_choice(
-            data.choices[0], i, output_text, aggregated_text
-        )
+        output_text, aggregated_text = _process_stream_choice(data.choices[0], i, output_text, aggregated_text)
     assert aggregated_text == output_text
 
 

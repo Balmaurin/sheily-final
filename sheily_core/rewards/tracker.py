@@ -47,9 +47,7 @@ class SessionTracker:
         session_str = json.dumps(session_data, sort_keys=True)
         return hashlib.sha256(session_str.encode("utf-8")).hexdigest()
 
-    def track_session(
-        self, domain: str, query: str, response: str, quality_score: float
-    ) -> Dict[str, Any]:
+    def track_session(self, domain: str, query: str, response: str, quality_score: float) -> Dict[str, Any]:
         """
         Registrar una sesión para evaluación de recompensas
 
@@ -83,9 +81,7 @@ class SessionTracker:
 
         return session_data
 
-    def get_useful_sessions(
-        self, min_quality_score: float = 0.7, domain: str = None
-    ) -> List[Dict[str, Any]]:
+    def get_useful_sessions(self, min_quality_score: float = 0.7, domain: str = None) -> List[Dict[str, Any]]:
         """
         Obtener sesiones útiles para entrenamiento
 

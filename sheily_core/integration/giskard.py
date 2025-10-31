@@ -36,9 +36,7 @@ def _scan_with_real_giskard(model_path: str, data: List[Dict]) -> Dict[str, Any]
     import pandas as pd
 
     # Preparar datos
-    df = pd.DataFrame(
-        {"input": [item["input"] for item in data], "output": [item["output"] for item in data]}
-    )
+    df = pd.DataFrame({"input": [item["input"] for item in data], "output": [item["output"] for item in data]})
 
     # Crear dataset de Giskard
     dataset = Dataset(df, target="output", feature_names=["input"])

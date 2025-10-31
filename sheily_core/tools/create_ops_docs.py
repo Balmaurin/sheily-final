@@ -15,9 +15,7 @@ class DocsGenerator:
         self.ggml_root = Path(ggml_root)
         self.ops_dir = self.ggml_root / "docs" / "ops"
         self.output_filename = output_filename
-        self.backend_support: dict[str, dict[str, list[bool]]] = defaultdict(
-            lambda: defaultdict(list)
-        )
+        self.backend_support: dict[str, dict[str, list[bool]]] = defaultdict(lambda: defaultdict(list))
         self.all_operations: set[str] = set()
         self.all_backends: set[str] = set()
         self.logger = logging.getLogger(__name__)
@@ -173,9 +171,7 @@ class DocsGenerator:
             )
             return
 
-        self.logger.info(
-            f"Found {len(self.all_operations)} operations across {len(self.all_backends)} backends"
-        )
+        self.logger.info(f"Found {len(self.all_operations)} operations across {len(self.all_backends)} backends")
 
         self.logger.info("Generating markdown...")
         markdown_content = self.generate_markdown()

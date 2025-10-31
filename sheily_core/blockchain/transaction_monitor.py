@@ -140,9 +140,7 @@ class TransactionMonitor:
                 )
                 self.monitoring_rules[rule.rule_id] = rule
 
-            logger.info(
-                f"✅ Configuración de monitoreo cargada: {len(self.monitoring_rules)} reglas"
-            )
+            logger.info(f"✅ Configuración de monitoreo cargada: {len(self.monitoring_rules)} reglas")
         else:
             self._create_default_config()
 
@@ -278,9 +276,7 @@ class TransactionMonitor:
         # Regla: Transacciones fallidas
         if rule.rule_id == "failed_transactions":
             if event.status == TransactionStatus.FAILED:
-                failed_count = self._get_failed_transactions_count(
-                    conditions.get("time_window", 3600)
-                )
+                failed_count = self._get_failed_transactions_count(conditions.get("time_window", 3600))
                 return failed_count >= conditions.get("max_failed", 10)
 
         # Regla: Timeout de transacciones pendientes
@@ -295,9 +291,7 @@ class TransactionMonitor:
 
         # Regla: Actividad sospechosa
         elif rule.rule_id == "suspicious_activity":
-            user_transactions = self._get_user_transactions_count(
-                event.user_id, conditions.get("time_window", 300)
-            )
+            user_transactions = self._get_user_transactions_count(event.user_id, conditions.get("time_window", 300))
             return user_transactions >= conditions.get("max_transactions_per_user", 5)
 
         return False
@@ -315,9 +309,7 @@ class TransactionMonitor:
         """Obtener cantidad de transacciones de usuario en ventana de tiempo"""
         cutoff_time = datetime.now() - timedelta(seconds=time_window)
         return sum(
-            1
-            for event in self.transaction_events
-            if event.user_id == user_id and event.timestamp >= cutoff_time
+            1 for event in self.transaction_events if event.user_id == user_id and event.timestamp >= cutoff_time
         )
 
     def _trigger_alert(self, rule: MonitoringRule, event: TransactionEvent):
@@ -399,18 +391,14 @@ class TransactionMonitor:
     def _cleanup_old_alerts(self):
         """Limpiar alertas antiguas"""
         cutoff_time = datetime.now() - timedelta(days=7)  # 7 días
-        self.active_alerts = [
-            alert for alert in self.active_alerts if alert.timestamp >= cutoff_time
-        ]
+        self.active_alerts = [alert for alert in self.active_alerts if alert.timestamp >= cutoff_time]
 
     def add_alert_callback(self, callback: Callable[[Alert], None]):
         """Agregar callback de alerta"""
         self.alert_callbacks.append(callback)
         logger.info("✅ Callback de alerta agregado")
 
-    def get_transaction_events(
-        self, user_id: Optional[str] = None, limit: int = 100
-    ) -> List[TransactionEvent]:
+    def get_transaction_events(self, user_id: Optional[str] = None, limit: int = 100) -> List[TransactionEvent]:
         """Obtener eventos de transacciones"""
         events = self.transaction_events
 

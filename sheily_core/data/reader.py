@@ -38,9 +38,7 @@ def read_gguf_file(gguf_file_path):
         shape_str = "x".join(map(str, tensor.shape))
         size_str = str(tensor.n_elements)
         quantization_str = tensor.tensor_type.name
-        print(
-            tensor_info_format.format(tensor.name, shape_str, size_str, quantization_str)
-        )  # noqa: NP100
+        print(tensor_info_format.format(tensor.name, shape_str, size_str, quantization_str))  # noqa: NP100
 
 
 if __name__ == "__main__":

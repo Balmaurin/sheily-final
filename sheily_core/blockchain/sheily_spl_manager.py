@@ -402,9 +402,7 @@ class SheilySPLManager:
             token_account = self.token_accounts[user_id]
 
             if token_account.balance < amount:
-                raise ValueError(
-                    f"Balance insuficiente para quemar: {token_account.balance} < {amount}"
-                )
+                raise ValueError(f"Balance insuficiente para quemar: {token_account.balance} < {amount}")
 
             # Crear transacción de quema
             transaction_id = str(uuid4())

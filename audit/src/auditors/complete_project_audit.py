@@ -807,13 +807,9 @@ class CompleteProjectAuditor:
                     lines = f.readlines()
                     if len(lines) > 0:
                         # Verificar líneas demasiado largas (básico)
-                        long_lines = [
-                            i + 1 for i, line in enumerate(lines) if len(line.rstrip()) > 120
-                        ]
+                        long_lines = [i + 1 for i, line in enumerate(lines) if len(line.rstrip()) > 120]
                         if long_lines:
-                            style_issues.append(
-                                f"{py_file.name}: {len(long_lines)} líneas >120 chars"
-                            )
+                            style_issues.append(f"{py_file.name}: {len(long_lines)} líneas >120 chars")
 
             except Exception:
                 continue
@@ -1077,13 +1073,9 @@ class CompleteProjectAuditor:
             try:
                 size = model_file.stat().st_size
                 if size < 50000:  # <50KB - demasiado pequeño
-                    abnormal_sizes.append(
-                        f"{model_file.parent.name}: {size/1024:.1f}KB (muy pequeño)"
-                    )
+                    abnormal_sizes.append(f"{model_file.parent.name}: {size/1024:.1f}KB (muy pequeño)")
                 elif size > 50000000:  # >50MB - demasiado grande
-                    abnormal_sizes.append(
-                        f"{model_file.parent.name}: {size/1024/1024:.1f}MB (muy grande)"
-                    )
+                    abnormal_sizes.append(f"{model_file.parent.name}: {size/1024/1024:.1f}MB (muy grande)")
             except Exception:
                 continue
 
@@ -1241,9 +1233,7 @@ class CompleteProjectAuditor:
         """Verificar organización de módulos MCP"""
         modules_dir = self.project_root / "modules"
         if modules_dir.exists():
-            module_count = len(
-                [d for d in modules_dir.iterdir() if d.is_dir() or d.suffix == ".py"]
-            )
+            module_count = len([d for d in modules_dir.iterdir() if d.is_dir() or d.suffix == ".py"])
             if module_count >= 5:
                 return {
                     "check": "mcp_modules_organized",
@@ -1420,9 +1410,7 @@ class CompleteProjectAuditor:
     def check_dependencies_installable(self) -> Dict:
         """Verificar que las dependencias se puedan instalar"""
         try:
-            result = subprocess.run(
-                [sys.executable, "-m", "pip", "check"], capture_output=True, text=True, timeout=30
-            )
+            result = subprocess.run([sys.executable, "-m", "pip", "check"], capture_output=True, text=True, timeout=30)
             if result.returncode == 0:
                 return {
                     "check": "dependencies_installable",
@@ -1876,9 +1864,7 @@ class CompleteProjectAuditor:
         # Recomendaciones específicas por categoría
         for category, data in self.audit_results["categories"].items():
             if data["status"] == "completed":
-                category_passed = sum(
-                    1 for check in data["checks"] if check.get("status") == "passed"
-                )
+                category_passed = sum(1 for check in data["checks"] if check.get("status") == "passed")
                 category_total = len(data["checks"])
 
                 if category_total > 0:
@@ -1958,9 +1944,7 @@ class CompleteProjectAuditor:
                 f.write("-" * 15 + "\n")
 
                 for rec in self.audit_results["recommendations"]:
-                    priority_icon = {"critical": "🚨", "high": "🔴", "medium": "🟡", "low": "🟢"}.get(
-                        rec["priority"], "⚪"
-                    )
+                    priority_icon = {"critical": "🚨", "high": "🔴", "medium": "🟡", "low": "🟢"}.get(rec["priority"], "⚪")
                     f.write(f"{priority_icon} [{rec['priority'].upper()}] {rec['description']}\n")
                     if rec.get("details"):
                         f.write(f"   Detalles: {rec['details']}\n")

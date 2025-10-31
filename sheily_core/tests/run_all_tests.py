@@ -102,9 +102,7 @@ def discover_and_run_tests():
 
     # Calcular porcentaje
     if result.testsRun > 0:
-        success_rate = (
-            (result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun
-        ) * 100
+        success_rate = ((result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun) * 100
         print(f"🎯 Tasa de éxito: {success_rate:.1f}%")
 
     print("=" * 80)

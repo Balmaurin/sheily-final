@@ -39,9 +39,7 @@ def run_system_initialization():
 
     # 2. Inicializar sistema de memoria humana
     print("💾 Inicializando sistema de memoria humana...")
-    result = safe_subprocess_run(
-        ["python3", "sheily_core/memory/human_mind_system.py"], capture_output=True, text=True
-    )
+    result = safe_subprocess_run(["python3", "sheily_core/memory/human_mind_system.py"], capture_output=True, text=True)
 
     if result.returncode == 0:
         print("✅ Sistema de memoria humana inicializado")
@@ -63,9 +61,7 @@ def run_system_initialization():
 
     # 4. Inicializar chat con memoria humana
     print("💬 Inicializando chat con memoria humana...")
-    result = safe_subprocess_run(
-        ["python3", "sheily_core/human_level_chat.py"], capture_output=True, text=True
-    )
+    result = safe_subprocess_run(["python3", "sheily_core/human_level_chat.py"], capture_output=True, text=True)
 
     if result.returncode == 0:
         print("✅ Chat con memoria humana inicializado")

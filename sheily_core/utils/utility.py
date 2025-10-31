@@ -44,9 +44,7 @@ def model_weight_count_rounded_notation(model_params_count: int, min_digits: int
 
 def size_label(total_params: int, shared_params: int, expert_params: int, expert_count: int) -> str:
     if expert_count > 0:
-        pretty_size = model_weight_count_rounded_notation(
-            abs(shared_params) + abs(expert_params), min_digits=2
-        )
+        pretty_size = model_weight_count_rounded_notation(abs(shared_params) + abs(expert_params), min_digits=2)
         size_class = f"{expert_count}x{pretty_size}"
     else:
         size_class = model_weight_count_rounded_notation(abs(total_params), min_digits=2)
@@ -74,15 +72,11 @@ def naming_convention(
 
     parameters = f"-{size_label}" if size_label is not None else ""
 
-    finetune = (
-        f"-{finetune_string.strip().replace(' ', '-')}" if finetune_string is not None else ""
-    )
+    finetune = f"-{finetune_string.strip().replace(' ', '-')}" if finetune_string is not None else ""
 
     version = f"-{version_string.strip().replace(' ', '-')}" if version_string is not None else ""
 
-    encoding = (
-        f"-{output_type.strip().replace(' ', '-').upper()}" if output_type is not None else ""
-    )
+    encoding = f"-{output_type.strip().replace(' ', '-').upper()}" if output_type is not None else ""
 
     kind = f"-{model_type.strip().replace(' ', '-')}" if model_type is not None else ""
 
@@ -100,11 +94,7 @@ class RemoteTensor:
     def data(self) -> bytearray:
         # TODO: handle request errors (maybe with limited retries?)
         # NOTE: using a bytearray, otherwise PyTorch complains the buffer is not writeable
-        data = bytearray(
-            SafetensorRemote.get_data_by_range(
-                url=self.url, start=self.offset_start, size=self.size
-            )
-        )
+        data = bytearray(SafetensorRemote.get_data_by_range(url=self.url, start=self.offset_start, size=self.size))
         return data
 
 
@@ -139,9 +129,7 @@ class SafetensorRemote:
         Each tensor is represented as a tuple of (dtype, shape, offset_start, size, remote_safetensor_url)
         """
         # case 1: model has only one single model.safetensor file
-        is_single_file = cls.check_file_exist(
-            f"{cls.BASE_DOMAIN}/{model_id}/resolve/main/model.safetensors"
-        )
+        is_single_file = cls.check_file_exist(f"{cls.BASE_DOMAIN}/{model_id}/resolve/main/model.safetensors")
         if is_single_file:
             url = f"{cls.BASE_DOMAIN}/{model_id}/resolve/main/model.safetensors"
             return cls.get_list_tensors(url)
@@ -195,9 +183,7 @@ class SafetensorRemote:
                 offset_start_relative, offset_end_relative = meta["data_offsets"]
                 size = offset_end_relative - offset_start_relative
                 offset_start = data_start_offset + offset_start_relative
-                res[name] = RemoteTensor(
-                    dtype=dtype, shape=tuple(shape), offset_start=offset_start, size=size, url=url
-                )
+                res[name] = RemoteTensor(dtype=dtype, shape=tuple(shape), offset_start=offset_start, size=size, url=url)
             except KeyError as e:
                 raise ValueError(f"Missing key in metadata for tensor '{name}': {e}, meta = {meta}")
 
@@ -228,9 +214,7 @@ class SafetensorRemote:
 
         # Check if we have enough data to read the metadata
         if len(raw_data) < 8 + metadata_length:
-            raise ValueError(
-                f"Could not read complete metadata. Need {8 + metadata_length} bytes, got {len(raw_data)}"
-            )
+            raise ValueError(f"Could not read complete metadata. Need {8 + metadata_length} bytes, got {len(raw_data)}")
 
         # Extract metadata bytes and parse as JSON
         metadata_bytes = raw_data[8 : 8 + metadata_length]

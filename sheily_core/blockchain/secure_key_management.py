@@ -96,9 +96,7 @@ class SecureKeyManagement:
 
         return master_key
 
-    def _derive_key_from_password(
-        self, password: str, salt: str, iterations: int = 100000
-    ) -> bytes:
+    def _derive_key_from_password(self, password: str, salt: str, iterations: int = 100000) -> bytes:
         """Derivar clave desde contraseña"""
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
@@ -185,9 +183,7 @@ class SecureKeyManagement:
                 return None
 
             # Desencriptar clave privada
-            private_key_bytes = self._decrypt_private_key(
-                wallet.encrypted_private_key, password, wallet.salt
-            )
+            private_key_bytes = self._decrypt_private_key(wallet.encrypted_private_key, password, wallet.salt)
 
             # Crear keypair
             keypair = Keypair.from_secret_key(private_key_bytes)
@@ -212,17 +208,13 @@ class SecureKeyManagement:
                     return False
 
                 # Obtener clave privada con contraseña antigua
-                private_key_bytes = self._decrypt_private_key(
-                    wallet.encrypted_private_key, old_password, wallet.salt
-                )
+                private_key_bytes = self._decrypt_private_key(wallet.encrypted_private_key, old_password, wallet.salt)
 
                 # Generar nuevo salt
                 new_salt = base64.urlsafe_b64encode(secrets.token_bytes(16)).decode()
 
                 # Encriptar con nueva contraseña
-                new_encrypted_private_key = self._encrypt_private_key(
-                    private_key_bytes, new_password, new_salt
-                )
+                new_encrypted_private_key = self._encrypt_private_key(private_key_bytes, new_password, new_salt)
 
                 # Actualizar wallet
                 wallet.encrypted_private_key = new_encrypted_private_key
@@ -245,9 +237,7 @@ class SecureKeyManagement:
                 return False
 
             # Obtener clave privada
-            private_key_bytes = self._decrypt_private_key(
-                wallet.encrypted_private_key, password, wallet.salt
-            )
+            private_key_bytes = self._decrypt_private_key(wallet.encrypted_private_key, password, wallet.salt)
 
             # Crear backup
             backup_data = {
@@ -385,9 +375,7 @@ class SecureKeyManagement:
 
         # Wallets creados en los últimos 30 días
         thirty_days_ago = datetime.now() - timedelta(days=30)
-        recent_wallets = sum(
-            1 for w in self.user_wallets.values() if w.created_at >= thirty_days_ago
-        )
+        recent_wallets = sum(1 for w in self.user_wallets.values() if w.created_at >= thirty_days_ago)
 
         return {
             "total_wallets": total_wallets,

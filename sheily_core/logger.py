@@ -332,9 +332,7 @@ def log_enterprise_performance(
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            context = create_log_context(
-                component=component, operation=operation, metadata={"function": func.__name__}
-            )
+            context = create_log_context(component=component, operation=operation, metadata={"function": func.__name__})
 
             logger = get_logger(f"{component}.{func.__name__}", context)
             start_time = datetime.now()
@@ -345,13 +343,9 @@ def log_enterprise_performance(
 
                 # Log basado en tiempo de ejecución
                 if execution_time > error_threshold:
-                    logger.error(
-                        f"⏰ {operation} muy lento: {execution_time:.3f}s > {error_threshold}s"
-                    )
+                    logger.error(f"⏰ {operation} muy lento: {execution_time:.3f}s > {error_threshold}s")
                 elif execution_time > warn_threshold:
-                    logger.warning(
-                        f"⚠️ {operation} lento: {execution_time:.3f}s > {warn_threshold}s"
-                    )
+                    logger.warning(f"⚠️ {operation} lento: {execution_time:.3f}s > {warn_threshold}s")
                 else:
                     logger.info(f"⚡ {operation} completado: {execution_time:.3f}s")
 
