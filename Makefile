@@ -20,6 +20,7 @@ help:
 	@echo ""
 	@echo "Project Management:"
 	@echo "  make audit          - Auditoría completa del proyecto"
+	@echo "  make metrics        - Calcular métricas del proyecto (auto)"
 	@echo "  make check-branches - Validar todas las ramas"
 	@echo "  make list-branches  - Listar ramas disponibles"
 	@echo ""
@@ -67,6 +68,9 @@ clean:
 # Project Management
 audit:
 	python3 tools/maintenance/audit_complete_project.py
+
+metrics:
+	python3 tools/maintenance/compute_project_metrics.py --update-readme
 
 check-branches:
 	python3 tools/branch_management/check_all_datasets.py
