@@ -1,0 +1,48 @@
+{
+  "index_type": "hybrid",
+  "total_documents": 16,
+  "embedding_model": "all-mpnet-base-v2",
+  "last_updated": "2025-10-31 10:33:22",
+  "categories": [
+    {
+      "file": "documents_cases.jsonl",
+      "documents": 3,
+      "tokens": 470
+    },
+    {
+      "file": "documents_contemporary.jsonl",
+      "documents": 3,
+      "tokens": 395
+    },
+    {
+      "file": "documents_fundamentals.jsonl",
+      "documents": 1,
+      "tokens": 139
+    },
+    {
+      "file": "documents_subfields.jsonl",
+      "documents": 3,
+      "tokens": 435
+    },
+    {
+      "file": "documents_theories.jsonl",
+      "documents": 3,
+      "tokens": 422
+    },
+    {
+      "file": "enhanced_antropologia.jsonl",
+      "documents": 1,
+      "tokens": 59
+    },
+    {
+      "file": "real_exercises_antropologia.jsonl",
+      "documents": 1,
+      "tokens": 105
+    },
+    {
+      "file": "ultra_technical_antropologia.jsonl",
+      "documents": 1,
+      "tokens": 118
+    }
+  ]
+}

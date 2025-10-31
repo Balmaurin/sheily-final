@@ -1,0 +1,38 @@
+{
+  "memory_id": "963fede0ea86942f",
+  "metadata": {
+    "source_file": "guia_python.md",
+    "file_size": 627,
+    "file_type": ".md",
+    "processing_time": "2025-10-19T02:41:23.842801",
+    "total_chunks": 1,
+    "total_characters": 615,
+    "memory_type": "documento_procesado"
+  },
+  "content": {
+    "full_text": "# Guía Completa de Python para Inteligencia Artificial\n\n## Introducción\nPython es el lenguaje de programación más utilizado en IA debido a su simplicidad y poderosas librerías.\n\n## Librerías Esenciales\n- **NumPy**: Computación numérica\n- **Pandas**: Análisis de datos\n- **TensorFlow/PyTorch**: Deep Learning\n- **Scikit-learn**: Machine Learning tradicional\n\n## Mejores Prácticas\n1. Usar entornos virtuales\n2. Documentar código adecuadamente\n3. Usar control de versiones\n4. Escribir tests unitarios\n\n## Recursos Adicionales\n- Documentación oficial de Python\n- Tutoriales en Real Python\n- Comunidad en Stack Overflow\n",
+    "chunks": [
+      {
+        "chunk_id": "chunk_001",
+        "content": "# Guía Completa de Python para Inteligencia Artificial\n\n## Introducción\nPython es el lenguaje de programación más utilizado en IA debido a su simplicidad y poderosas librerías.\n\n## Librerías Esenciales\n- **NumPy**: Computación numérica\n- **Pandas**: Análisis de datos\n- **TensorFlow/PyTorch**: Deep Learning\n- **Scikit-learn**: Machine Learning tradicional\n\n## Mejores Prácticas\n1. Usar entornos virtuales\n2. Documentar código adecuadamente\n3. Usar control de versiones\n4. Escribir tests unitarios\n\n## Recursos Adicionales\n- Documentación oficial de Python\n- Tutoriales en Real Python\n- Comunidad en Stack Overflow\n",
+        "start_pos": 0,
+        "end_pos": 615,
+        "size": 615
+      }
+    ],
+    "summary": "# Guía Completa de Python para Inteligencia Artificial Python es el lenguaje de programación más utilizado en IA debido a su simplicidad y poderosas librerías. ## Librerías Esenciales"
+  },
+  "context": {
+    "importance_score": 0.7,
+    "category": "documentación",
+    "tags": [
+      "python"
+    ]
+  },
+  "access_info": {
+    "created": "2025-10-19T02:41:23.842837",
+    "last_accessed": null,
+    "access_count": 0,
+    "retrieval_score": 0.0
+  }
+}

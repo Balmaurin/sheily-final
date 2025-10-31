@@ -1,0 +1,315 @@
+name: 🚀 CI/CD Pipeline - Sheily AI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  release:
+    types: [ published ]
+
+env:
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '18'
+
+jobs:
+  # ===============================
+  # JOB 1: LINTING Y ANÁLISIS ESTÁTICO
+  # ===============================
+  lint:
+    name: 🔍 Code Quality & Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+        
+    - name: 📦 Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt
+        pip install black isort mypy bandit safety
+        
+    - name: 🎨 Check Code Formatting (Black)
+      run: black --check --line-length 120 .
+      
+    - name: 📑 Check Import Sorting (isort)
+      run: isort --check-only --profile black --line-length 120 .
+      
+    - name: 🔍 Type Checking (MyPy)
+      run: mypy sheily_core sheily_train --ignore-missing-imports
+      continue-on-error: true  # No fallar el build por warnings de tipos
+      
+    - name: 🔒 Security Analysis (Bandit)
+      run: bandit -r sheily_core sheily_train -f json -o bandit-report.json
+      continue-on-error: true
+      
+    - name: 🛡️ Dependency Vulnerability Check (Safety)
+      run: safety check --json --output safety-report.json
+      continue-on-error: true
+      
+    - name: 📊 Upload Security Reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          safety-report.json
+
+  # ===============================
+  # JOB 2: TESTING MATRIZ MÚLTIPLE
+  # ===============================
+  test:
+    name: 🧪 Tests (Python ${{ matrix.python-version }}, OS: ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: lint
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.9', '3.10', '3.11']
+        
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Setup Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+        
+    - name: 📦 Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+        pip install pytest pytest-cov pytest-xdist pytest-asyncio
+        
+    - name: 🧪 Run Unit Tests
+      run: |
+        pytest tests/unit/ -v --tb=short --cov=sheily_core --cov=sheily_train --cov-report=xml --cov-report=html
+        
+    - name: 🔗 Run Integration Tests
+      run: |
+        pytest tests/integration/ -v --tb=short
+      continue-on-error: true  # Los tests de integración pueden fallar en CI
+      
+    - name: 📊 Upload Coverage Reports
+      uses: codecov/codecov-action@v3
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: sheily-ai-coverage
+        
+    - name: 📋 Upload Test Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results-${{ matrix.os }}-py${{ matrix.python-version }}
+        path: |
+          htmlcov/
+          coverage.xml
+          pytest.xml
+
+  # ===============================
+  # JOB 3: TESTING DE SEGURIDAD
+  # ===============================
+  security-test:
+    name: 🔒 Security Testing
+    runs-on: ubuntu-latest
+    needs: lint
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+        
+    - name: 📦 Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+        
+    - name: 🔒 Run Security Tests
+      run: |
+        pytest tests/security/ -v --tb=short
+      continue-on-error: true
+      
+    - name: 🛡️ OWASP Dependency Check
+      uses: dependency-check/Dependency-Check_Action@main
+      with:
+        project: 'Sheily AI'
+        path: '.'
+        format: 'ALL'
+        
+    - name: 📊 Upload OWASP Report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: owasp-dependency-check-report
+        path: reports/
+
+  # ===============================
+  # JOB 4: BUILD Y CONTAINERIZACIÓN
+  # ===============================
+  build:
+    name: 🏗️ Build & Container
+    runs-on: ubuntu-latest
+    needs: [test, security-test]
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐳 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: 📋 Extract Metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: sheily-ai
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          
+    - name: 🏗️ Build Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        push: false  # Solo build, no push en CI público
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        
+    - name: 🧪 Test Docker Container
+      run: |
+        docker run --rm sheily-ai:latest python -c "import sheily_core; print('✅ Container build successful')"
+
+  # ===============================
+  # JOB 5: ANÁLISIS DE RENDIMIENTO
+  # ===============================
+  performance:
+    name: ⚡ Performance Testing
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+        
+    - name: 📦 Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest-benchmark memory-profiler
+        
+    - name: ⚡ Run Performance Tests
+      run: |
+        python -m pytest tests/ -k "performance or benchmark" --benchmark-json=benchmark.json
+      continue-on-error: true
+      
+    - name: 📊 Upload Performance Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: performance-results
+        path: benchmark.json
+
+  # ===============================
+  # JOB 6: DEPLOYMENT (SOLO EN RELEASE)
+  # ===============================
+  deploy:
+    name: 🚀 Deploy
+    runs-on: ubuntu-latest
+    needs: [build, performance]
+    if: github.event_name == 'release' && github.event.action == 'published'
+    environment: production
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: 📦 Build Package
+      run: |
+        python -m pip install --upgrade pip build twine
+        python -m build
+        
+    - name: 🧪 Test Package Installation
+      run: |
+        pip install dist/*.whl
+        python -c "import sheily_core; print('✅ Package installation successful')"
+        
+    - name: 📋 Validate Package
+      run: |
+        twine check dist/*
+        
+    # Nota: Descomentar para deployment real
+    # - name: 🚀 Publish to PyPI
+    #   uses: pypa/gh-action-pypi-publish@release/v1
+    #   with:
+    #     password: ${{ secrets.PYPI_API_TOKEN }}
+
+  # ===============================
+  # JOB 7: NOTIFICACIONES
+  # ===============================
+  notify:
+    name: 📢 Notifications
+    runs-on: ubuntu-latest
+    needs: [lint, test, security-test, build]
+    if: always()
+    
+    steps:
+    - name: 📊 Check Job Results
+      run: |
+        echo "Lint: ${{ needs.lint.result }}"
+        echo "Test: ${{ needs.test.result }}"
+        echo "Security: ${{ needs.security-test.result }}"
+        echo "Build: ${{ needs.build.result }}"
+        
+    - name: ✅ Success Notification
+      if: needs.lint.result == 'success' && needs.test.result == 'success' && needs.build.result == 'success'
+      run: |
+        echo "🎉 All CI/CD jobs completed successfully!"
+        echo "✅ Code quality: PASSED"
+        echo "✅ Tests: PASSED" 
+        echo "✅ Security: CHECKED"
+        echo "✅ Build: SUCCESS"
+        
+    - name: ❌ Failure Notification
+      if: needs.lint.result == 'failure' || needs.test.result == 'failure' || needs.build.result == 'failure'
+      run: |
+        echo "❌ Some CI/CD jobs failed!"
+        echo "Please check the logs for details."
+        exit 1

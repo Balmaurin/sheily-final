@@ -1,0 +1,48 @@
+{
+  "timestamp": "2025-10-24T13:45:01.933890",
+  "overall_status": "\u2705 PRODUCTION READY",
+  "quality_score": 8.7,
+  "metrics": {
+    "coverage": 74,
+    "security_issues": 5,
+    "python_files": 302,
+    "test_count": 224,
+    "lines_of_code": 137564
+  },
+  "alerts": 0,
+  "quality_gates_passed": true,
+  "recommendations": [
+    {
+      "priority": "MEDIUM",
+      "category": "Refactoring",
+      "message": "Reduce complexity in 194 files",
+      "files": [
+        {
+          "file": "functional_test_suite.py",
+          "score": 17.0
+        },
+        {
+          "file": "tests_light/test_safety.py",
+          "score": 17.117117117117115
+        },
+        {
+          "file": "tests_light/test_training_integration.py",
+          "score": 22.55639097744361
+        }
+      ]
+    },
+    {
+      "priority": "HIGH",
+      "category": "Security",
+      "message": "Address 5 security concerns",
+      "count": 5
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Testing",
+      "message": "Increase test coverage to 80%+ (currently 74%)",
+      "current": 74,
+      "target": 80
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "memory_id": "cd88d6271f9a14fc",
+  "metadata": {
+    "source_file": "matematicas_discretas.txt",
+    "file_size": 898,
+    "file_type": ".txt",
+    "processing_time": "2025-10-19T02:41:23.857574",
+    "total_chunks": 1,
+    "total_characters": 879,
+    "memory_type": "documento_procesado"
+  },
+  "content": {
+    "full_text": "MATEMÁTICAS DISCRETAS - GUÍA COMPLETA\n\nIntroducción a las Matemáticas Discretas\n\nLas matemáticas discretas son el estudio de estructuras matemáticas que son fundamentalmente discretas en lugar de continuas.\n\nTEORÍA DE CONJUNTOS\n- Conjuntos finitos e infinitos\n- Operaciones con conjuntos\n- Relaciones y funciones\n\nLÓGICA MATEMÁTICA\n- Proposiciones y conectivos lógicos\n- Tablas de verdad\n- Cuantificadores\n\nTEORÍA DE NÚMEROS\n- Números enteros y propiedades\n- Divisibilidad y algoritmos\n- Teoremas fundamentales\n\nGRAFOS Y ÁRBOLES\n- Definición y propiedades de grafos\n- Algoritmos de grafos\n- Árboles y aplicaciones\n\nCOMBINATORIA\n- Principios de conteo\n- Permutaciones y combinaciones\n- Teorema del binomio\n\nEste documento es una guía completa para estudiantes de matemáticas discretas que cubre todos los temas fundamentales necesarios para entender esta rama de las matemáticas.\n",
+    "chunks": [
+      {
+        "chunk_id": "chunk_001",
+        "content": "MATEMÁTICAS DISCRETAS - GUÍA COMPLETA\n\nIntroducción a las Matemáticas Discretas\n\nLas matemáticas discretas son el estudio de estructuras matemáticas que son fundamentalmente discretas en lugar de continuas.\n\nTEORÍA DE CONJUNTOS\n- Conjuntos finitos e infinitos\n- Operaciones con conjuntos\n- Relaciones y funciones\n\nLÓGICA MATEMÁTICA\n- Proposiciones y conectivos lógicos\n- Tablas de verdad\n- Cuantificadores\n\nTEORÍA DE NÚMEROS\n- Números enteros y propiedades\n- Divisibilidad y algoritmos\n- Teoremas fundamentales\n\nGRAFOS Y ÁRBOLES\n- Definición y propiedades de grafos\n- Algoritmos de grafos\n- Árboles y aplicaciones\n\nCOMBINATORIA\n- Principios de conteo\n- Permutaciones y combinaciones\n- Teorema del binomio\n\nEste documento es una guía completa para estudiantes de matemáticas discretas que cubre todos los temas fundamentales necesarios para entender esta rama de las matemáticas.\n",
+        "start_pos": 0,
+        "end_pos": 879,
+        "size": 879
+      }
+    ],
+    "summary": "MATEMÁTICAS DISCRETAS - GUÍA COMPLETA Introducción a las Matemáticas Discretas Las matemáticas discretas son el estudio de estructuras matemáticas que son fundamentalmente discretas en lugar de continuas."
+  },
+  "context": {
+    "importance_score": 0.7,
+    "category": "documentación",
+    "tags": [
+      "discretas",
+      "matemáticas",
+      "grafos",
+      "conjuntos"
+    ]
+  },
+  "access_info": {
+    "created": "2025-10-19T02:41:23.857666",
+    "last_accessed": null,
+    "access_count": 0,
+    "retrieval_score": 0.0
+  }
+}

@@ -1,0 +1,59 @@
+# Requirements para la rama Antropología - Sheily AI
+# ====================================================
+# Versión: 2.0.0 - Enterprise Ready
+
+# Core ML/AI Libraries
+transformers>=4.41.0
+peft>=0.11.0
+torch>=2.0.0
+accelerate>=0.31.0
+bitsandbytes>=0.43.0; platform_system == 'Linux'
+
+# Embeddings y RAG
+sentence-transformers>=2.2.0
+faiss-cpu>=1.7.4
+langchain>=0.1.0
+
+# Procesamiento de datos
+numpy>=1.22.0
+pandas>=2.0.0
+datasets>=2.18.0
+scikit-learn>=1.3.0
+
+# Procesamiento de documentos
+PyPDF2>=3.0.0
+python-docx>=0.8.11
+openpyxl>=3.1.0
+chardet>=5.0.0
+
+# OCR y multimedia (opcional)
+pillow>=10.0.0
+pytesseract>=0.3.10; platform_system != 'Windows'
+
+# Audio/Video processing (opcional)
+SpeechRecognition>=3.10.0
+opencv-python>=4.8.0
+
+# Utilidades
+python-dotenv>=1.0.0
+pyyaml>=6.0
+tqdm>=4.65.0
+jsonlines>=4.0.0
+
+# Validación y testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=23.0.0
+flake8>=6.0.0
+
+# Logging y monitoring
+loguru>=0.7.0
+
+# API y web (si se necesita servir modelos)
+fastapi>=0.100.0
+uvicorn>=0.23.0
+pydantic>=2.0.0
+
+# Visualización (para análisis)
+matplotlib>=3.7.0
+seaborn>=0.12.0

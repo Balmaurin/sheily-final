@@ -1,0 +1,205 @@
+{
+  "start_time": "2025-10-31T13:25:14.043849",
+  "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+  "device": "privateuseone:0",
+  "device_type": "directml",
+  "datasets_trained": [
+    {
+      "dataset": "premium_complete_optimized_premium_dataset_migrated.jsonl",
+      "status": "success",
+      "metadata": {
+        "dataset": "premium_complete_optimized_premium_dataset_migrated.jsonl",
+        "examples": 320,
+        "epochs": 1,
+        "batch_size": 2,
+        "max_length": 512,
+        "training_loss": 0.6018698612848917,
+        "training_time_seconds": 569.7377924919128,
+        "device": "privateuseone:0",
+        "device_type": "directml",
+        "timestamp": "2025-10-31T13:34:48.853168"
+      }
+    },
+    {
+      "dataset": "complete_optimized_premium_dataset.jsonl",
+      "status": "success",
+      "metadata": {
+        "dataset": "complete_optimized_premium_dataset.jsonl",
+        "examples": 320,
+        "epochs": 1,
+        "batch_size": 2,
+        "max_length": 512,
+        "training_loss": 0.5775781472524008,
+        "training_time_seconds": 560.3023526668549,
+        "device": "privateuseone:0",
+        "device_type": "directml",
+        "timestamp": "2025-10-31T13:44:09.285895"
+      }
+    },
+    {
+      "dataset": "premium_premium_training_dataset_migrated.jsonl",
+      "status": "success",
+      "metadata": {
+        "dataset": "premium_premium_training_dataset_migrated.jsonl",
+        "examples": 320,
+        "epochs": 1,
+        "batch_size": 2,
+        "max_length": 512,
+        "training_loss": 0.543073813120524,
+        "training_time_seconds": 563.11159491539,
+        "device": "privateuseone:0",
+        "device_type": "directml",
+        "timestamp": "2025-10-31T13:53:32.490307"
+      }
+    },
+    {
+      "dataset": "adapter_premium_training_dataset.jsonl",
+      "status": "success",
+      "metadata": {
+        "dataset": "adapter_premium_training_dataset.jsonl",
+        "examples": 320,
+        "epochs": 1,
+        "batch_size": 2,
+        "max_length": 512,
+        "training_loss": 0.466353972752889,
+        "training_time_seconds": 490.83462738990784,
+        "device": "privateuseone:0",
+        "device_type": "directml",
+        "timestamp": "2025-10-31T14:01:43.423826"
+      }
+    },
+    {
+      "dataset": "train_improved.jsonl",
+      "status": "success",
+      "metadata": {
+        "dataset": "train_improved.jsonl",
+        "examples": 54,
+        "epochs": 1,
+        "batch_size": 2,
+        "max_length": 512,
+        "training_loss": 0.8672715425491333,
+        "training_time_seconds": 117.32620906829834,
+        "device": "privateuseone:0",
+        "device_type": "directml",
+        "timestamp": "2025-10-31T14:03:40.912688"
+      }
+    },
+    {
+      "dataset": "incremental_train_improved_migrated.jsonl",
+      "status": "success",
+      "metadata": {
+        "dataset": "incremental_train_improved_migrated.jsonl",
+        "examples": 54,
+        "epochs": 1,
+        "batch_size": 2,
+        "max_length": 512,
+        "training_loss": 0.7859655022621155,
+        "training_time_seconds": 116.69835948944092,
+        "device": "privateuseone:0",
+        "device_type": "directml",
+        "timestamp": "2025-10-31T14:05:37.615204"
+      }
+    },
+    {
+      "dataset": "supplementary_improved.jsonl",
+      "status": "success",
+      "metadata": {
+        "dataset": "supplementary_improved.jsonl",
+        "examples": 36,
+        "epochs": 1,
+        "batch_size": 2,
+        "max_length": 512,
+        "training_loss": 0.7938610315322876,
+        "training_time_seconds": 77.88731479644775,
+        "device": "privateuseone:0",
+        "device_type": "directml",
+        "timestamp": "2025-10-31T14:06:55.506660"
+      }
+    },
+    {
+      "dataset": "incremental_supplementary_improved_migrated.jsonl",
+      "status": "success",
+      "metadata": {
+        "dataset": "incremental_supplementary_improved_migrated.jsonl",
+        "examples": 36,
+        "epochs": 1,
+        "batch_size": 2,
+        "max_length": 512,
+        "training_loss": 0.6226508021354675,
+        "training_time_seconds": 77.03996658325195,
+        "device": "privateuseone:0",
+        "device_type": "directml",
+        "timestamp": "2025-10-31T14:08:12.551179"
+      }
+    },
+    {
+      "dataset": "supplementary_data_migrated.jsonl",
+      "status": "success",
+      "metadata": {
+        "dataset": "supplementary_data_migrated.jsonl",
+        "examples": 110,
+        "epochs": 1,
+        "batch_size": 2,
+        "max_length": 512,
+        "training_loss": 0.15070056915283203,
+        "training_time_seconds": 131.82459378242493,
+        "device": "privateuseone:0",
+        "device_type": "directml",
+        "timestamp": "2025-10-31T14:10:24.377742"
+      }
+    },
+    {
+      "dataset": "supplementary_data.jsonl",
+      "status": "success",
+      "metadata": {
+        "dataset": "supplementary_data.jsonl",
+        "examples": 110,
+        "epochs": 1,
+        "batch_size": 2,
+        "max_length": 512,
+        "training_loss": 0.1356576532125473,
+        "training_time_seconds": 132.57616519927979,
+        "device": "privateuseone:0",
+        "device_type": "directml",
+        "timestamp": "2025-10-31T14:12:37.039210"
+      }
+    },
+    {
+      "dataset": "train_migrated.jsonl",
+      "status": "success",
+      "metadata": {
+        "dataset": "train_migrated.jsonl",
+        "examples": 120,
+        "epochs": 1,
+        "batch_size": 2,
+        "max_length": 512,
+        "training_loss": 0.11644785851240158,
+        "training_time_seconds": 147.63020777702332,
+        "device": "privateuseone:0",
+        "device_type": "directml",
+        "timestamp": "2025-10-31T14:15:04.679640"
+      }
+    },
+    {
+      "dataset": "train.jsonl",
+      "status": "success",
+      "metadata": {
+        "dataset": "train.jsonl",
+        "examples": 120,
+        "epochs": 1,
+        "batch_size": 2,
+        "max_length": 512,
+        "training_loss": 0.09729654341936111,
+        "training_time_seconds": 146.05818939208984,
+        "device": "privateuseone:0",
+        "device_type": "directml",
+        "timestamp": "2025-10-31T14:17:30.738949"
+      }
+    }
+  ],
+  "backups_created": [
+    "backup_current_20251031_132514"
+  ],
+  "end_time": "2025-10-31T14:17:31.562812",
+  "status": "success"
+}

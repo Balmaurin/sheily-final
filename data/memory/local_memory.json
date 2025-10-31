@@ -1,0 +1,10 @@
+{
+  "user_name": "Sergio",
+  "user": {
+    "name": "Sergio Gomez",
+    "color_favorito": "azul"
+  },
+  "bot": {
+    "name": "Sheily"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "memory_id": "d2fbe43d15fd4de7",
+  "metadata": {
+    "source_file": "documento_academico.pdf",
+    "file_size": 1247,
+    "file_type": ".pdf",
+    "processing_time": "2025-10-19T02:41:23.841332",
+    "total_chunks": 1,
+    "total_characters": 69,
+    "memory_type": "documento_procesado"
+  },
+  "content": {
+    "full_text": "[PDF - Instalar: pip install PyPDF2]\nArchivo: documento_academico.pdf",
+    "chunks": [
+      {
+        "chunk_id": "chunk_001",
+        "content": "[PDF - Instalar: pip install PyPDF2]\nArchivo: documento_academico.pdf",
+        "start_pos": 0,
+        "end_pos": 69,
+        "size": 69
+      }
+    ],
+    "summary": "[PDF - Instalar: pip install PyPDF2] Archivo: documento_academico.pdf"
+  },
+  "context": {
+    "importance_score": 0.0,
+    "category": "general",
+    "tags": []
+  },
+  "access_info": {
+    "created": "2025-10-19T02:41:23.841348",
+    "last_accessed": null,
+    "access_count": 0,
+    "retrieval_score": 0.0
+  }
+}

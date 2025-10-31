@@ -1,0 +1,34 @@
+{
+  "dream_generation": {
+    "enabled": true,
+    "frequency_hours": 8,
+    "types": [
+      "creative",
+      "problem_solving",
+      "memory_consolidation",
+      "emotional_processing"
+    ],
+    "creativity_levels": {
+      "low": 0.3,
+      "medium": 0.6,
+      "high": 0.9
+    },
+    "emotional_influence": true,
+    "memory_consolidation": true
+  },
+  "dream_content_generation": {
+    "max_length": 2000,
+    "include_sensory_details": true,
+    "include_emotional_context": true,
+    "include_symbolism": true,
+    "problem_solving_focus": true,
+    "creativity_amplification": 1.5
+  },
+  "dream_interpretation": {
+    "analyze_symbols": true,
+    "extract_insights": true,
+    "emotional_analysis": true,
+    "problem_solving_extraction": true,
+    "memory_pattern_detection": true
+  }
+}

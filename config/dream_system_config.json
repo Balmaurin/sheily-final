@@ -1,0 +1,19 @@
+{
+  "dream_generation": {
+    "enabled": true,
+    "frequency": "daily",
+    "types": [
+      "creative",
+      "problem_solving",
+      "memory_consolidation"
+    ],
+    "min_memories_required": 3,
+    "creativity_threshold": 0.7
+  },
+  "dream_content": {
+    "max_length": 1000,
+    "include_emotions": true,
+    "include_sensory_details": true,
+    "problem_solving_focus": true
+  }
+}

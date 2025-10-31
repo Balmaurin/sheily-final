@@ -1,0 +1,151 @@
+{
+  "timestamp": "2025-10-31T16:53:15.818871",
+  "project": "Sheily AI",
+  "audit_level": "Enterprise Grade",
+  "sections": {
+    "architecture": {
+      "structure": {
+        "sheily_core": {
+          "exists": true,
+          "python_files": 206,
+          "size_mb": 3.916874885559082
+        },
+        "sheily_train": {
+          "exists": true,
+          "python_files": 19,
+          "size_mb": 0.1702880859375
+        },
+        "tests": {
+          "exists": true,
+          "python_files": 23,
+          "size_mb": 0.13122081756591797
+        },
+        "tools": {
+          "exists": true,
+          "python_files": 45,
+          "size_mb": 0.33983421325683594
+        },
+        "all-Branches": {
+          "exists": true,
+          "python_files": 20,
+          "size_mb": 0.2309255599975586
+        }
+      },
+      "modules": {
+        "sheily_core": [
+          "blockchain",
+          "chat",
+          "core",
+          "data",
+          "enterprise",
+          "experimental",
+          "integration",
+          "llm_engine",
+          "memory",
+          "models",
+          "monitoring",
+          "rewards",
+          "security",
+          "shared",
+          "tests",
+          "tools",
+          "unified_systems",
+          "utils"
+        ]
+      },
+      "code_metrics": {
+        "total_python_files": 34992
+      },
+      "issues": [],
+      "recommendations": [
+        "Considerar modularización adicional debido al alto número de archivos"
+      ],
+      "architectural_patterns": [
+        "Microservicios/Integración",
+        "Seguridad por diseño",
+        "Observabilidad"
+      ]
+    },
+    "code_quality": {
+      "pep8_compliance": {},
+      "type_hints": {
+        "percentage": 92.0
+      },
+      "docstrings": {
+        "percentage": 94.0
+      },
+      "complexity": {},
+      "issues": [],
+      "score": 50
+    },
+    "security": {
+      "secrets_exposed": [],
+      "vulnerable_patterns": {
+        "sheily_core\\core\\sitecustomize.py": [
+          "Uso de __import__()"
+        ],
+        "sheily_core\\rewards\\contextual_accuracy.py": [
+          "Uso de eval()"
+        ],
+        "sheily_core\\security\\safety.py": [
+          "Uso de eval()",
+          "Uso de exec()"
+        ]
+      },
+      "security_features": [
+        ".secrets.baseline",
+        ".pre-commit-config.yaml",
+        ".env.example",
+        "sheily_core/security"
+      ],
+      "recommendations": [],
+      "severity": "LOW"
+    },
+    "testing": {
+      "test_files": 16,
+      "test_structure": {
+        "unit": 8,
+        "integration": 2,
+        "security": 3,
+        "e2e": 1,
+        "performance": 1
+      },
+      "coverage": {},
+      "recommendations": []
+    },
+    "documentation": {
+      "readme_files": 41,
+      "api_docs": false,
+      "quality_score": 80.0,
+      "missing": [
+        "README.md"
+      ],
+      "found": [
+        "LICENSE",
+        ".env.example",
+        "requirements.txt",
+        "docs/"
+      ]
+    }
+  },
+  "errors": "'charmap' codec can't decode byte 0x81 in position 3626: character maps to <undefined>",
+  "executive_summary": {
+    "overall_score": 61.875,
+    "section_scores": {
+      "Arquitectura": 85,
+      "Calidad de Código": 50,
+      "Seguridad": 80,
+      "Testing": 70,
+      "Documentación": 80.0,
+      "Dependencias": 50,
+      "Performance": 40,
+      "DevOps": 40
+    },
+    "status": "ACEPTABLE (***)",
+    "timestamp": "2025-10-31T16:53:15.818871",
+    "prioritized_recommendations": [
+      "[ALTA] Mejorar docstrings y type hints en el codigo",
+      "[BAJA] Implementar CI/CD y monitoring"
+    ]
+  }
+}

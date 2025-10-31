@@ -1,0 +1,24 @@
+{
+  "branch": "antropologia",
+  "premium_version": "2.0.0",
+  "total_samples": 320,
+  "source_datasets": [
+    "training_corpus/antropologia/train_improved.jsonl",
+    "training_corpus/antropologia/supplementary_improved.jsonl",
+    "training_corpus/antropologia/train.jsonl",
+    "training_corpus/antropologia/supplementary_data.jsonl"
+  ],
+  "premium_features": [
+    "consolidated_training_data",
+    "expert_level_content",
+    "enhanced_contextual_samples",
+    "premium_quality_validation"
+  ],
+  "created_date": "2025-10-24T19:04:49.634553",
+  "optimization_notes": [
+    "Dataset premium consolidado de múltiples fuentes",
+    "Contenido experto y contextual mejorado",
+    "Validación de calidad implementada",
+    "Optimización para entrenamiento premium"
+  ]
+}

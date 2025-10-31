@@ -1,0 +1,30 @@
+{
+  "title": "Perspectivas Poscoloniales y Decolonización",
+  "content": "Las perspectivas poscoloniales en antropología critican los legados coloniales en la disciplina y buscan decolonizar tanto la teoría como la práctica antropológica. Estas críticas incluyen: complicidad histórica con el colonialismo, construcción del 'otro' como objeto de estudio, extracción de conocimiento sin reciprocidad, y universalización de categorías occidentales. La decolonización metodológica implica centrar perspectivas indígenas, compartir control del proceso de investigación, reconocer conocimiento indígena como válido, y priorizar beneficios para comunidades estudiadas. En la práctica, esto significa investigación colaborativa donde comunidades dirigen preguntas, controlan datos sensibles, y reciben beneficios tangibles. También implica repatriación de artefactos culturales, publicación en lenguas locales, y abogacía basada en hallazgos. La antropología poscolonial reconoce que el conocimiento no es neutral, sino que incorpora relaciones de poder, y busca transformar estas relaciones hacia la justicia epistemológica y social.",
+  "domain": "antropologia",
+  "category": "perspectivas_poscoloniales",
+  "keywords": ["decolonización", "perspectivas poscoloniales", "investigación colaborativa", "justicia epistemológica", "repatriación cultural"],
+  "language": "es",
+  "source": "manual_content_anthropology",
+  "date": "2025-01-24"
+}
+{
+  "title": "Antropología Feminista e Interseccionalidad",
+  "content": "La antropología feminista ha transformado la disciplina al cuestionar el androcentrismo y centrar las experiencias de las mujeres como sujetos de conocimiento. Ha evolucionado desde la crítica inicial al sesgo de género en la teoría antropológica hacia análisis más sofisticados de poder, desigualdad e interseccionalidad. La interseccionalidad, desarrollada por Kimberlé Crenshaw, analiza cómo categorías como género, raza, clase y sexualidad se intersectan para crear formas únicas de discriminación y privilegio. En antropología, esto significa examinar cómo opresiones múltiples crean vulnerabilidades específicas y cómo la resistencia cultural también es interseccional. La antropología feminista ha contribuido al desarrollo de metodologías inclusivas, análisis de trabajo reproductivo, violencia de género, y poder doméstico. También ha integrado perspectivas queer y trans, cuestionando la binariedad de género y explorando diversidad de género en diferentes culturas.",
+  "domain": "antropologia",
+  "category": "antropologia_feminista",
+  "keywords": ["antropología feminista", "interseccionalidad", "violencia de género", "trabajo reproductivo", "perspectivas queer"],
+  "language": "es",
+  "source": "manual_content_anthropology",
+  "date": "2025-01-24"
+}
+{
+  "title": "Antropología Digital y Nuevas Tecnologías",
+  "content": "La antropología digital estudia cómo las tecnologías digitales transforman la cultura y las prácticas sociales, expandiendo el campo antropológico a espacios virtuales y comunidades digitales. Ha transformado la etnografía al permitir investigación multisitio simultánea, acceso a poblaciones dispersas, y nuevos métodos como la netnografía (etnografía online). Las nuevas tecnologías han cambiado dinámicas de acceso y privacidad, generado nuevos métodos visuales como la antropología visual digital, y creado nuevas formas de identidad y comunidad. Ejemplos incluyen estudios de comunidades en redes sociales, análisis de cultura gamer, investigación de cómo las apps de citas transforman relaciones románticas, y uso de realidad virtual para recrear sitios culturales. La antropología digital también analiza cómo algoritmos y plataformas digitales reproducen sesgos culturales y estructuras de poder, y cómo las comunidades marginadas usan tecnología digital para resistencia cultural y organización política.",
+  "domain": "antropologia",
+  "category": "antropologia_digital",
+  "keywords": ["antropología digital", "netnografía", "tecnologías digitales", "identidad virtual", "algoritmos culturales"],
+  "language": "es",
+  "source": "manual_content_anthropology",
+  "date": "2025-01-24"
+}

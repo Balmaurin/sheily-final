@@ -1,0 +1,36 @@
+{
+  "memory_id": "d9c31018b2c0531c",
+  "metadata": {
+    "source_file": "matematicas_avanzadas.txt",
+    "file_size": 238,
+    "file_type": ".txt",
+    "processing_time": "2025-10-19T02:41:23.840583",
+    "total_chunks": 1,
+    "total_characters": 232,
+    "memory_type": "documento_procesado"
+  },
+  "content": {
+    "full_text": "Este es un documento de prueba sobre matemáticas avanzadas. Contiene información importante sobre cálculo diferencial e integral, álgebra lineal y teoría de números. Es un recurso educativo completo para estudiantes universitarios.\n",
+    "chunks": [
+      {
+        "chunk_id": "chunk_001",
+        "content": "Este es un documento de prueba sobre matemáticas avanzadas. Contiene información importante sobre cálculo diferencial e integral, álgebra lineal y teoría de números. Es un recurso educativo completo para estudiantes universitarios.\n",
+        "start_pos": 0,
+        "end_pos": 232,
+        "size": 232
+      }
+    ],
+    "summary": "Este es un documento de prueba sobre matemáticas avanzadas. Contiene información importante sobre cálculo diferencial e integral, álgebra lineal y teoría de números. Es un recurso educativo completo para estudiantes universitarios."
+  },
+  "context": {
+    "importance_score": 0.3,
+    "category": "general",
+    "tags": []
+  },
+  "access_info": {
+    "created": "2025-10-19T02:41:23.840606",
+    "last_accessed": null,
+    "access_count": 0,
+    "retrieval_score": 0.0
+  }
+}

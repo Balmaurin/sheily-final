@@ -1,0 +1,36 @@
+{
+  "memory_id": "4b88af7aea3e02ea",
+  "metadata": {
+    "source_file": "guia_markdown.md",
+    "file_size": 281,
+    "file_type": ".md",
+    "processing_time": "2025-10-19T02:41:23.854532",
+    "total_chunks": 1,
+    "total_characters": 273,
+    "memory_type": "documento_procesado"
+  },
+  "content": {
+    "full_text": "# Guía de Uso del Sistema de Memoria\n\n## Introducción\nEl sistema de memoria permite almacenar y recuperar información de manera inteligente.\n\n## Funcionalidades\n- Procesamiento automático de archivos\n- Categorización inteligente\n- Búsqueda semántica\n- Integración con chat\n",
+    "chunks": [
+      {
+        "chunk_id": "chunk_001",
+        "content": "# Guía de Uso del Sistema de Memoria\n\n## Introducción\nEl sistema de memoria permite almacenar y recuperar información de manera inteligente.\n\n## Funcionalidades\n- Procesamiento automático de archivos\n- Categorización inteligente\n- Búsqueda semántica\n- Integración con chat\n",
+        "start_pos": 0,
+        "end_pos": 273,
+        "size": 273
+      }
+    ],
+    "summary": "# Guía de Uso del Sistema de Memoria El sistema de memoria permite almacenar y recuperar información de manera inteligente. - Procesamiento automático de archivos"
+  },
+  "context": {
+    "importance_score": 0.2,
+    "category": "general",
+    "tags": []
+  },
+  "access_info": {
+    "created": "2025-10-19T02:41:23.854629",
+    "last_accessed": null,
+    "access_count": 0,
+    "retrieval_score": 0.0
+  }
+}

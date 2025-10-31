@@ -1,0 +1,40 @@
+{
+  "memory_id": "26e9b8ee41b71961",
+  "metadata": {
+    "source_file": "fisica_cuantica.md",
+    "file_size": 817,
+    "file_type": ".md",
+    "processing_time": "2025-10-19T02:41:23.850322",
+    "total_chunks": 1,
+    "total_characters": 790,
+    "memory_type": "documento_procesado"
+  },
+  "content": {
+    "full_text": "# Documento de Física Cuántica\n\nLa física cuántica es una rama fundamental de la física que describe el comportamiento de la materia y la energía a escalas muy pequeñas, como átomos y partículas subatómicas.\n\n## Principios Fundamentales\n\n### 1. Dualidad Onda-Partícula\nLos electrones y otras partículas muestran propiedades tanto de ondas como de partículas, dependiendo de cómo se observen.\n\n### 2. Superposición\nUn sistema cuántico puede existir en múltiples estados simultáneamente hasta que se mide.\n\n### 3. Entrelazamiento\nDos partículas pueden estar correlacionadas de tal manera que el estado de una influye instantáneamente en la otra, independientemente de la distancia.\n\n## Aplicaciones\n- Computación cuántica\n- Criptografía cuántica\n- Sensores cuánticos\n- Teleportación cuántica\n",
+    "chunks": [
+      {
+        "chunk_id": "chunk_001",
+        "content": "# Documento de Física Cuántica\n\nLa física cuántica es una rama fundamental de la física que describe el comportamiento de la materia y la energía a escalas muy pequeñas, como átomos y partículas subatómicas.\n\n## Principios Fundamentales\n\n### 1. Dualidad Onda-Partícula\nLos electrones y otras partículas muestran propiedades tanto de ondas como de partículas, dependiendo de cómo se observen.\n\n### 2. Superposición\nUn sistema cuántico puede existir en múltiples estados simultáneamente hasta que se mide.\n\n### 3. Entrelazamiento\nDos partículas pueden estar correlacionadas de tal manera que el estado de una influye instantáneamente en la otra, independientemente de la distancia.\n\n## Aplicaciones\n- Computación cuántica\n- Criptografía cuántica\n- Sensores cuánticos\n- Teleportación cuántica\n",
+        "start_pos": 0,
+        "end_pos": 790,
+        "size": 790
+      }
+    ],
+    "summary": "# Documento de Física Cuántica La física cuántica es una rama fundamental de la física que describe el comportamiento de la materia y la energía a escalas muy pequeñas, como átomos y partículas subatómicas. ## Principios Fundamentales"
+  },
+  "context": {
+    "importance_score": 0.7,
+    "category": "general",
+    "tags": [
+      "física",
+      "cuántica",
+      "partículas"
+    ]
+  },
+  "access_info": {
+    "created": "2025-10-19T02:41:23.850513",
+    "last_accessed": null,
+    "access_count": 0,
+    "retrieval_score": 0.0
+  }
+}

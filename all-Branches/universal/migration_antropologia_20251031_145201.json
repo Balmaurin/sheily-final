@@ -1,0 +1,26 @@
+{
+  "branch": "antropologia",
+  "timestamp": "2025-10-31T14:52:01.462375",
+  "corpus_files": [
+    "antropologia_corpus_documents_cases.jsonl",
+    "antropologia_corpus_documents_contemporary.jsonl",
+    "antropologia_corpus_documents_fundamentals.jsonl",
+    "antropologia_corpus_documents_subfields.jsonl",
+    "antropologia_corpus_documents_theories.jsonl"
+  ],
+  "training_files": [
+    "antropologia_training_adapter_premium_training_dataset.jsonl",
+    "antropologia_training_complete_optimized_premium_dataset.jsonl",
+    "antropologia_training_incremental_supplementary_improved_migrated.jsonl",
+    "antropologia_training_incremental_train_improved_migrated.jsonl",
+    "antropologia_training_premium_complete_optimized_premium_dataset_migrated.jsonl",
+    "antropologia_training_premium_premium_training_dataset_migrated.jsonl",
+    "antropologia_training_supplementary_data.jsonl",
+    "antropologia_training_supplementary_data_migrated.jsonl",
+    "antropologia_training_supplementary_improved.jsonl",
+    "antropologia_training_train.jsonl",
+    "antropologia_training_train_improved.jsonl",
+    "antropologia_training_train_migrated.jsonl"
+  ],
+  "total_examples": 2050
+}

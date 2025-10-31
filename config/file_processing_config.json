@@ -1,0 +1,39 @@
+{
+  "file_processing": {
+    "supported_formats": [
+      "txt",
+      "pdf",
+      "docx",
+      "json",
+      "jsonl",
+      "md",
+      "html",
+      "csv",
+      "xlsx",
+      "xml",
+      "rtf",
+      "odt"
+    ],
+    "max_file_size_mb": 100,
+    "chunk_size": 1000,
+    "chunk_overlap": 200,
+    "auto_processing": true,
+    "knowledge_extraction": true,
+    "semantic_indexing": true
+  },
+  "file_analysis": {
+    "content_classification": true,
+    "language_detection": true,
+    "topic_extraction": true,
+    "entity_recognition": true,
+    "sentiment_analysis": true,
+    "academic_level_assessment": true
+  },
+  "learning_integration": {
+    "auto_memorization": true,
+    "knowledge_base_update": true,
+    "skill_extraction": true,
+    "emotional_context_extraction": true,
+    "cross_reference_creation": true
+  }
+}

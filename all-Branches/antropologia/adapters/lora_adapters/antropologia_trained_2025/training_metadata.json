@@ -1,0 +1,15 @@
+{
+  "adapter_name": "antropologia_trained_2025",
+  "base_model": "microsoft/Phi-3.5-mini-instruct",
+  "dataset": "train.jsonl",
+  "num_examples": 120,
+  "num_epochs": 3,
+  "lora_r": 56,
+  "lora_alpha": 112,
+  "lora_dropout": 0.025,
+  "trainable_params": 2457600,
+  "training_time_seconds": 120.5,
+  "device": "simulated",
+  "train_loss": 0.234,
+  "mode": "simulation"
+}

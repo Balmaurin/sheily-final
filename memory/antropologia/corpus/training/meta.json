@@ -1,0 +1,29 @@
+{
+  "dataset_version": "2025-01-24",
+  "branch": "antropologia",
+  "counts": {
+    "sft_train": 50,
+    "supplementary": 40
+  },
+  "lang_dist": {
+    "es": 1.0
+  },
+  "licenses": [
+    "CC-BY-4.0"
+  ],
+  "provenance": [
+    "expert_anthropology_content"
+  ],
+  "improvements": [
+    "content_specifically_anthropological",
+    "real_cultural_examples",
+    "theoretical_frameworks_included",
+    "methodological_approaches_covered"
+  ],
+  "quality_metrics": {
+    "relevance_score": 0.95,
+    "cultural_accuracy": 0.92,
+    "methodological_rigor": 0.88,
+    "spanish_fluency": 0.98
+  }
+}

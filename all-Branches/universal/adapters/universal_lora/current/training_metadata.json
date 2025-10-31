@@ -1,0 +1,11 @@
+{
+  "training_date": "2025-10-31T15:11:39.135395",
+  "total_examples_trained": 36,
+  "epochs": 1,
+  "max_steps": 20,
+  "batch_size": 4,
+  "learning_rate": 0.0002,
+  "final_loss": 2.1478109836578367,
+  "duration_seconds": 405.944349,
+  "training_type": "quick_test"
+}

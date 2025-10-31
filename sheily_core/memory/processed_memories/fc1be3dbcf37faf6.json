@@ -1,0 +1,36 @@
+{
+  "memory_id": "fc1be3dbcf37faf6",
+  "metadata": {
+    "source_file": "prueba_memoria.txt",
+    "file_size": 278,
+    "file_type": ".txt",
+    "processing_time": "2025-10-19T02:41:23.844514",
+    "total_chunks": 1,
+    "total_characters": 278,
+    "memory_type": "documento_procesado"
+  },
+  "content": {
+    "full_text": "ESTE ES UN DOCUMENTO DE PRUEBA PARA EL SISTEMA DE MEMORIA\n\nContenido importante sobre:\n- Inteligencia Artificial\n- Machine Learning\n- Procesamiento de Lenguaje Natural\n- Sistemas de Memoria Avanzada\n\nEste documento es crucial para entender el funcionamiento del sistema Sheily.\n",
+    "chunks": [
+      {
+        "chunk_id": "chunk_001",
+        "content": "ESTE ES UN DOCUMENTO DE PRUEBA PARA EL SISTEMA DE MEMORIA\n\nContenido importante sobre:\n- Inteligencia Artificial\n- Machine Learning\n- Procesamiento de Lenguaje Natural\n- Sistemas de Memoria Avanzada\n\nEste documento es crucial para entender el funcionamiento del sistema Sheily.\n",
+        "start_pos": 0,
+        "end_pos": 278,
+        "size": 278
+      }
+    ],
+    "summary": "ESTE ES UN DOCUMENTO DE PRUEBA PARA EL SISTEMA DE MEMORIA Contenido importante sobre: - Inteligencia Artificial"
+  },
+  "context": {
+    "importance_score": 0.3,
+    "category": "general",
+    "tags": []
+  },
+  "access_info": {
+    "created": "2025-10-19T02:41:23.844552",
+    "last_accessed": null,
+    "access_count": 0,
+    "retrieval_score": 0.0
+  }
+}

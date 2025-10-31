@@ -1,0 +1,128 @@
+{
+  "created": "2025-10-19T02:41:23.838394",
+  "total_memories": 7,
+  "memories": {
+    "d9c31018b2c0531c": {
+      "file_name": "matematicas_avanzadas.txt",
+      "category": "general",
+      "tags": [],
+      "created": "2025-10-19T02:41:23.840606",
+      "importance": 0.3,
+      "file_type": ".txt"
+    },
+    "d2fbe43d15fd4de7": {
+      "file_name": "documento_academico.pdf",
+      "category": "general",
+      "tags": [],
+      "created": "2025-10-19T02:41:23.841348",
+      "importance": 0.0,
+      "file_type": ".pdf"
+    },
+    "963fede0ea86942f": {
+      "file_name": "guia_python.md",
+      "category": "documentación",
+      "tags": [
+        "python"
+      ],
+      "created": "2025-10-19T02:41:23.842837",
+      "importance": 0.7,
+      "file_type": ".md"
+    },
+    "fc1be3dbcf37faf6": {
+      "file_name": "prueba_memoria.txt",
+      "category": "general",
+      "tags": [],
+      "created": "2025-10-19T02:41:23.844552",
+      "importance": 0.3,
+      "file_type": ".txt"
+    },
+    "26e9b8ee41b71961": {
+      "file_name": "fisica_cuantica.md",
+      "category": "general",
+      "tags": [
+        "física",
+        "cuántica",
+        "partículas"
+      ],
+      "created": "2025-10-19T02:41:23.850513",
+      "importance": 0.7,
+      "file_type": ".md"
+    },
+    "4b88af7aea3e02ea": {
+      "file_name": "guia_markdown.md",
+      "category": "general",
+      "tags": [],
+      "created": "2025-10-19T02:41:23.854629",
+      "importance": 0.2,
+      "file_type": ".md"
+    },
+    "cd88d6271f9a14fc": {
+      "file_name": "matematicas_discretas.txt",
+      "category": "documentación",
+      "tags": [
+        "discretas",
+        "matemáticas",
+        "grafos",
+        "conjuntos"
+      ],
+      "created": "2025-10-19T02:41:23.857666",
+      "importance": 0.7,
+      "file_type": ".txt"
+    }
+  },
+  "categories": {
+    "general": [
+      "d9c31018b2c0531c",
+      "d2fbe43d15fd4de7",
+      "fc1be3dbcf37faf6",
+      "26e9b8ee41b71961",
+      "4b88af7aea3e02ea"
+    ],
+    "documentación": [
+      "963fede0ea86942f",
+      "cd88d6271f9a14fc"
+    ]
+  },
+  "tags": {
+    "python": [
+      "963fede0ea86942f"
+    ],
+    "física": [
+      "26e9b8ee41b71961"
+    ],
+    "cuántica": [
+      "26e9b8ee41b71961"
+    ],
+    "partículas": [
+      "26e9b8ee41b71961"
+    ],
+    "discretas": [
+      "cd88d6271f9a14fc"
+    ],
+    "matemáticas": [
+      "cd88d6271f9a14fc"
+    ],
+    "grafos": [
+      "cd88d6271f9a14fc"
+    ],
+    "conjuntos": [
+      "cd88d6271f9a14fc"
+    ]
+  },
+  "file_types": {
+    ".txt": [
+      "d9c31018b2c0531c",
+      "fc1be3dbcf37faf6",
+      "cd88d6271f9a14fc"
+    ],
+    ".pdf": [
+      "d2fbe43d15fd4de7"
+    ],
+    ".md": [
+      "963fede0ea86942f",
+      "26e9b8ee41b71961",
+      "4b88af7aea3e02ea"
+    ]
+  },
+  "last_updated": "2025-10-19T02:41:23.858071"
+}

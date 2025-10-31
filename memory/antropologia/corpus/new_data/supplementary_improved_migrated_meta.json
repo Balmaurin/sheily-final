@@ -1,0 +1,11 @@
+{
+  "dataset_name": "supplementary_improved_migrated",
+  "migrated_at": "2025-10-26T15:52:14.586956",
+  "original_analysis": {
+    "line_count": 36,
+    "avg_input_length": 0.0,
+    "avg_output_length": 0.0,
+    "has_metadata": false,
+    "quality_indicators": [],
+    "estimated_quality": 0.0,
+    "topics": 

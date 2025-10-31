@@ -1,0 +1,183 @@
+{
+  "project": {
+    "name": "Sheily AI",
+    "repository": "https://github.com/Balmaurin/sheily-pruebas",
+    "version": "1.0-final",
+    "timestamp": "2025-10-24T00:00:00Z"
+  },
+  "statistics": {
+    "total_tests": 220,
+    "total_files": 10,
+    "total_lines_of_test_code": 4733,
+    "average_coverage": 74.4,
+    "pass_rate": 100,
+    "compilation_errors": 0,
+    "lint_errors": 0
+  },
+  "test_files": [
+    {
+      "name": "test_config.py",
+      "path": "tests_light/test_config.py",
+      "category": "Configuration",
+      "tests": 6,
+      "coverage": 80,
+      "status": "passing",
+      "phase": 3
+    },
+    {
+      "name": "test_logger.py",
+      "path": "tests_light/test_logger.py",
+      "category": "Logging",
+      "tests": 8,
+      "coverage": 75,
+      "status": "passing",
+      "phase": 3
+    },
+    {
+      "name": "test_safety.py",
+      "path": "tests_light/test_safety.py",
+      "category": "Security",
+      "tests": 10,
+      "coverage": 78,
+      "status": "passing",
+      "phase": 3
+    },
+    {
+      "name": "test_embeddings_cache_and_batch.py",
+      "path": "tests_light/test_embeddings_cache_and_batch.py",
+      "category": "Embeddings",
+      "tests": 5,
+      "coverage": 70,
+      "status": "passing",
+      "phase": 3
+    },
+    {
+      "name": "test_rag_integration.py",
+      "path": "tests_light/test_rag_integration.py",
+      "category": "RAG Integration",
+      "tests": 8,
+      "coverage": 72,
+      "status": "passing",
+      "phase": 3
+    },
+    {
+      "name": "test_training_integration.py",
+      "path": "tests_light/test_training_integration.py",
+      "category": "Training Integration",
+      "tests": 9,
+      "coverage": 74,
+      "status": "passing",
+      "phase": 3
+    },
+    {
+      "name": "test_training_extended.py",
+      "path": "tests_light/test_training_extended.py",
+      "category": "Training Extended",
+      "tests": 45,
+      "coverage": 75,
+      "status": "passing",
+      "phase": 7
+    },
+    {
+      "name": "test_rag_extended.py",
+      "path": "tests_light/test_rag_extended.py",
+      "category": "RAG Extended",
+      "tests": 38,
+      "coverage": 74,
+      "status": "passing",
+      "phase": 7
+    },
+    {
+      "name": "test_core_extended.py",
+      "path": "tests_light/test_core_extended.py",
+      "category": "Core Extended",
+      "tests": 45,
+      "coverage": 74,
+      "status": "passing",
+      "phase": 7
+    },
+    {
+      "name": "test_app_extended.py",
+      "path": "tests_light/test_app_extended.py",
+      "category": "App Extended",
+      "tests": 46,
+      "coverage": 72,
+      "status": "passing",
+      "phase": 7
+    }
+  ],
+  "modules": {
+    "sheily_train": {
+      "tests": 45,
+      "coverage": 75,
+      "files": [
+        "test_training_extended.py"
+      ]
+    },
+    "sheily_rag": {
+      "tests": 38,
+      "coverage": 74,
+      "files": [
+        "test_rag_extended.py"
+      ]
+    },
+    "sheily_core": {
+      "tests": 45,
+      "coverage": 74,
+      "files": [
+        "test_core_extended.py"
+      ]
+    },
+    "app": {
+      "tests": 46,
+      "coverage": 72,
+      "files": [
+        "test_app_extended.py"
+      ]
+    }
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Audit",
+      "status": "complete",
+      "tests": 0
+    },
+    {
+      "phase": 2,
+      "name": "Fixes",
+      "status": "complete",
+      "tests": 0
+    },
+    {
+      "phase": 3,
+      "name": "Initial Testing",
+      "status": "complete",
+      "tests": 52
+    },
+    {
+      "phase": 4,
+      "name": "Cleanup",
+      "status": "complete",
+      "tests": 0
+    },
+    {
+      "phase": 5,
+      "name": "DevOps",
+      "status": "complete",
+      "tests": 0
+    },
+    {
+      "phase": 6,
+      "name": "Automation",
+      "status": "complete",
+      "tests": 0
+    },
+    {
+      "phase": 7,
+      "name": "Test Expansion",
+      "status": "complete",
+      "tests": 174
+    }
+  ]
+}

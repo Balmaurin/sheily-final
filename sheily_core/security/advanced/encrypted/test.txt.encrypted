@@ -1,0 +1,7 @@
+{
+  "encrypted_data": "E4iayWATsy6RRgf5JA3AzVmbGDfO35Igy53m8cOM458=",
+  "iv": "W3dweV4wcCbiBGaylO8xIA==",
+  "salt": "ObR453mCxB3XOL+zlgZrLw==",
+  "algorithm": "AES-256-CBC",
+  "iterations": 100000
+}

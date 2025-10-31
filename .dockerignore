@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+var/central_logs/*
+
+# Data and models (copiar manualmente si es necesario)
+var/central_models/*
+var/central_cache/*
+var/central_data/*
+
+# Git
+.git/
+.gitignore
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+
+# Temporary files
+*.tmp
+*.bak
+.DS_Store
+
+# Environment files (usar .env en runtime)
+.env
+.env.local
+
+# Documentation builds
+docs/_build/
+
+# Backup
+backup_branches/
+*.backup
+
+# Large datasets (montar como volumen)
+all-Branches/*/training/data/*.jsonl
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore

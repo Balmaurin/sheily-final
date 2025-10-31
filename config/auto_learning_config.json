@@ -1,0 +1,21 @@
+{
+  "continuous_learning": {
+    "enabled": true,
+    "knowledge_extraction": true,
+    "semantic_update": true,
+    "adapter_retraining": true,
+    "file_processing": true
+  },
+  "learning_triggers": {
+    "conversation_threshold": 5,
+    "knowledge_threshold": 3,
+    "skill_improvement_threshold": 10,
+    "file_processing_threshold": 1
+  },
+  "learning_parameters": {
+    "learning_rate": 0.01,
+    "memory_consolidation_rate": 0.95,
+    "knowledge_confidence_threshold": 0.6,
+    "skill_mastery_threshold": 0.9
+  }
+}

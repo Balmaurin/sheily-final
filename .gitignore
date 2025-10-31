@@ -1,0 +1,154 @@
+# Ignore local model caches and artifacts
+models/
+models/**
+
+# Python build and cache
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.cache/
+
+# Virtual environments and local configs
+.venv/
+venv/
+env/
+.env
+.env.*
+*.env
+.python-version
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and temp files
+logs/
+**/*.log
+tmp/
+temp/
+
+# Heavy ML artifacts (models, weights, checkpoints)
+**/*.safetensors
+**/*.gguf
+**/*.ckpt
+**/*.bin
+**/*.pt
+**/*.pth
+**/*.onnx
+**/trainer_state.json
+**/training_args.bin
+**/optimizer.pt
+**/scheduler.pt
+**/rng_state.pth
+**/snapshots/**
+
+# Datasets and generated artifacts
+**/*.npy
+**/*.npz
+**/*.pkl
+**/*.pickle
+**/*.arrow
+**/*faiss.index
+data/**/*.db
+data/**/*.idx
+data/**/*.index
+
+# Corpus and training datasets (large)
+all-Branches/**/corpus/**
+all-Branches/**/training/**/*.jsonl
+memory/**/training/**/*.jsonl
+
+# Generated reports and build outputs
+audit/reports/**
+tests/reports/**
+
+# Centralized runtime data (do not version)
+var/central_cache/**
+var/central_data/**
+var/central_logs/**
+var/central_models/**
+
+# Node/npm (in case of web assets)
+node_modules/
+package-lock.json
+
+
+# Sheily AI - Gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# Data and Cache
+var/central_data/*
+var/central_cache/*
+var/central_models/*
+!var/central_data/.gitkeep
+!var/central_cache/.gitkeep
+!var/central_models/.gitkeep
+
+# Env files (keep .env.example tracked)
+.env
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup
+backup_branches/
+
+# System
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.windsurf/rules/snyk_rules.md
