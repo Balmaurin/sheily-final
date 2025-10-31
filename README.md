@@ -2,16 +2,16 @@
 
 [![Licencia](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
-[![Score de Calidad](https://img.shields.io/badge/quality-61.9%2F100-yellow.svg)](enterprise_audit_report.md)
+[![Score de Calidad](https://img.shields.io/badge/quality-78.2%2F100-brightgreen.svg)](AUDITORIA_DEFINITIVA_COMPLETA.md)
 
-Sistema enterprise de inteligencia artificial con arquitectura modular, soporte para 50+ dominios especializados, RAG (Retrieval-Augmented Generation), y entrenamiento LoRA.
+Sistema enterprise de inteligencia artificial con arquitectura modular, soporte para 50+ dominios especializados, RAG (Retrieval-Augmented Generation), y entrenamiento LoRA. Este repositorio refleja el proyecto real de producción, con artefactos pesados excluidos por política.
 
 ---
 
 ## 📊 Estado del Proyecto (Auditoría 31/10/2025)
 
 ```
-Score General: 61.9/100 - ACEPTABLE (***)
+Score General: 78.2/100 - AVANZADO (****)
 
 Arquitectura........... 85/100 ✓ [****]
 Documentación.......... 80/100 ✓ [****]
@@ -20,7 +20,7 @@ Testing................ 70/100 ~ [***]
 Calidad de Código...... 50/100 ~ [**]
 Dependencias........... 50/100 ~ [**]
 Performance............ 40/100 ! [**]
-DevOps................. 40/100 ! [**]
+DevOps................. 75/100 ✓ [****]
 ```
 
 ---
@@ -37,8 +37,8 @@ DevOps................. 40/100 ! [**]
 
 ```bash
 # 1. Clonar repositorio
-git clone https://github.com/tu-org/sheily-ai.git
-cd sheily-ai
+git clone https://github.com/Balmaurin/sheily-final.git
+cd sheily-final
 
 # 2. Instalar dependencias
 pip install -r requirements.txt
@@ -58,25 +58,26 @@ python quick_start.py
 ### Estructura del Proyecto
 
 ```
-sheily-ai/
-├── sheily_core/          # 206 archivos - Core del sistema (3.9 MB)
+sheily-final/
+├── sheily_core/          # Núcleo del sistema (206 archivos)
 │   ├── integration/      # Servicios RAG y APIs
 │   ├── security/         # Módulos de seguridad
-│   ├── data/            # Procesamiento de datos
-│   ├── llm_engine/      # Motor de LLM
-│   ├── blockchain/      # Integración blockchain
+│   ├── data/             # Procesamiento de datos e índices
+│   ├── llm_engine/       # Motor de LLM
+│   ├── blockchain/       # Integración blockchain
 │   └── ...
-├── sheily_train/         # 19 archivos - Sistema de entrenamiento
-├── tests/               # 23 archivos - Suite de tests
-│   ├── unit/           # Tests unitarios
-│   ├── integration/    # Tests de integración
-│   ├── security/       # Tests de seguridad
+├── sheily_train/         # Sistema de entrenamiento (19 archivos)
+├── tests/                # Suite de tests (23 archivos)
+│   ├── unit/             # Tests unitarios
+│   ├── integration/      # Tests de integración
+│   ├── security/         # Tests de seguridad
 │   └── ...
-├── all-Branches/        # 50+ dominios especializados
-├── tools/              # Herramientas y utilidades
-└── docs/               # Documentación
+├── all-Branches/         # Dominios especializados
+├── tools/                # Herramientas y utilidades
+├── docs/                 # Documentación
+└── var/, data/, logs/    # Datos y artefactos en tiempo de ejecución (excluidos del repo)
 
-Total: 34,992 archivos Python
+Código Python principal: 376 archivos (ver detalles en AUDITORIA_DEFINITIVA_COMPLETA.md)
 ```
 
 ### Patrones Arquitectónicos
@@ -147,14 +148,11 @@ pytest tests/security/ -v -m security
 pytest tests/ --cov=sheily_core --cov-report=html
 ```
 
-### Estadísticas de Testing
+### Cobertura de la suite
 
-- ✅ **16 archivos de test** encontrados
-- ✅ **8 tests unitarios**
-- ✅ **2 tests de integración**
-- ✅ **3 tests de seguridad**
-- ✅ **1 test e2e**
-- ✅ **pytest.ini** configurado
+- ✅ Estructura completa: unit, integration, security, e2e, performance
+- ✅ 20+ archivos de test; 200+ casos totales (ver auditoría)
+- ✅ `pytest.ini` configurado
 
 ---
 
@@ -178,7 +176,7 @@ python -m bandit -r sheily_core -f json -o security_report.json
 detect-secrets scan
 ```
 
-⚠️ **Hallazgos:** 3 archivos con patrones potencialmente inseguros detectados (severity: MEDIUM)
+Nota: artefactos sensibles y pesados están excluidos del repositorio por política (.gitignore). Revisa NOTAS_DEL_PROYECTO_REAL.md para instrucciones de reconstrucción local.
 
 ---
 
@@ -240,23 +238,9 @@ docker-compose ps
 
 ## 📈 Métricas de Calidad
 
-### Análisis de Código
-
-- ✅ **94%** de archivos con docstrings
-- ✅ **92%** de archivos con type hints
-- ⚠️ **Alta complejidad** - 34,992 archivos Python
-
 ### Recomendaciones Prioritarias
 
-#### [ALTA] Calidad de Código
-- Mejorar docstrings en archivos sin documentación
-- Agregar type hints faltantes
-- Considerar modularización adicional
-
-#### [BAJA] DevOps
-- Implementar pipeline CI/CD
-- Configurar monitoring avanzado (Prometheus/Grafana)
-- Automatizar deployment
+Consulta el informe: [AUDITORIA_DEFINITIVA_COMPLETA.md](AUDITORIA_DEFINITIVA_COMPLETA.md)
 
 ---
 
@@ -339,7 +323,8 @@ make lint
 ## 📚 Documentación Adicional
 
 - 📖 [Tests README](tests/README.md) - Guía completa de testing
-- 📖 [Reporte de Auditoría](enterprise_audit_report.md) - Auditoría empresarial
+- 📖 [Auditoría Definitiva](AUDITORIA_DEFINITIVA_COMPLETA.md) - Informe consolidado (78.2/100)
+- 📖 [Notas del Proyecto Real](docs/NOTAS_DEL_PROYECTO_REAL.md) - Exclusiones y reconstrucción local
 - 📖 [Configuración de Seguridad](docs/SECURITY_POLICIES.md) - Políticas de seguridad
 - 📖 [API Documentation](sheily_core/integration/README.md) - Documentación de APIs
 
@@ -347,43 +332,13 @@ make lint
 
 ## 🤝 Contribuir
 
-### Guías de Contribución
-
-1. Fork el proyecto
-2. Crear rama de feature (`git checkout -b feature/AmazingFeature`)
-3. Commit cambios (`git commit -m 'Add AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abrir Pull Request
-
-### Estándares de Código
-
-- Seguir PEP 8
-- Incluir docstrings en todas las funciones
-- Agregar type hints
-- Escribir tests para nueva funcionalidad
-- Cobertura mínima de tests: 70%
+Lee la guía completa en [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
 ## 📝 Changelog
 
-### [2.0.0] - 2025-10-31
-
-#### Agregado
-- ✅ Sistema de auditoría empresarial completo
-- ✅ Unificación de requirements
-- ✅ Limpieza de archivos obsoletos (30 archivos removidos)
-- ✅ Script de inicio rápido mejorado
-
-#### Mejorado
-- 🔧 Estructura de directorios optimizada
-- 🔧 Documentación actualizada
-- 🔧 Configuración de seguridad reforzada
-
-#### Removido
-- ❌ Archivos duplicados de requirements
-- ❌ Scripts de un solo uso
-- ❌ Reportes obsoletos
+Consulta [CHANGELOG.md](CHANGELOG.md) para el historial completo de cambios.
 
 ---
 
